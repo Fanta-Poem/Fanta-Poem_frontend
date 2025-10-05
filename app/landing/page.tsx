@@ -1,6 +1,7 @@
 "use client";
 
 import * as S from "./style";
+import Link from "next/link";
 
 const scrollImg = "/3d/scroll.svg";
 const treasure_box = "/3d/treasure_box.svg";
@@ -33,16 +34,18 @@ export default function LandingPage() {
             <S.PrimaryCTA>
               <p>시작하기</p>
             </S.PrimaryCTA>
-            <S.SecondaryCTA>
-              <p>깃허브 보기</p>
-            </S.SecondaryCTA>
+            <Link href={"https://github.com/Fanta-Poem/Fanta-Poem_frontend"}>
+              <S.SecondaryCTA>
+                <p>깃허브 보기</p>
+              </S.SecondaryCTA>
+            </Link>
           </S.CTAButtonsContainer>
         </S.HeroContent>
 
         {/* Floating Elements */}
         <S.FloatingElement
           className="floating-book"
-          top="142px"
+          top="142px" 
           left="390px"
           rotate="357.343deg"
         >

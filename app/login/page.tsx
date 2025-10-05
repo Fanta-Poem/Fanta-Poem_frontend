@@ -6,6 +6,7 @@ import Link from "next/link";
 import Button from "../components/Button";
 import OutlineButton from "../components/OutlineButton";
 import GoogleIcon from "../components/GoogleIcon";
+import { ChevronLeft, Eye, EyeOff } from "lucide-react";
 
 const scrollImg = "/3d/scroll.svg";
 const swardImg = "/3d/sword.svg";
@@ -40,8 +41,8 @@ export default function LoginPage() {
             </S.LogoSection>
             <Link href="/landing">
               <S.BackButton>
-                <S.BackIcon>←</S.BackIcon>
-                돌아가기
+                <ChevronLeft color="#D6BCFA" size={20} />
+                뒤로가기
               </S.BackButton>
             </Link>
           </S.TopBar>
@@ -84,7 +85,11 @@ export default function LoginPage() {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? "👁️" : "👁️‍🗨️"}
+                  {showPassword ? (
+                    <Eye size={16} />
+                  ) : (
+                    <EyeOff size={16} color="gray" />
+                  )}
                 </S.EyeButton>
               </S.PasswordInputWrapper>
             </S.InputSection>

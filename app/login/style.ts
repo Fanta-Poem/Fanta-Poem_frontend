@@ -94,17 +94,13 @@ export const BackButton = styled.button`
   gap: 8px;
   background: transparent;
   border: none;
-  color: #9ca3af;
+  color: var(--light-primary);
   font-family: "IM_Hyemin", sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 20px;
   cursor: pointer;
   padding: 10px 16px;
   transition: color 0.3s ease;
-
-  &:hover {
-    color: white;
-  }
 `;
 
 export const BackIcon = styled.span`

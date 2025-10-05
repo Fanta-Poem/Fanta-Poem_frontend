@@ -31,6 +31,7 @@ export const HeroSection = styled.div`
   position: relative;
   flex-shrink: 0;
   width: 100%;
+  height: 100vh;
 `;
 
 export const HeroContent = styled.div`

@@ -46,7 +46,7 @@ export default function LandingPage() {
         <S.FloatingElement top="570px" left="155px" rotate="" scale="1, -1">
           <S.FloatingImage src={treasure_box} alt="떠다니는 요소 2" />
         </S.FloatingElement>
-        <S.FloatingElement top="400px" left="900px" rotate="9.285deg">
+        <S.FloatingElement top="500px" left="1200px" rotate="9.285deg">
           <S.FloatingImage src={unicorn} alt="떠다니는 요소 3" />
         </S.FloatingElement>
       </S.HeroSection>

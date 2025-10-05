@@ -8,6 +8,7 @@ export const LandingContainer = styled.div`
   position: relative;
   width: 100%;
   min-height: 100vh;
+  overflow: visible;
 `;
 
 export const HeroSection = styled.div`
@@ -25,7 +26,7 @@ export const HeroSection = styled.div`
   height: 900px;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow: visible;
   padding: 80px 60px;
   position: relative;
   flex-shrink: 0;
@@ -228,6 +229,9 @@ export const FloatingElement = styled.div<{
   transform: rotate(${(props) => props.rotate})
     ${(props) => (props.scale ? `scale(${props.scale})` : "")};
   z-index: 1;
+  overflow: visible;
+  width: 242px;
+  height: 242px;
 `;
 
 export const FloatingImage = styled.img`

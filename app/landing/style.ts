@@ -231,12 +231,18 @@ export const FloatingElement = styled.div<{
     ${(props) => (props.scale ? `scale(${props.scale})` : "")};
   z-index: 1;
   overflow: visible;
-  width: 242px;
-  height: 242px;
+  width: 200px;
+  height: 200px;
+
+  &.floating-unicorn {
+    width: 250px;
+    height: 250px;
+  }
   animation: float 4s ease-in-out infinite;
 
   @keyframes float {
-    0%, 100% {
+    0%,
+    100% {
       transform: translateY(0px) rotate(${(props) => props.rotate})
         ${(props) => (props.scale ? `scale(${props.scale})` : "")};
     }
@@ -246,12 +252,88 @@ export const FloatingElement = styled.div<{
     }
   }
 
-  &:nth-of-type(2) {
+  &.floating-box {
     animation-delay: -1.5s;
   }
 
-  &:nth-of-type(3) {
+  &.floating-unicorn {
     animation-delay: -3s;
+  }
+
+  /* 반응형 위치 조정 */
+  @media (max-width: 1440px) {
+    &.floating-book {
+      left: 20% !important;
+      top: 20% !important;
+    }
+    &.floating-box {
+      left: 5% !important;
+      top: 65% !important;
+    }
+    &.floating-unicorn {
+      left: 75% !important;
+      top: 60% !important;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    width: 150px;
+    height: 150px;
+
+    &.floating-book {
+      left: 15% !important;
+      top: 15% !important;
+    }
+    &.floating-box {
+      left: 3% !important;
+      top: 70% !important;
+    }
+    &.floating-unicorn {
+      left: 40% !important;
+      top: 50% !important;
+      width: 180px;
+      height: 180px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    width: 100px;
+    height: 100px;
+
+    &.floating-book {
+      left: 10% !important;
+      top: 10% !important;
+    }
+    &.floating-box {
+      left: 2% !important;
+      top: 75% !important;
+    }
+    &.floating-unicorn {
+      left: 65% !important;
+      top: 70% !important;
+      width: 120px;
+      height: 120px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    width: 80px;
+    height: 80px;
+
+    &.floating-book {
+      left: 5% !important;
+      top: 8% !important;
+    }
+    &.floating-box {
+      left: 1% !important;
+      top: 80% !important;
+    }
+    &.floating-unicorn {
+      left: 60% !important;
+      top: 75% !important;
+      width: 100px;
+      height: 100px;
+    }
   }
 `;
 

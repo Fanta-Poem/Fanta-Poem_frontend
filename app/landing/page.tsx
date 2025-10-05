@@ -40,13 +40,13 @@ export default function LandingPage() {
         </S.HeroContent>
 
         {/* Floating Elements */}
-        <S.FloatingElement top="142px" left="390px" rotate="357.343deg">
+        <S.FloatingElement className="floating-book" top="142px" left="390px" rotate="357.343deg">
           <S.FloatingImage src={book} alt="떠다니는 요소 book" />
         </S.FloatingElement>
-        <S.FloatingElement top="570px" left="155px" rotate="" scale="1, -1">
+        <S.FloatingElement className="floating-box" top="570px" left="155px" rotate="" scale="1, -1">
           <S.FloatingImage src={treasure_box} alt="떠다니는 요소 box" />
         </S.FloatingElement>
-        <S.FloatingElement top="500px" left="1200px" rotate="9.285deg">
+        <S.FloatingElement className="floating-unicorn" top="500px" left="1200px" rotate="9.285deg">
           <S.FloatingImage src={unicorn} alt="떠다니는 요소 unicorn" />
         </S.FloatingElement>
       </S.HeroSection>

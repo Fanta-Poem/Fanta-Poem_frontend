@@ -110,8 +110,8 @@ export const TitleArea = styled.div`
 export const MenuTitle = styled.h1`
   font-family: "IM_Hyemin", sans-serif;
   font-weight: bold;
-  font-size: 80px;
-  line-height: 80px;
+  font-size: 72px;
+  line-height: 72px;
   color: white;
   margin: 0;
   text-align: center;

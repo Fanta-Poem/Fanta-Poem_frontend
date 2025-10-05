@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import Button from "../components/Button";
 
 const scrollImg = "/3d/scroll.svg";
+const castleImg = "/3d/castle.svg";
 
 const menuData = [
   {
@@ -18,9 +19,10 @@ const menuData = [
   },
   {
     id: 2,
-    title: "홈",
-    image: scrollImg,
-    description: "홈 페이지 설명입니다.",
+    title: "마이 페이지",
+    image: castleImg,
+    description:
+      "자신의 여정을 돌아볼 수 있습니다.<br />완독한 이야기와 읽고 있는 이야기 별로 확인이 가능하며,<br/>각각의 이야기에 대해 수정 삭제 또한 가능합니다.",
     link: "/home",
   },
   {

@@ -78,6 +78,10 @@ export const LogoImage = styled.img`
   max-width: none;
   width: 100%;
   height: 100%;
+  user-select: none;
+  -webkit-user-drag: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 `;
 
 export const TitleArea = styled.div`
@@ -355,6 +359,10 @@ export const IconImage = styled.img`
   max-width: none;
   width: 64px;
   height: 64px;
+  user-select: none;
+  -webkit-user-drag: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 `;
 
 export const CardContent = styled.div`

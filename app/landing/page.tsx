@@ -31,9 +31,11 @@ export default function LandingPage() {
             </S.SubTitle>
           </S.HeaderSection>
           <S.CTAButtonsContainer>
-            <S.PrimaryCTA>
-              <p>시작하기</p>
-            </S.PrimaryCTA>
+            <Link href={"/login"}>
+              <S.PrimaryCTA>
+                <p>시작하기</p>
+              </S.PrimaryCTA>
+            </Link>
             <Link href={"https://github.com/Fanta-Poem/Fanta-Poem_frontend"}>
               <S.SecondaryCTA>
                 <p>깃허브 보기</p>
@@ -45,7 +47,7 @@ export default function LandingPage() {
         {/* Floating Elements */}
         <S.FloatingElement
           className="floating-book"
-          top="142px" 
+          top="142px"
           left="390px"
           rotate="357.343deg"
         >

@@ -39,7 +39,7 @@ export default function LoginPage() {
               <S.LogoImage src={scrollImg} alt="판타시 로고" />
               <S.LogoText>판타시</S.LogoText>
             </S.LogoSection>
-            <Link href="/landing">
+            <Link href="/">
               <S.BackButton>
                 <ChevronLeft color="#D6BCFA" size={20} />
                 뒤로가기

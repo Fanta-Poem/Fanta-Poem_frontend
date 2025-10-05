@@ -29,7 +29,7 @@ export const MenuInner = styled.div`
   flex-direction: column;
   width: 100%;
   max-width: 1110px;
-  gap: 40px;
+  gap: 80px;
 `;
 
 export const DotsIndicator = styled.div`
@@ -40,8 +40,8 @@ export const DotsIndicator = styled.div`
 `;
 
 export const Dot = styled.div<{ active?: boolean }>`
-  width: 16px;
-  height: 16px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: ${(props) =>
     props.active ? "var(--light-primary)" : "rgba(214, 188, 250, 0.3)"};

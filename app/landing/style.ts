@@ -233,6 +233,26 @@ export const FloatingElement = styled.div<{
   overflow: visible;
   width: 242px;
   height: 242px;
+  animation: float 4s ease-in-out infinite;
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px) rotate(${(props) => props.rotate})
+        ${(props) => (props.scale ? `scale(${props.scale})` : "")};
+    }
+    50% {
+      transform: translateY(-20px) rotate(${(props) => props.rotate})
+        ${(props) => (props.scale ? `scale(${props.scale})` : "")};
+    }
+  }
+
+  &:nth-of-type(2) {
+    animation-delay: -1.5s;
+  }
+
+  &:nth-of-type(3) {
+    animation-delay: -3s;
+  }
 `;
 
 export const FloatingImage = styled.img`

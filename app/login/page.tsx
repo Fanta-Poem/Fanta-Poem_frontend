@@ -3,6 +3,9 @@
 import { useState } from "react";
 import * as S from "./style";
 import Link from "next/link";
+import Button from "../components/Button";
+import OutlineButton from "../components/OutlineButton";
+import GoogleIcon from "../components/GoogleIcon";
 
 const scrollImg = "/3d/scroll.svg";
 const swardImg = "/3d/sword.svg";
@@ -99,7 +102,7 @@ export default function LoginPage() {
               <S.ForgotText>비밀번호를 잊어버리셨나요?</S.ForgotText>
             </S.OptionsRow>
 
-            <S.LoginBtn type="submit">로그인</S.LoginBtn>
+            <Button type="submit">로그인</Button>
 
             <S.DividerSection>
               <S.DividerLine />
@@ -107,14 +110,13 @@ export default function LoginPage() {
               <S.DividerLine />
             </S.DividerSection>
 
-            <S.GoogleBtn type="button" onClick={handleGoogleLogin}>
-              <S.GoogleIconWrapper>G</S.GoogleIconWrapper>
+            <Button onClick={handleGoogleLogin} icon={<GoogleIcon />}>
               Google 계정으로 계속하기
-            </S.GoogleBtn>
+            </Button>
 
-            <S.GuestBtn type="button" onClick={handleGuestLogin}>
+            <OutlineButton onClick={handleGuestLogin}>
               게스트로 둘러보기
-            </S.GuestBtn>
+            </OutlineButton>
 
             <S.SignupText>
               계정이 없으신가요?{" "}

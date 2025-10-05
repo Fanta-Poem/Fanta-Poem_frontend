@@ -326,13 +326,13 @@ export const LoginBtn = styled.button`
   height: 56px;
   background: linear-gradient(
     135deg,
-    rgba(122, 25, 196, 0.9) 0%,
-    rgba(93, 21, 153, 0.9) 100%
+    rgba(122, 25, 196, 0.3) 0%,
+    rgba(183, 148, 246, 0.3) 100%
   );
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(122, 25, 196, 0.3);
-  border-radius: 12px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: none;
+  border-radius: 16px;
   font-family: "IM_Hyemin", sans-serif;
   font-weight: bold;
   font-size: 18px;
@@ -340,19 +340,19 @@ export const LoginBtn = styled.button`
   color: white;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0px 4px 20px rgba(122, 25, 196, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 24px rgba(122, 25, 196, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
   margin-top: 20px;
 
   &:hover {
     background: linear-gradient(
       135deg,
-      rgba(139, 42, 213, 0.95) 0%,
-      rgba(110, 26, 170, 0.95) 100%
+      rgba(122, 25, 196, 0.4) 0%,
+      rgba(183, 148, 246, 0.4) 100%
     );
-    transform: translateY(-2px);
-    box-shadow: 0px 8px 30px rgba(122, 25, 196, 0.4),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border-color: rgba(122, 25, 196, 0.7);
+    box-shadow: 0 6px 32px rgba(122, 25, 196, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
   }
 `;
 
@@ -379,11 +379,15 @@ export const DividerText = styled.span`
 export const GoogleBtn = styled.button`
   width: 100%;
   height: 56px;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
+  background: linear-gradient(
+    135deg,
+    rgba(122, 25, 196, 0.15) 0%,
+    rgba(183, 148, 246, 0.15) 100%
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(122, 25, 196, 0.3);
+  border-radius: 16px;
   font-family: "IM_Hyemin", sans-serif;
   font-weight: bold;
   font-size: 16px;
@@ -395,10 +399,18 @@ export const GoogleBtn = styled.button`
   align-items: center;
   justify-content: center;
   gap: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
+    background: linear-gradient(
+      135deg,
+      rgba(122, 25, 196, 0.2) 0%,
+      rgba(183, 148, 246, 0.2) 100%
+    );
+    border-color: rgba(122, 25, 196, 0.4);
+    box-shadow: 0 6px 32px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 `;
 
@@ -425,24 +437,30 @@ export const GuestBtn = styled.button`
   width: 100%;
   height: 56px;
   background: transparent;
-  border: 2px solid rgba(122, 25, 196, 0.5);
-  border-radius: 12px;
-  font-family: "IM_Hyemin", sans-serif;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(122, 25, 196, 0.4);
+  border-radius: 16px;
+  font-family: "IM_Hyemin";
   font-weight: bold;
   font-size: 16px;
   line-height: 20px;
-  color: #7a19c4;
+  color: #a855f7;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 
   &:hover {
-    border-color: rgba(122, 25, 196, 0.8);
+    border-color: rgba(122, 25, 196, 0.6);
     background: rgba(122, 25, 196, 0.1);
+    box-shadow: 0 6px 32px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
 `;
 
 export const SignupText = styled.p`
-  font-family: "IM_Hyemin", sans-serif;
+  font-family: "IM_Hyemin";
   font-size: 14px;
   line-height: 17px;
   color: #9ca3af;

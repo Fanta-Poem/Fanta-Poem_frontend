@@ -19,7 +19,7 @@ const StyledOutlineButton = styled.button`
   font-weight: bold;
   font-size: 16px;
   line-height: 20px;
-  color: #7a19c4;
+  color: var(--primary);
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05),

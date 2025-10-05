@@ -317,7 +317,7 @@ export const ForgotText = styled.a`
   transition: color 0.3s ease;
 
   &:hover {
-    color: #7a19c4;
+    color: var(--primary);
   }
 `;
 
@@ -469,7 +469,7 @@ export const SignupText = styled.p`
 `;
 
 export const SignupLinkText = styled.span`
-  color: #7a19c4;
+  color: var(--light-primary);
   font-weight: bold;
   cursor: pointer;
   transition: color 0.3s ease;

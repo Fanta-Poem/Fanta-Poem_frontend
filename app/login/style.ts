@@ -7,22 +7,22 @@ export const PageContainer = styled.div`
   width: 100%;
   min-height: 100vh;
   background: radial-gradient(
-    ellipse at 25% 60%,
-    rgba(75, 27, 112, 1) 0%,
-    rgba(48, 23, 66, 1) 25%,
-    rgba(34, 22, 43, 1) 50%,
-    rgba(20, 20, 20, 1) 75%
+    ellipse 1400px 700px at 25% 70%,
+    rgba(75, 27, 112, 0.8) 0%,
+    rgba(48, 23, 66, 0.6) 30%,
+    rgba(34, 22, 43, 0.4) 55%,
+    rgba(20, 20, 20, 1) 85%
   );
   padding: 64px 80px;
 
   @media (max-width: 1024px) {
     padding: 40px;
     background: radial-gradient(
-      ellipse at 50% 40%,
-      rgba(75, 27, 112, 1) 0%,
-      rgba(48, 23, 66, 1) 25%,
-      rgba(34, 22, 43, 1) 50%,
-      rgba(20, 20, 20, 1) 75%
+      ellipse 900px 500px at 50% 50%,
+      rgba(75, 27, 112, 0.8) 0%,
+      rgba(48, 23, 66, 0.6) 30%,
+      rgba(34, 22, 43, 0.4) 55%,
+      rgba(20, 20, 20, 1) 85%
     );
   }
 
@@ -115,7 +115,7 @@ export const BackIcon = styled.span`
 export const IllustrationArea = styled.div`
   flex: 1;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   min-height: 483px;
 

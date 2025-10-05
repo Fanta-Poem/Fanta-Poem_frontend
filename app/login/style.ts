@@ -308,16 +308,15 @@ export const HiddenCheckbox = styled.input`
 `;
 
 export const ForgotText = styled.a`
-  font-family: "IM_Hyemin", sans-serif;
+  font-family: "IM_Hyemin";
   font-size: 14px;
   line-height: 20px;
-  color: #9ca3af;
+  color: var(--light-primary);
   text-decoration: none;
   cursor: pointer;
   transition: color 0.3s ease;
-
   &:hover {
-    color: var(--primary);
+    text-decoration: underline;
   }
 `;
 
@@ -365,15 +364,15 @@ export const DividerSection = styled.div`
 
 export const DividerLine = styled.div`
   flex: 1;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.1);
+  height: 0.5px;
+  background: var(--light-primary);
 `;
 
 export const DividerText = styled.span`
   font-family: "IM_Hyemin", sans-serif;
   font-size: 14px;
   line-height: 17px;
-  color: #6b7280;
+  color: var(--light-primary);
 `;
 
 export const GoogleBtn = styled.button`
@@ -475,7 +474,6 @@ export const SignupLinkText = styled.span`
   transition: color 0.3s ease;
 
   &:hover {
-    color: #9333ea;
     text-decoration: underline;
   }
 `;

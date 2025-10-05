@@ -445,20 +445,27 @@ export const FeatureCard = styled.div`
 `;
 
 export const IconContainer = styled.div`
-  background: rgba(122, 25, 196, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(122, 25, 196, 0.5);
-  box-sizing: border-box;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  border-radius: 20px;
-  flex-shrink: 0;
   width: 80px;
   height: 80px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: 20px;
+  position: relative;
+
+  background: linear-gradient(
+    145deg,
+    rgba(20, 20, 20, 0.9) 0%,
+    rgba(40, 40, 40, 0.8) 50%,
+    rgba(60, 60, 60, 0.7) 100%
+  );
+  border: 1px solid rgba(122, 25, 196, 0.5);
+  transition: all 0.3s ease;
+  filter: hue-rotate(0deg) saturate(1.2) brightness(1.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 `;
 
 export const IconImage = styled.img`

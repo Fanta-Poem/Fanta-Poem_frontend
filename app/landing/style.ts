@@ -442,22 +442,16 @@ export const Tag = styled.div<{ variant?: "primary" | "secondary" }>`
   }
 `;
 
-export const SamplePoem = styled.div`
+export const VideoContainer = styled.div`
   flex: 1;
   background: rgba(42, 42, 42, 0.6);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
   border: 1px solid rgba(255, 255, 255, 0.05);
   box-sizing: border-box;
-  display: flex;
-  gap: 12px;
-  height: 100%;
-  align-items: flex-start;
-  min-height: 1px;
-  min-width: 1px;
-  padding: 20px;
+  height: 400px;
   position: relative;
-  border-radius: 12px;
+  border-radius: 24px;
   flex-shrink: 0;
 `;
 

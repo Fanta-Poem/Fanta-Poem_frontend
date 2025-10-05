@@ -68,13 +68,7 @@ export default function LandingPage() {
 
         <S.FeatureCardsContainer>
           <S.FeatureRow>
-            <S.SamplePoem>
-              <S.PoemLines>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-              </S.PoemLines>
-            </S.SamplePoem>
+            <S.VideoContainer>{/* 동영상이 들어갈 예정 */}</S.VideoContainer>
             <S.FeatureCard>
               <S.IconContainer>
                 <S.IconImage src={scrollImg} alt="시적 감상문 아이콘" />
@@ -121,23 +115,11 @@ export default function LandingPage() {
                 </S.Tag>
               </S.TagsContainer>
             </S.FeatureCard>
-            <S.SamplePoem>
-              <S.PoemLines>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-              </S.PoemLines>
-            </S.SamplePoem>
+            <S.VideoContainer>{/* 동영상이 들어갈 예정 */}</S.VideoContainer>
           </S.FeatureRow>
 
           <S.FeatureRow>
-            <S.SamplePoem>
-              <S.PoemLines>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-              </S.PoemLines>
-            </S.SamplePoem>
+            <S.VideoContainer>{/* 동영상이 들어갈 예정 */}</S.VideoContainer>
             <S.FeatureCard>
               <S.IconContainer>
                 <S.IconImage src={keyImg} alt="공유 소장 아이콘" />

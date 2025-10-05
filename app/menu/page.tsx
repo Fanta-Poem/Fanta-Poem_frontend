@@ -43,13 +43,19 @@ const menuData = [
 
 export default function MenuPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [direction, setDirection] = useState<"left" | "right">("right");
+  const [animationKey, setAnimationKey] = useState(0);
 
   const handlePrev = () => {
+    setDirection("left");
     setCurrentIndex((prev) => (prev === 0 ? menuData.length - 1 : prev - 1));
+    setAnimationKey((prev) => prev + 1);
   };
 
   const handleNext = () => {
+    setDirection("right");
     setCurrentIndex((prev) => (prev === menuData.length - 1 ? 0 : prev + 1));
+    setAnimationKey((prev) => prev + 1);
   };
 
   const currentMenu = menuData[currentIndex];
@@ -68,13 +74,18 @@ export default function MenuPage() {
             <ChevronLeft size={36} color="white" />
           </S.ArrowButton>
 
-          <S.ContentArea>
+          <S.ContentArea key={animationKey} direction={direction}>
             <S.TitleArea>
               <S.MenuTitle>{currentMenu.title}</S.MenuTitle>
             </S.TitleArea>
 
             <S.ImageArea>
-              <S.MenuImage src={currentMenu.image} alt={currentMenu.title} />
+              <S.MenuImage
+                key={animationKey}
+                src={currentMenu.image}
+                alt={currentMenu.title}
+                direction={direction}
+              />
             </S.ImageArea>
 
             <S.DescriptionArea>

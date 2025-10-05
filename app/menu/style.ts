@@ -87,13 +87,39 @@ export const ArrowButton = styled.button<{ direction: "left" | "right" }>`
   }
 `;
 
-export const ContentArea = styled.div`
+export const ContentArea = styled.div<{ direction: "left" | "right" }>`
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 40px;
   max-width: 722px;
+
+  animation: ${(props) =>
+      props.direction === "right" ? "slideInRight" : "slideInLeft"}
+    0.5s ease-out;
+
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(150px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-150px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
 
   @media (max-width: 768px) {
     gap: 30px;
@@ -105,6 +131,18 @@ export const TitleArea = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
+  animation: fadeInUp 0.5s ease-out 0.6s backwards;
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 `;
 
 export const MenuTitle = styled.h1`
@@ -122,7 +160,7 @@ export const MenuTitle = styled.h1`
   }
 `;
 
-export const ImageArea = styled.div`
+export const ImageArea = styled.div<{ direction?: "left" | "right" }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -135,14 +173,39 @@ export const ImageArea = styled.div`
   }
 `;
 
-export const MenuImage = styled.img`
+export const MenuImage = styled.img<{ direction?: "left" | "right" }>`
   width: 100%;
   height: 100%;
   object-fit: contain;
   user-select: none;
   -webkit-user-drag: none;
   filter: drop-shadow(0 0 40px rgba(122, 25, 196, 0.5));
-  animation: float 6s ease-in-out infinite;
+  animation: ${(props) =>
+        props.direction === "right" ? "slideInRight" : "slideInLeft"}
+      0.5s ease-out,
+    float 6s ease-in-out 0.5s infinite;
+
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(150px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-150px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
 
   @keyframes float {
     0%,
@@ -161,6 +224,18 @@ export const DescriptionArea = styled.div`
   justify-content: center;
   width: 100%;
   max-width: 722px;
+  animation: fadeInUp 0.5s ease-out 0.7s backwards;
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 `;
 
 export const Description = styled.p`
@@ -184,6 +259,18 @@ export const ButtonArea = styled.div`
   align-items: center;
   justify-content: center;
   width: 200px;
+  animation: fadeInUp 0.5s ease-out 0.8s backwards;
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 
   @media (max-width: 768px) {
     width: 100%;

@@ -7,11 +7,11 @@ export const MenuContainer = styled.div`
   width: 100%;
   min-height: 100vh;
   background: radial-gradient(
-    ellipse 1400px 700px at 25% 70%,
-    rgba(75, 27, 112, 0.8) 0%,
-    rgba(48, 23, 66, 0.6) 30%,
-    rgba(34, 22, 43, 0.4) 55%,
-    rgba(20, 20, 20, 1) 85%
+    ellipse at center,
+    rgba(75, 27, 112, 1) 0%,
+    rgba(48, 23, 66, 1) 30%,
+    rgba(34, 22, 43, 1) 50%,
+    rgba(20, 20, 20, 1) 75%
   );
   padding: 78px 165px;
 

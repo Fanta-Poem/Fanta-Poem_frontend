@@ -235,8 +235,10 @@ export const FloatingElement = styled.div<{
   height: 200px;
 
   &.floating-unicorn {
-    width: 250px;
-    height: 250px;
+    width: 280px;
+    height: 500px;
+    top: ${(props) => props.top};
+    left: ${(props) => props.left};
   }
   animation: float 4s ease-in-out infinite;
 
@@ -339,13 +341,25 @@ export const FloatingElement = styled.div<{
 
 export const FloatingImage = styled.img`
   display: block;
-  max-width: none;
+  max-width: 100%;
+  max-height: 100%;
   width: 100%;
   height: 100%;
+  object-fit: contain;
   user-select: none;
   -webkit-user-drag: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  pointer-events: auto;
+
+  &:hover {
+    filter: drop-shadow(0 0 20px rgba(122, 25, 196, 0.8))
+      drop-shadow(0 0 40px rgba(122, 25, 196, 0.6))
+      drop-shadow(0 0 60px rgba(122, 25, 196, 0.4));
+    transform: scale(1.05);
+  }
 `;
 
 export const FeaturesSection = styled.div`

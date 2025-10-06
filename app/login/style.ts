@@ -88,25 +88,6 @@ export const LogoText = styled.h1`
   margin: 0;
 `;
 
-export const BackButton = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: transparent;
-  border: none;
-  color: var(--light-primary);
-  font-family: "IM_Hyemin", sans-serif;
-  font-size: 16px;
-  line-height: 20px;
-  cursor: pointer;
-  padding: 10px 16px;
-  transition: color 0.3s ease;
-`;
-
-export const BackIcon = styled.span`
-  font-size: 16px;
-  line-height: 20px;
-`;
 
 export const IllustrationArea = styled.div`
   flex: 1;

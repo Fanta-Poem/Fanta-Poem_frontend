@@ -6,7 +6,8 @@ import Link from "next/link";
 import Button from "../components/Button";
 import OutlineButton from "../components/OutlineButton";
 import GoogleIcon from "../components/GoogleIcon";
-import { ChevronLeft, Eye, EyeOff } from "lucide-react";
+import BackButton from "../components/BackButton";
+import { Eye, EyeOff } from "lucide-react";
 
 const scrollImg = "/3d/scroll.svg";
 const swardImg = "/3d/sword.svg";
@@ -39,12 +40,7 @@ export default function LoginPage() {
               <S.LogoImage src={scrollImg} alt="판타시 로고" />
               <S.LogoText>판타시</S.LogoText>
             </S.LogoSection>
-            <Link href="/">
-              <S.BackButton>
-                <ChevronLeft color="#D6BCFA" size={20} />
-                뒤로가기
-              </S.BackButton>
-            </Link>
+            <BackButton />
           </S.TopBar>
           <S.IllustrationArea>
             <S.SwordImage src={swardImg} alt="3D Illustration" />

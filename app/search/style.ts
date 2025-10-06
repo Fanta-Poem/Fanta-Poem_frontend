@@ -171,7 +171,7 @@ export const BookInfo = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  justify-content: space-between;
 `;
 
 export const BookTitle = styled.h3`
@@ -234,13 +234,21 @@ export const ReviewCount = styled.span`
 
 export const BookActions = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
   justify-content: flex-end;
-  min-width: 200px;
+  align-self: flex-end;
+
+  button {
+    padding: 10px 20px;
+    font-size: 14px;
+    line-height: 18px;
+    white-space: nowrap;
+  }
 
   @media (max-width: 768px) {
-    min-width: 100%;
+    width: 100%;
   }
 `;
 

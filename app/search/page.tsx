@@ -127,8 +127,8 @@ export default function SearchPage() {
                     </S.RatingSection>
                   </S.BookInfo>
                   <S.BookActions>
-                    <Button type="button">읽는 중 표시</Button>
-                    <OutlineButton type="button">바로 시 쓰기</OutlineButton>
+                    <OutlineButton type="button">읽는 중 표시</OutlineButton>
+                    <Button type="button">바로 시 쓰기</Button>
                   </S.BookActions>
                 </S.BookCard>
               ))}

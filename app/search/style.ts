@@ -147,7 +147,7 @@ export const BookCard = styled.div`
   display: flex;
   gap: 24px;
   padding: 24px 10px;
-  border-bottom: 1px solid rgba(122, 25, 196, 0.2);
+  border-top: 0.5px solid var(--light-primary);
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -257,14 +257,17 @@ export const Pagination = styled.div`
   justify-content: center;
   align-items: center;
   gap: 24px;
-  padding: 32px 0;
+  padding: 10px 0;
+  border-top: 0.5px solid var(--light-primary);
+  border-bottom: 0.5px solid var(--light-primary);
 `;
 
 export const PageNumber = styled.button<{ active?: boolean }>`
   background: transparent;
   border: none;
   font-family: "IM_Hyemin", sans-serif;
-  font-size: 24px;
+  font-weight: 700;
+  font-size: 20px;
   line-height: 32px;
   color: ${(props) => (props.active ? "var(--primary)" : "white")};
   cursor: pointer;

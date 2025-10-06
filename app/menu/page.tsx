@@ -4,6 +4,7 @@ import { useState } from "react";
 import * as S from "./style";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Button from "../components/Button";
+import { useRouter } from "next/navigation";
 
 const scrollImg = "/3d/scroll.svg";
 const castleImg = "/3d/castle.svg";
@@ -15,7 +16,7 @@ const menuData = [
     image: scrollImg,
     description:
       "이야기를 검색하고 해당 이야기에 대해서 시를 쓸 수 있습니다.<br />서재에서 이야기를 검색해 시를 쓰는 것은 당신의 페이지를 채우는 첫걸음입니다.<br />모든 기록은 차곡차곡 쌓여 당신만의 고유한 독서 연대기가 될 것입니다.",
-    link: "/library",
+    link: "/search",
   },
   {
     id: 2,
@@ -23,7 +24,7 @@ const menuData = [
     image: castleImg,
     description:
       "자신의 여정을 돌아볼 수 있습니다.<br />완독한 이야기와 읽고 있는 이야기 별로 확인이 가능하며,<br/>각각의 이야기에 대해 수정 삭제 또한 가능합니다.",
-    link: "/home",
+    link: "/mypage",
   },
   {
     id: 3,
@@ -42,6 +43,7 @@ const menuData = [
 ];
 
 export default function MenuPage() {
+  const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState<"left" | "right">("right");
   const [animationKey, setAnimationKey] = useState(0);
@@ -56,6 +58,10 @@ export default function MenuPage() {
     setDirection("right");
     setCurrentIndex((prev) => (prev === menuData.length - 1 ? 0 : prev + 1));
     setAnimationKey((prev) => prev + 1);
+  };
+
+  const handleEnter = () => {
+    router.push(currentMenu.link);
   };
 
   const currentMenu = menuData[currentIndex];
@@ -95,7 +101,9 @@ export default function MenuPage() {
             </S.DescriptionArea>
 
             <S.ButtonArea>
-              <Button type="button">입장하기</Button>
+              <Button type="button" onClick={handleEnter}>
+                입장하기
+              </Button>
             </S.ButtonArea>
           </S.ContentArea>
 

@@ -189,7 +189,7 @@ export default function SearchPage() {
                       .map((book) => (
                         <BookCard
                           key={book.isbn}
-                          thumbnail={book.thumbnail || "/book-sample.jpg"}
+                          thumbnail={book.thumbnail || "/book-sample.svg"}
                           title={book.title}
                           subtitle={book.contents}
                           authors={book.authors}

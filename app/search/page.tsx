@@ -56,6 +56,7 @@ export default function SearchPage() {
   const [inputValue, setInputValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState("accuracy");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: ["books", searchQuery, currentPage, sortBy],
@@ -80,9 +81,10 @@ export default function SearchPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleSortToggle = () => {
-    setSortBy((prev) => (prev === "accuracy" ? "latest" : "accuracy"));
+  const handleSortChange = (value: string) => {
+    setSortBy(value);
     setCurrentPage(1);
+    setIsDropdownOpen(false);
   };
 
   return (
@@ -113,12 +115,32 @@ export default function SearchPage() {
                   '<S.Highlight>{searchQuery}</S.Highlight>' 에 대한{" "}
                   {totalCount.toLocaleString()}개의 이야기
                 </S.ResultsCount>
-                <S.SortDropdown onClick={handleSortToggle}>
-                  <S.SortText>
-                    {sortBy === "accuracy" ? "정확도순" : "최신순"}
-                  </S.SortText>
-                  <ChevronDown size={16} color="var(--light-primary)" />
-                </S.SortDropdown>
+                <S.SortDropdownWrapper>
+                  <S.SortDropdown
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  >
+                    <S.SortText>
+                      {sortBy === "accuracy" ? "정확도순" : "최신순"}
+                    </S.SortText>
+                    <ChevronDown size={16} color="var(--light-primary)" />
+                  </S.SortDropdown>
+                  {isDropdownOpen && (
+                    <S.DropdownMenu>
+                      <S.DropdownItem
+                        active={sortBy === "accuracy"}
+                        onClick={() => handleSortChange("accuracy")}
+                      >
+                        정확도순
+                      </S.DropdownItem>
+                      <S.DropdownItem
+                        active={sortBy === "latest"}
+                        onClick={() => handleSortChange("latest")}
+                      >
+                        최신순
+                      </S.DropdownItem>
+                    </S.DropdownMenu>
+                  )}
+                </S.SortDropdownWrapper>
               </S.ResultsHeader>
 
               {isLoading ? (

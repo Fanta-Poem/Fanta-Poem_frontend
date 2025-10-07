@@ -9,7 +9,8 @@
       "mcp__figma-dev-mode-mcp-server__get_metadata",
       "WebFetch(domain:claude.ai)",
       "WebFetch(domain:developers.kakao.com)",
-      "WebFetch(domain:www.figma.com)"
+      "WebFetch(domain:www.figma.com)",
+      "Bash(echo:*)"
     ],
     "deny": [],
     "ask": []

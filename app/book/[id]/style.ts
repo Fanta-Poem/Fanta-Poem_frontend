@@ -634,3 +634,19 @@ export const LoadMoreButton = styled.button`
     margin: 0;
   }
 `;
+
+export const LoadingMessage = styled.div`
+  font-family: "IM_Hyemin", sans-serif;
+  font-size: 18px;
+  color: #d6bcfa;
+  text-align: center;
+  padding: 40px;
+`;
+
+export const ErrorMessage = styled.div`
+  font-family: "IM_Hyemin", sans-serif;
+  font-size: 18px;
+  color: #ff6b6b;
+  text-align: center;
+  padding: 40px;
+`;

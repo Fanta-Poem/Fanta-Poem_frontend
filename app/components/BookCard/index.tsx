@@ -16,6 +16,7 @@ export interface BookCardProps {
   rating?: number;
   reviewCount?: number;
   variant?: "search" | "detail";
+  onClick?: () => void;
 }
 
 export default function BookCard({
@@ -30,6 +31,7 @@ export default function BookCard({
   rating = 0,
   reviewCount = 0,
   variant = "search",
+  onClick,
 }: BookCardProps) {
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     e.currentTarget.src = "/book-sample.jpg";
@@ -86,8 +88,12 @@ export default function BookCard({
     );
   }
 
+  const handleButtonClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   return (
-    <S.SearchBookCard>
+    <S.SearchBookCard onClick={onClick}>
       <S.BookImage src={thumbnail} alt={title} onError={handleImageError} />
       <S.BookInfo>
         <S.BookTitle>{title}</S.BookTitle>
@@ -113,7 +119,7 @@ export default function BookCard({
           <S.ReviewCount>({reviewCount})</S.ReviewCount>
         </S.RatingSection>
       </S.BookInfo>
-      <S.BookActions>
+      <S.BookActions onClick={handleButtonClick}>
         <OutlineButton type="button">읽는 중 표시</OutlineButton>
         <Button type="button">바로 시 쓰기</Button>
       </S.BookActions>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import * as S from "./style";
 import BackButton from "../components/BackButton";
 import Dropdown from "../components/Dropdown";
@@ -55,6 +56,7 @@ const sortOptions = [
 ];
 
 export default function SearchPage() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [inputValue, setInputValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -88,6 +90,12 @@ export default function SearchPage() {
     setCurrentPage(1);
   };
 
+  const handleBookClick = (isbn: string) => {
+    // ISBN이 공백으로 구분된 경우 첫 번째 값만 사용
+    const firstISBN = isbn.split(" ")[0].trim();
+    router.push(`/book/${firstISBN}`);
+  };
+
   return (
     <S.SearchContainer>
       <S.SearchInner>
@@ -100,7 +108,7 @@ export default function SearchPage() {
               placeholder="이야기 검색"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             />
             <S.SearchIcon
               src="/icons/search.svg"
@@ -151,6 +159,7 @@ export default function SearchPage() {
                         rating={0}
                         reviewCount={0}
                         variant="search"
+                        onClick={() => handleBookClick(book.isbn)}
                       />
                     ))}
                   </S.BookList>

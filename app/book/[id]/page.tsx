@@ -1,11 +1,37 @@
 "use client";
 
 import { useState } from "react";
+import { useParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 import BackButton from "@/app/components/BackButton";
 import CommentCard from "@/app/components/CommentCard";
 import Dropdown from "@/app/components/Dropdown";
 import BookCard from "@/app/components/BookCard";
 import * as S from "./style";
+
+interface Book {
+  isbn: string;
+  title: string;
+  contents: string;
+  url: string;
+  authors: string[];
+  publisher: string;
+  translators: string[];
+  price: number;
+  sale_price: number;
+  thumbnail: string;
+  datetime: string;
+}
+
+const fetchBookByISBN = async (isbn: string): Promise<Book> => {
+  const response = await fetch(`/api/books/${isbn}`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch book");
+  }
+
+  return response.json();
+};
 
 const mockComments = [
   {
@@ -49,7 +75,38 @@ const sortOptions = [
 ];
 
 export default function BookDetailPage() {
+  const params = useParams();
+  const isbn = params.id as string;
   const [sortBy, setSortBy] = useState("likes");
+
+  const { data: book, isLoading, error } = useQuery({
+    queryKey: ["book", isbn],
+    queryFn: () => fetchBookByISBN(isbn),
+    enabled: !!isbn,
+  });
+
+  if (isLoading) {
+    return (
+      <S.BookDetailContainer>
+        <S.BookDetailInner>
+          <BackButton />
+          <S.LoadingMessage>로딩 중...</S.LoadingMessage>
+        </S.BookDetailInner>
+      </S.BookDetailContainer>
+    );
+  }
+
+  if (error || !book) {
+    return (
+      <S.BookDetailContainer>
+        <S.BookDetailInner>
+          <BackButton />
+          <S.ErrorMessage>책 정보를 불러올 수 없습니다.</S.ErrorMessage>
+        </S.BookDetailInner>
+      </S.BookDetailContainer>
+    );
+  }
+
   return (
     <S.BookDetailContainer>
       <S.BookDetailInner>
@@ -57,15 +114,22 @@ export default function BookDetailPage() {
 
         <S.BookDetailSection>
           <BookCard
-            thumbnail="/semplePoster.png"
-            title="[국내도서] 체인소 맨 5"
-            subtitle="(학산 코믹스 HC 9241)"
-            authors={["Tatsuki Fujimoto"]}
-            publisher="학산문화사"
-            publishDate="2025년 03월 25일"
-            price="5,400 원"
-            rating={3.5}
-            reviewCount={4}
+            thumbnail={book.thumbnail || "/book-sample.jpg"}
+            title={book.title}
+            subtitle={book.contents}
+            authors={book.authors}
+            translators={book.translators}
+            publisher={book.publisher}
+            publishDate={new Date(book.datetime).toLocaleDateString("ko-KR")}
+            price={
+              book.sale_price > 0
+                ? `${book.sale_price.toLocaleString()} 원`
+                : book.price > 0
+                ? `${book.price.toLocaleString()} 원`
+                : "가격 정보 없음"
+            }
+            rating={0}
+            reviewCount={0}
             variant="search"
           />
         </S.BookDetailSection>

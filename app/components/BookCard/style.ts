@@ -8,6 +8,12 @@ export const SearchBookCard = styled.div`
   padding: 24px 10px;
   border-top: 0.5px solid var(--light-primary);
   width: 100%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: rgba(122, 25, 196, 0.05);
+  }
 
   @media (max-width: 768px) {
     flex-direction: column;

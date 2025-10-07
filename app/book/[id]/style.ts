@@ -308,6 +308,7 @@ export const CommentsHeader = styled.div`
   gap: 16px;
   align-items: flex-start;
   width: 100%;
+  overflow: visible;
 `;
 
 export const CommentsHeaderInner = styled.div`
@@ -316,7 +317,7 @@ export const CommentsHeaderInner = styled.div`
   justify-content: space-between;
   padding: 10px;
   width: 100%;
-  overflow: hidden;
+  overflow: visible;
 `;
 
 export const CommentsTitle = styled.p`

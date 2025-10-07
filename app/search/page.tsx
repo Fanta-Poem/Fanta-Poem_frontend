@@ -138,6 +138,17 @@ export default function SearchPage() {
     router.push(`/book/${firstISBN}`);
   };
 
+  const handleWriteClick = (isbn: string) => {
+    const firstISBN = isbn.split(" ")[0].trim();
+
+    if (!firstISBN || firstISBN.length < 10) {
+      console.warn("⚠️ Invalid ISBN:", isbn);
+      return;
+    }
+
+    router.push(`/write/${firstISBN}`);
+  };
+
   return (
     <S.SearchContainer>
       <S.SearchInner>
@@ -208,7 +219,9 @@ export default function SearchPage() {
                           rating={0}
                           reviewCount={0}
                           variant="search"
+                          isbn={book.isbn}
                           onClick={() => handleBookClick(book.isbn)}
+                          onWriteClick={() => handleWriteClick(book.isbn)}
                         />
                       ))}
                   </S.BookList>

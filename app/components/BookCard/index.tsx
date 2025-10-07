@@ -17,6 +17,8 @@ export interface BookCardProps {
   reviewCount?: number;
   variant?: "search" | "detail";
   onClick?: () => void;
+  isbn?: string;
+  onWriteClick?: () => void;
 }
 
 export default function BookCard({
@@ -32,6 +34,8 @@ export default function BookCard({
   reviewCount = 0,
   variant = "search",
   onClick,
+  isbn,
+  onWriteClick,
 }: BookCardProps) {
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     e.currentTarget.src = "/book-sample.svg";
@@ -121,7 +125,15 @@ export default function BookCard({
       </S.BookInfo>
       <S.BookActions onClick={handleButtonClick}>
         <OutlineButton type="button">읽는 중 표시</OutlineButton>
-        <Button type="button">바로 시 쓰기</Button>
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <Button type="button" onClick={onWriteClick}>
+            바로 시 쓰기
+          </Button>
+        </div>
       </S.BookActions>
     </S.SearchBookCard>
   );

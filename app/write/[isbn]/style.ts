@@ -106,6 +106,7 @@ export const ReviewTextarea = styled.textarea`
   width: 100%;
   flex: 1;
   min-height: 250px;
+  max-height: calc(100vh - 82px - 40px - 202px - 20px - 48px - 20px - 76px);
   background: transparent;
   border: 1px solid rgba(122, 25, 196, 0.5);
   border-radius: 16px;

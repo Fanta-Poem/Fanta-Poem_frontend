@@ -57,10 +57,7 @@ export default function BookDetailPage() {
         <S.BookDetailSection>
           <S.BookCard>
             <S.BookCardInner>
-              <S.BookCoverImage
-                src="/assets/70ad43afb2cce230d7aab61201010217663a250d.png"
-                alt="book cover"
-              />
+              <S.BookCoverImage src="/semplePoster.png" alt="book cover" />
               <S.BookInfoRow>
                 <S.BookInfoInner>
                   <S.BookDetails>
@@ -78,10 +75,7 @@ export default function BookDetailPage() {
                     <S.BookPrice>5,400 원</S.BookPrice>
                     <S.BookRatingRow>
                       <S.TrophyIcon>
-                        <img
-                          src="/assets/6a3fecda4ff90c6f75c7c2c85556f3f8918e9e24.svg"
-                          alt="trophy"
-                        />
+                        <img src="/trophy/trophy_filled.svg" alt="trophy" />
                       </S.TrophyIcon>
                       <S.RatingText>3.5 / 5</S.RatingText>
                       <S.ReviewCount>(4)</S.ReviewCount>

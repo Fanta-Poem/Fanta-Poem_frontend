@@ -5,8 +5,8 @@ interface UserRatingProps {
 }
 
 const FULL_ICON = "/trophy/trophy_filled.svg";
-const HALF_ICON = "/trophy/trophy_filled.svg"; 
-const EMPTY_ICON = "/trophy/torphy_unfilled.svg";
+const HALF_ICON = "/trophy/trophy_filled.svg";
+const EMPTY_ICON = "/trophy/trophy_unfilled.svg";
 
 export default function UserRating({ rating }: UserRatingProps) {
   const getRatingIcons = () => {

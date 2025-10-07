@@ -8,6 +8,7 @@ import OutlineButton from "../components/OutlineButton";
 import BackButton from "../components/BackButton";
 import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
+import LoadingNotFound from "./LoadingNotFound";
 
 interface Book {
   isbn: string;
@@ -121,7 +122,7 @@ export default function SearchPage() {
               </S.ResultsHeader>
 
               {isLoading ? (
-                <S.LoadingMessage>검색 중...</S.LoadingMessage>
+                <LoadingNotFound />
               ) : books.length > 0 ? (
                 <>
                   <S.BookList>
@@ -208,7 +209,7 @@ export default function SearchPage() {
                   </S.Pagination>
                 </>
               ) : (
-                <S.LoadingMessage>검색 결과가 없습니다.</S.LoadingMessage>
+                <LoadingNotFound />
               )}
             </S.ResultsSection>
           )}

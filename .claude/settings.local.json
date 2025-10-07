@@ -10,7 +10,8 @@
       "WebFetch(domain:claude.ai)",
       "WebFetch(domain:developers.kakao.com)",
       "WebFetch(domain:www.figma.com)",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(npm run dev:*)"
     ],
     "deny": [],
     "ask": []

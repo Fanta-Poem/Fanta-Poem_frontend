@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import BackButton from "@/app/components/BackButton";
+import Button from "@/app/components/Button";
 import * as S from "./style";
 
 interface Book {
@@ -129,7 +130,9 @@ export default function WritePage() {
               value={poem}
               onChange={(e) => setPoem(e.target.value)}
             />
-            <S.SubmitButton onClick={handleSubmit}>작성완료</S.SubmitButton>
+            <S.ButtonWrapper>
+              <Button onClick={handleSubmit}>작성완료</Button>
+            </S.ButtonWrapper>
           </S.RightSection>
         </S.ContentWrapper>
       </S.WriteInner>

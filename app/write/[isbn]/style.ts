@@ -158,32 +158,9 @@ export const PoemTextarea = styled.textarea`
   }
 `;
 
-export const SubmitButton = styled.button`
-  background: linear-gradient(135deg, #7a19c4 0%, #5a148f 100%);
-  border: none;
-  display: flex;
-  height: 56px;
-  align-items: center;
-  justify-content: center;
-  padding: 0 32px;
-  border-radius: 16px;
-  font-family: "IM_Hyemin", sans-serif;
-  font-size: 18px;
-  font-weight: bold;
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
+export const ButtonWrapper = styled.div`
+  width: 200px;
   align-self: flex-end;
-
-  &:hover {
-    background: linear-gradient(135deg, #8a29d4 0%, #6a249f 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(122, 25, 196, 0.4);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
 `;
 
 export const LoadingMessage = styled.div`

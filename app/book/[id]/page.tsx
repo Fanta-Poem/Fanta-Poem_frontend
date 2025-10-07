@@ -4,6 +4,7 @@ import { useState } from "react";
 import BackButton from "@/app/components/BackButton";
 import CommentCard from "@/app/components/CommentCard";
 import Dropdown from "@/app/components/Dropdown";
+import BookCard from "@/app/components/BookCard";
 import * as S from "./style";
 
 const mockComments = [
@@ -55,44 +56,18 @@ export default function BookDetailPage() {
         <BackButton />
 
         <S.BookDetailSection>
-          <S.BookCard>
-            <S.BookCardInner>
-              <S.BookCoverImage src="/semplePoster.png" alt="book cover" />
-              <S.BookInfoRow>
-                <S.BookInfoInner>
-                  <S.BookDetails>
-                    <S.BookTitle>[국내도서] 체인소 맨 5</S.BookTitle>
-                    <S.BookSubtitle>(학산 코믹스 HC 9241)</S.BookSubtitle>
-                    <S.BookAuthorRow>
-                      <p>Tatsuki Fujimoto</p>
-                      <p>저자(글)</p>
-                    </S.BookAuthorRow>
-                    <S.BookPublisherRow>
-                      <p>학산문화사</p>
-                      <p>•</p>
-                      <p>2025년 03월 25일</p>
-                    </S.BookPublisherRow>
-                    <S.BookPrice>5,400 원</S.BookPrice>
-                    <S.BookRatingRow>
-                      <S.TrophyIcon>
-                        <img src="/trophy/trophy_filled.svg" alt="trophy" />
-                      </S.TrophyIcon>
-                      <S.RatingText>3.5 / 5</S.RatingText>
-                      <S.ReviewCount>(4)</S.ReviewCount>
-                    </S.BookRatingRow>
-                  </S.BookDetails>
-                  <S.BookActions>
-                    <S.SecondaryButton>
-                      <p>읽는 중 표시</p>
-                    </S.SecondaryButton>
-                    <S.PrimaryButton>
-                      <p>바로 시 쓰기</p>
-                    </S.PrimaryButton>
-                  </S.BookActions>
-                </S.BookInfoInner>
-              </S.BookInfoRow>
-            </S.BookCardInner>
-          </S.BookCard>
+          <BookCard
+            thumbnail="/semplePoster.png"
+            title="[국내도서] 체인소 맨 5"
+            subtitle="(학산 코믹스 HC 9241)"
+            authors={["Tatsuki Fujimoto"]}
+            publisher="학산문화사"
+            publishDate="2025년 03월 25일"
+            price="5,400 원"
+            rating={3.5}
+            reviewCount={4}
+            variant="detail"
+          />
         </S.BookDetailSection>
 
         <S.PoetryCommentsContainer>

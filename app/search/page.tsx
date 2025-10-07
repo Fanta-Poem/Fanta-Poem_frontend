@@ -2,11 +2,9 @@
 
 import { useState } from "react";
 import * as S from "./style";
-import Button from "../components/Button";
-import OutlineButton from "../components/OutlineButton";
 import BackButton from "../components/BackButton";
 import Dropdown from "../components/Dropdown";
-import Image from "next/image";
+import BookCard from "../components/BookCard";
 import { useQuery } from "@tanstack/react-query";
 import LoadingNotFound from "./LoadingNotFound";
 
@@ -132,55 +130,28 @@ export default function SearchPage() {
                 <>
                   <S.BookList>
                     {books.map((book) => (
-                      <S.BookCard key={book.isbn}>
-                        <S.BookImage
-                          src={book.thumbnail || "/book-sample.jpg"}
-                          alt={book.title}
-                          onError={(e) => {
-                            e.currentTarget.src = "/book-sample.jpg";
-                          }}
-                        />
-                        <S.BookInfo>
-                          <S.BookTitle>{book.title}</S.BookTitle>
-                          <S.BookSubtitle>{book.contents}</S.BookSubtitle>
-                          <S.BookMeta>
-                            <S.MetaText>
-                              {book.authors.join(", ")}
-                              {book.translators.length > 0 &&
-                                ` · ${book.translators.join(", ")}`}
-                            </S.MetaText>
-                            <S.MetaText>
-                              {book.publisher} ·{" "}
-                              {new Date(book.datetime).toLocaleDateString(
-                                "ko-KR"
-                              )}
-                            </S.MetaText>
-                            <S.MetaText>
-                              {book.sale_price > 0
-                                ? `${book.sale_price.toLocaleString()} 원`
-                                : book.price > 0
-                                ? `${book.price.toLocaleString()} 원`
-                                : "가격 정보 없음"}
-                            </S.MetaText>
-                          </S.BookMeta>
-                          <S.RatingSection>
-                            <S.TrophyIcon
-                              src="/trophy/trophy_filled.svg"
-                              alt="트로피"
-                              width={20}
-                              height={20}
-                            />
-                            <S.RatingText>0 / 5</S.RatingText>
-                            <S.ReviewCount>(0)</S.ReviewCount>
-                          </S.RatingSection>
-                        </S.BookInfo>
-                        <S.BookActions>
-                          <OutlineButton type="button">
-                            읽는 중 표시
-                          </OutlineButton>
-                          <Button type="button">바로 시 쓰기</Button>
-                        </S.BookActions>
-                      </S.BookCard>
+                      <BookCard
+                        key={book.isbn}
+                        thumbnail={book.thumbnail || "/book-sample.jpg"}
+                        title={book.title}
+                        subtitle={book.contents}
+                        authors={book.authors}
+                        translators={book.translators}
+                        publisher={book.publisher}
+                        publishDate={new Date(book.datetime).toLocaleDateString(
+                          "ko-KR"
+                        )}
+                        price={
+                          book.sale_price > 0
+                            ? `${book.sale_price.toLocaleString()} 원`
+                            : book.price > 0
+                            ? `${book.price.toLocaleString()} 원`
+                            : "가격 정보 없음"
+                        }
+                        rating={0}
+                        reviewCount={0}
+                        variant="search"
+                      />
                     ))}
                   </S.BookList>
 

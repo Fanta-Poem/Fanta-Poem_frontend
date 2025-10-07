@@ -7,6 +7,7 @@ export const SearchBookCard = styled.div`
   gap: 24px;
   padding: 24px 10px;
   border-top: 0.5px solid var(--light-primary);
+  width: 100%;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -118,6 +119,7 @@ export const DetailBookCard = styled.div`
   position: relative;
   min-height: 1px;
   min-width: 1px;
+  width: 100%;
 `;
 
 export const DetailBookCardInner = styled.div`

@@ -88,11 +88,7 @@ export default function BookCard({
 
   return (
     <S.SearchBookCard>
-      <S.BookImage
-        src={thumbnail}
-        alt={title}
-        onError={handleImageError}
-      />
+      <S.BookImage src={thumbnail} alt={title} onError={handleImageError} />
       <S.BookInfo>
         <S.BookTitle>{title}</S.BookTitle>
         {subtitle && <S.BookSubtitle>{subtitle}</S.BookSubtitle>}

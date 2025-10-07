@@ -66,7 +66,7 @@ export default function BookDetailPage() {
             price="5,400 원"
             rating={3.5}
             reviewCount={4}
-            variant="detail"
+            variant="search"
           />
         </S.BookDetailSection>
 

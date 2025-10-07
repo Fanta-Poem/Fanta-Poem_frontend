@@ -122,7 +122,7 @@ export default function SearchPage() {
               </S.ResultsHeader>
 
               {isLoading ? (
-                <LoadingNotFound />
+                <S.LoadingMessage>로딩 중...</S.LoadingMessage>
               ) : books.length > 0 ? (
                 <>
                   <S.BookList>

@@ -2,7 +2,43 @@
 
 import BackButton from "@/app/components/BackButton";
 import UserRating from "@/app/components/UserRating";
+import CommentCard from "@/app/components/CommentCard";
 import * as S from "./style";
+
+const mockComments = [
+  {
+    id: 1,
+    username: "이감상",
+    timeAgo: "1주 전",
+    rating: 3.5,
+    poemLines: [
+      "책장을 넘기는 손끝에서",
+      "새로운 세상이 펼쳐지고",
+      "작가의 혼이 내 영혼과 만나네",
+      "...",
+    ],
+    poemQuote:
+      "만약 도시가 살아있고, 모래 바람을 통해 당신에게 속삭인다면 어떨 것 같나요? 엘리아나 로웬의 소설 <속삭이는 모래의 도시>는 바로 그 신비로운 질문에서 시작합니다. 이 책은 사막의 심장부에서 해가 뜰 때 나타났다가 해가 지면 사라지는 전설의 도시, '카이람'에 대한 이야기입니다.",
+    likeCount: 12,
+    isLiked: false,
+  },
+  {
+    id: 2,
+    username: "이감상",
+    timeAgo: "1주 전",
+    rating: 3.5,
+    poemLines: [
+      "책장을 넘기는 손끝에서",
+      "새로운 세상이 펼쳐지고",
+      "작가의 혼이 내 영혼과 만나네",
+      "...",
+    ],
+    poemQuote:
+      "만약 도시가 살아있고, 모래 바람을 통해 당신에게 속삭인다면 어떨 것 같나요? 엘리아나 로웬의 소설 <속삭이는 모래의 도시>는 바로 그 신비로운 질문에서 시작합니다. 이 책은 사막의 심장부에서 해가 뜰 때 나타났다가 해가 지면 사라지는 전설의 도시, '카이람'에 대한 이야기입니다.",
+    likeCount: 12,
+    isLiked: true,
+  },
+];
 
 export default function BookDetailPage() {
   return (
@@ -75,107 +111,18 @@ export default function BookDetailPage() {
           </S.CommentsHeader>
 
           <S.CommentsList>
-            <S.CommentCard>
-              <S.UserInfoLeft>
-                <S.UserDetails>
-                  <S.Username>이감상</S.Username>
-                  <S.TimeAgo>1주 전</S.TimeAgo>
-                </S.UserDetails>
-                <UserRating rating={3.5} />
-              </S.UserInfoLeft>
-              <S.PoemContent>
-                <S.PoemLines>
-                  <p>책장을 넘기는 손끝에서</p>
-                  <p>새로운 세상이 펼쳐지고</p>
-                  <p>작가의 혼이 내 영혼과 만나네</p>
-                  <p className="more">...</p>
-                </S.PoemLines>
-                <S.PoemQuote>
-                  <p>
-                    만약 도시가 살아있고, 모래 바람을 통해 당신에게 속삭인다면
-                    어떨 것 같나요? 엘리아나 로웬의 소설 &lt;속삭이는 모래의
-                    도시&gt;는 바로 그 신비로운 질문에서 시작합니다. 이 책은
-                    사막의 심장부에서 해가 뜰 때 나타났다가 해가 지면 사라지는
-                    전설의 도시, '카이람'에 대한 이야기입니다.
-                  </p>
-                </S.PoemQuote>
-                <S.InteractionBar>
-                  <S.LeftActions>
-                    <S.LikeButton>
-                      <img
-                        src="/assets/dea38351ff717cced18bce75dbc82aedadccae18.svg"
-                        alt="heart"
-                      />
-                      <p>12</p>
-                    </S.LikeButton>
-                    <S.ShareButton>
-                      <img
-                        src="/assets/30200e1b58960763af5cff2fcc68bb995c9369f0.svg"
-                        alt="share"
-                      />
-                      <p>공유</p>
-                    </S.ShareButton>
-                  </S.LeftActions>
-                  <S.MoreButton>
-                    <img
-                      src="/assets/331af38c7b04f8fbf1f2f879efb2ea93a826cf3e.svg"
-                      alt="more"
-                    />
-                  </S.MoreButton>
-                </S.InteractionBar>
-              </S.PoemContent>
-            </S.CommentCard>
-
-            <S.CommentCard>
-              <S.UserInfoLeft>
-                <S.UserDetails>
-                  <S.Username>이감상</S.Username>
-                  <S.TimeAgo>1주 전</S.TimeAgo>
-                </S.UserDetails>
-                <UserRating rating={3.5} />
-              </S.UserInfoLeft>
-              <S.PoemContent>
-                <S.PoemLines>
-                  <p>책장을 넘기는 손끝에서</p>
-                  <p>새로운 세상이 펼쳐지고</p>
-                  <p>작가의 혼이 내 영혼과 만나네</p>
-                  <p className="more">...</p>
-                </S.PoemLines>
-                <S.PoemQuote>
-                  <p>
-                    만약 도시가 살아있고, 모래 바람을 통해 당신에게 속삭인다면
-                    어떨 것 같나요? 엘리아나 로웬의 소설 &lt;속삭이는 모래의
-                    도시&gt;는 바로 그 신비로운 질문에서 시작합니다. 이 책은
-                    사막의 심장부에서 해가 뜰 때 나타났다가 해가 지면 사라지는
-                    전설의 도시, '카이람'에 대한 이야기입니다.
-                  </p>
-                </S.PoemQuote>
-                <S.InteractionBar>
-                  <S.LeftActions>
-                    <S.LikeButton>
-                      <img
-                        src="/assets/dea38351ff717cced18bce75dbc82aedadccae18.svg"
-                        alt="heart"
-                      />
-                      <p>12</p>
-                    </S.LikeButton>
-                    <S.ShareButton>
-                      <img
-                        src="/assets/30200e1b58960763af5cff2fcc68bb995c9369f0.svg"
-                        alt="share"
-                      />
-                      <p>공유</p>
-                    </S.ShareButton>
-                  </S.LeftActions>
-                  <S.MoreButton>
-                    <img
-                      src="/assets/331af38c7b04f8fbf1f2f879efb2ea93a826cf3e.svg"
-                      alt="more"
-                    />
-                  </S.MoreButton>
-                </S.InteractionBar>
-              </S.PoemContent>
-            </S.CommentCard>
+            {mockComments.map((comment) => (
+              <CommentCard
+                key={comment.id}
+                username={comment.username}
+                timeAgo={comment.timeAgo}
+                rating={comment.rating}
+                poemLines={comment.poemLines}
+                poemQuote={comment.poemQuote}
+                likeCount={comment.likeCount}
+                isLiked={comment.isLiked}
+              />
+            ))}
           </S.CommentsList>
 
           <S.LoadMoreButton>

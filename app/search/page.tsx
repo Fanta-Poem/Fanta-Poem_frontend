@@ -179,12 +179,14 @@ export default function SearchPage() {
                   </S.BookList>
 
                   <S.Pagination>
-                    {currentPage > 1 && (
-                      <S.PageNumber onClick={() => handlePageChange(1)}>
-                        1
-                      </S.PageNumber>
+                    {currentPage > 2 && (
+                      <>
+                        <S.PageNumber onClick={() => handlePageChange(1)}>
+                          1
+                        </S.PageNumber>
+                        <S.PageNumber>...</S.PageNumber>
+                      </>
                     )}
-                    {currentPage > 2 && <S.PageNumber>...</S.PageNumber>}
                     {currentPage > 1 && (
                       <S.PageNumber
                         onClick={() => handlePageChange(currentPage - 1)}

@@ -1,6 +1,7 @@
 "use client";
 
 import BackButton from "@/app/components/BackButton";
+import UserRating from "@/app/components/UserRating";
 import * as S from "./style";
 
 export default function BookDetailPage() {
@@ -80,38 +81,7 @@ export default function BookDetailPage() {
                   <S.Username>이감상</S.Username>
                   <S.TimeAgo>1주 전</S.TimeAgo>
                 </S.UserDetails>
-                <S.UserRating>
-                  <S.RatingIcon>
-                    <img
-                      src="/assets/6a3fecda4ff90c6f75c7c2c85556f3f8918e9e24.svg"
-                      alt="rating"
-                    />
-                  </S.RatingIcon>
-                  <S.RatingIcon>
-                    <img
-                      src="/assets/6a3fecda4ff90c6f75c7c2c85556f3f8918e9e24.svg"
-                      alt="rating"
-                    />
-                  </S.RatingIcon>
-                  <S.RatingIcon>
-                    <img
-                      src="/assets/6a3fecda4ff90c6f75c7c2c85556f3f8918e9e24.svg"
-                      alt="rating"
-                    />
-                  </S.RatingIcon>
-                  <S.RatingIcon>
-                    <img
-                      src="/assets/013cb20cb0c7357a5c57377d3929db0bf331b848.svg"
-                      alt="rating"
-                    />
-                  </S.RatingIcon>
-                  <S.RatingIcon>
-                    <img
-                      src="/assets/ce3a8f575d064e79355353c8af78e8c1190b5484.svg"
-                      alt="rating"
-                    />
-                  </S.RatingIcon>
-                </S.UserRating>
+                <UserRating rating={3.5} />
               </S.UserInfoLeft>
               <S.PoemContent>
                 <S.PoemLines>
@@ -162,38 +132,7 @@ export default function BookDetailPage() {
                   <S.Username>이감상</S.Username>
                   <S.TimeAgo>1주 전</S.TimeAgo>
                 </S.UserDetails>
-                <S.UserRating>
-                  <S.RatingIcon>
-                    <img
-                      src="/assets/6a3fecda4ff90c6f75c7c2c85556f3f8918e9e24.svg"
-                      alt="rating"
-                    />
-                  </S.RatingIcon>
-                  <S.RatingIcon>
-                    <img
-                      src="/assets/6a3fecda4ff90c6f75c7c2c85556f3f8918e9e24.svg"
-                      alt="rating"
-                    />
-                  </S.RatingIcon>
-                  <S.RatingIcon>
-                    <img
-                      src="/assets/6a3fecda4ff90c6f75c7c2c85556f3f8918e9e24.svg"
-                      alt="rating"
-                    />
-                  </S.RatingIcon>
-                  <S.RatingIcon>
-                    <img
-                      src="/assets/013cb20cb0c7357a5c57377d3929db0bf331b848.svg"
-                      alt="rating"
-                    />
-                  </S.RatingIcon>
-                  <S.RatingIcon>
-                    <img
-                      src="/assets/ce3a8f575d064e79355353c8af78e8c1190b5484.svg"
-                      alt="rating"
-                    />
-                  </S.RatingIcon>
-                </S.UserRating>
+                <UserRating rating={3.5} />
               </S.UserInfoLeft>
               <S.PoemContent>
                 <S.PoemLines>

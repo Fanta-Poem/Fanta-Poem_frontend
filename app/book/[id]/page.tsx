@@ -1,8 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import BackButton from "@/app/components/BackButton";
-import UserRating from "@/app/components/UserRating";
 import CommentCard from "@/app/components/CommentCard";
+import Dropdown from "@/app/components/Dropdown";
 import * as S from "./style";
 
 const mockComments = [
@@ -40,7 +41,14 @@ const mockComments = [
   },
 ];
 
+const sortOptions = [
+  { value: "likes", label: "좋아요 순" },
+  { value: "latest", label: "최신순" },
+  { value: "oldest", label: "오래된 순" },
+];
+
 export default function BookDetailPage() {
+  const [sortBy, setSortBy] = useState("likes");
   return (
     <S.BookDetailContainer>
       <S.BookDetailInner>
@@ -97,15 +105,12 @@ export default function BookDetailPage() {
           <S.CommentsHeader>
             <S.CommentsHeaderInner>
               <S.CommentsTitle>총 8개의 여행자의 기록</S.CommentsTitle>
-              <S.YearFilter>
-                <p>좋아요 순</p>
-                <S.ChevronIcon>
-                  <img
-                    src="/assets/57fe073068e40b1c404cb5ea96de3eee97fbc0de.svg"
-                    alt="chevron"
-                  />
-                </S.ChevronIcon>
-              </S.YearFilter>
+              <Dropdown
+                options={sortOptions}
+                value={sortBy}
+                onChange={setSortBy}
+                width="160px"
+              />
             </S.CommentsHeaderInner>
             <S.Separator />
           </S.CommentsHeader>

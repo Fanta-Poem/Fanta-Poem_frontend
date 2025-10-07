@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import * as S from "./style";
 import BackButton from "../components/BackButton";
 import Dropdown from "../components/Dropdown";
@@ -57,10 +57,19 @@ const sortOptions = [
 
 export default function SearchPage() {
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [inputValue, setInputValue] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [sortBy, setSortBy] = useState("accuracy");
+  const searchParams = useSearchParams();
+
+  // URL에서 초기 값 읽기
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("query") || ""
+  );
+  const [inputValue, setInputValue] = useState(searchParams.get("query") || "");
+  const [currentPage, setCurrentPage] = useState(
+    Number(searchParams.get("page")) || 1
+  );
+  const [sortBy, setSortBy] = useState(
+    searchParams.get("sort") || "accuracy"
+  );
 
   const { data, isLoading } = useQuery({
     queryKey: ["books", searchQuery, currentPage, sortBy],
@@ -73,21 +82,49 @@ export default function SearchPage() {
   const books = data?.documents || [];
   const totalCount = data?.meta.total_count || 0;
 
+  // URL 파라미터 변경 감지 (뒤로가기/앞으로가기)
+  useEffect(() => {
+    const query = searchParams.get("query") || "";
+    const page = Number(searchParams.get("page")) || 1;
+    const sort = searchParams.get("sort") || "accuracy";
+
+    setSearchQuery(query);
+    setInputValue(query);
+    setCurrentPage(page);
+    setSortBy(sort);
+  }, [searchParams]);
+
+  // URL 업데이트 함수
+  const updateURL = (query: string, page: number, sort: string) => {
+    const params = new URLSearchParams();
+    if (query) params.set("query", query);
+    if (page > 1) params.set("page", page.toString());
+    if (sort !== "accuracy") params.set("sort", sort);
+
+    const newURL = params.toString()
+      ? `/search?${params.toString()}`
+      : "/search";
+    router.replace(newURL);
+  };
+
   const handleSearch = () => {
     if (inputValue.trim()) {
       setSearchQuery(inputValue);
       setCurrentPage(1);
+      updateURL(inputValue, 1, sortBy);
     }
   };
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    updateURL(searchQuery, page, sortBy);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleSortChange = (value: string) => {
     setSortBy(value);
     setCurrentPage(1);
+    updateURL(searchQuery, 1, value);
   };
 
   const handleBookClick = (isbn: string) => {

@@ -143,7 +143,7 @@ export default function BookDetailPage() {
                 value={sortBy}
                 onChange={setSortBy}
                 width="160px"
-              />
+              />ㅈ
             </S.CommentsHeaderInner>
             <S.Separator />
           </S.CommentsHeader>

@@ -643,10 +643,40 @@ export const LoadingMessage = styled.div`
   padding: 40px;
 `;
 
+export const ErrorContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 60px 40px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+`;
+
 export const ErrorMessage = styled.div`
   font-family: "IM_Hyemin", sans-serif;
-  font-size: 18px;
+  font-size: 24px;
+  font-weight: bold;
   color: #ff6b6b;
   text-align: center;
-  padding: 40px;
+`;
+
+export const ErrorDescription = styled.div`
+  font-family: "IM_Hyemin", sans-serif;
+  font-size: 16px;
+  color: #c7c7c7;
+  text-align: center;
+  line-height: 1.6;
+`;
+
+export const ErrorButtonGroup = styled.div`
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+
+  button {
+    padding: 12px 24px;
+    font-size: 16px;
+  }
 `;

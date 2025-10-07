@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import BackButton from "@/app/components/BackButton";
 import CommentCard from "@/app/components/CommentCard";
 import Dropdown from "@/app/components/Dropdown";
 import BookCard from "@/app/components/BookCard";
+import Button from "@/app/components/Button";
 import * as S from "./style";
 
 interface Book {
@@ -76,6 +77,7 @@ const sortOptions = [
 
 export default function BookDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const isbn = params.id as string;
   const [sortBy, setSortBy] = useState("likes");
 
@@ -105,7 +107,20 @@ export default function BookDetailPage() {
       <S.BookDetailContainer>
         <S.BookDetailInner>
           <BackButton />
-          <S.ErrorMessage>책 정보를 불러올 수 없습니다.</S.ErrorMessage>
+          <S.ErrorContainer>
+            <S.ErrorMessage>책 정보를 불러올 수 없습니다.</S.ErrorMessage>
+            <S.ErrorDescription>
+              이 책의 상세 정보를 찾을 수 없습니다. 다른 책을 검색해보세요.
+            </S.ErrorDescription>
+            <S.ErrorButtonGroup>
+              <Button type="button" onClick={() => router.back()}>
+                이전 페이지로
+              </Button>
+              <Button type="button" onClick={() => router.push("/search")}>
+                검색 페이지로
+              </Button>
+            </S.ErrorButtonGroup>
+          </S.ErrorContainer>
         </S.BookDetailInner>
       </S.BookDetailContainer>
     );

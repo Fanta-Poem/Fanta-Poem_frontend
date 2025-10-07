@@ -79,7 +79,11 @@ export default function BookDetailPage() {
   const isbn = params.id as string;
   const [sortBy, setSortBy] = useState("likes");
 
-  const { data: book, isLoading, error } = useQuery({
+  const {
+    data: book,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["book", isbn],
     queryFn: () => fetchBookByISBN(isbn),
     enabled: !!isbn,
@@ -143,7 +147,7 @@ export default function BookDetailPage() {
                 value={sortBy}
                 onChange={setSortBy}
                 width="160px"
-              />ㅈ
+              />
             </S.CommentsHeaderInner>
             <S.Separator />
           </S.CommentsHeader>

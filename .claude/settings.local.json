@@ -6,7 +6,9 @@
       "mcp__figma-dev-mode-mcp-server__get_code",
       "mcp__figma-dev-mode-mcp-server__get_screenshot",
       "Bash(mkdir:*)",
-      "mcp__figma-dev-mode-mcp-server__get_metadata"
+      "mcp__figma-dev-mode-mcp-server__get_metadata",
+      "WebFetch(domain:claude.ai)",
+      "WebFetch(domain:developers.kakao.com)"
     ],
     "deny": [],
     "ask": []

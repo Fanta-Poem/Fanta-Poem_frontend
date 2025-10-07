@@ -7,65 +7,81 @@ import Button from "../components/Button";
 import OutlineButton from "../components/OutlineButton";
 import BackButton from "../components/BackButton";
 import Image from "next/image";
+import { useQuery } from "@tanstack/react-query";
 
-const mockBookData = [
-  {
-    id: 1,
-    title: "[국내도서] 제인소 앤 5",
-    subtitle: "(원본 코믹스 MC 92권)",
-    author: "Tatsuki Fujimoto · 김민경",
-    publisher: "학산문화사",
-    publishDate: "2025년 05월 25일",
-    pages: "5,400 원",
-    rating: 3.5,
-    reviews: 4,
-    image: "/book-sample.jpg",
-  },
-  {
-    id: 2,
-    title: "[국내도서] 제인소 앤 5",
-    subtitle: "(원본 코믹스 MC 92권)",
-    author: "Tatsuki Fujimoto · 김민경",
-    publisher: "학산문화사",
-    publishDate: "2025년 05월 25일",
-    pages: "5,400 원",
-    rating: 3.5,
-    reviews: 4,
-    image: "/book-sample.jpg",
-  },
-  {
-    id: 3,
-    title: "[국내도서] 제인소 앤 5",
-    subtitle: "(원본 코믹스 MC 92권)",
-    author: "Tatsuki Fujimoto · 김민경",
-    publisher: "학산문화사",
-    publishDate: "2025년 05월 25일",
-    pages: "5,400 원",
-    rating: 3.5,
-    reviews: 4,
-    image: "/book-sample.jpg",
-  },
-  {
-    id: 4,
-    title: "[국내도서] 제인소 앤 5",
-    subtitle: "(원본 코믹스 MC 92권)",
-    author: "Tatsuki Fujimoto · 김민경",
-    publisher: "학산문화사",
-    publishDate: "2025년 05월 25일",
-    pages: "5,400 원",
-    rating: 3.5,
-    reviews: 4,
-    image: "/book-sample.jpg",
-  },
-];
+interface Book {
+  isbn: string;
+  title: string;
+  contents: string;
+  url: string;
+  authors: string[];
+  publisher: string;
+  translators: string[];
+  price: number;
+  sale_price: number;
+  thumbnail: string;
+  datetime: string;
+}
+
+interface SearchResponse {
+  meta: {
+    total_count: number;
+    pageable_count: number;
+    is_end: boolean;
+  };
+  documents: Book[];
+}
+
+const fetchBooks = async (
+  query: string,
+  page: number,
+  sort: string
+): Promise<SearchResponse> => {
+  const response = await fetch(
+    `/api/books/search?query=${encodeURIComponent(
+      query
+    )}&page=${page}&size=10&sort=${sort}`
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch books");
+  }
+
+  return response.json();
+};
 
 export default function SearchPage() {
-  const [searchQuery, setSearchQuery] = useState("고구마");
-  const [sortBy, setSortBy] = useState("트로피순");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [inputValue, setInputValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortBy, setSortBy] = useState("accuracy");
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["books", searchQuery, currentPage, sortBy],
+    queryFn: () => fetchBooks(searchQuery, currentPage, sortBy),
+    enabled: !!searchQuery.trim(),
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 10,
+  });
+
+  const books = data?.documents || [];
+  const totalCount = data?.meta.total_count || 0;
 
   const handleSearch = () => {
-    console.log("Search:", searchQuery);
+    if (inputValue.trim()) {
+      setSearchQuery(inputValue);
+      setCurrentPage(1);
+    }
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleSortToggle = () => {
+    setSortBy((prev) => (prev === "accuracy" ? "latest" : "accuracy"));
+    setCurrentPage(1);
   };
 
   return (
@@ -78,8 +94,8 @@ export default function SearchPage() {
             <S.SearchInput
               type="text"
               placeholder="이야기 검색"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && handleSearch()}
             />
             <S.SearchIcon
@@ -89,64 +105,111 @@ export default function SearchPage() {
             />
           </S.SearchBar>
 
-          <S.ResultsSection>
-            <S.ResultsHeader>
-              <S.ResultsCount>
-                '<S.Highlight>{searchQuery}</S.Highlight>' 에 대한 945개의
-                이야기
-              </S.ResultsCount>
-              <S.SortDropdown>
-                <S.SortText>{sortBy}</S.SortText>
-                <ChevronDown size={16} color="var(--light-primary)" />
-              </S.SortDropdown>
-            </S.ResultsHeader>
+          {searchQuery && (
+            <S.ResultsSection>
+              <S.ResultsHeader>
+                <S.ResultsCount>
+                  '<S.Highlight>{searchQuery}</S.Highlight>' 에 대한{" "}
+                  {totalCount.toLocaleString()}개의 이야기
+                </S.ResultsCount>
+                <S.SortDropdown onClick={handleSortToggle}>
+                  <S.SortText>
+                    {sortBy === "accuracy" ? "정확도순" : "최신순"}
+                  </S.SortText>
+                  <ChevronDown size={16} color="var(--light-primary)" />
+                </S.SortDropdown>
+              </S.ResultsHeader>
 
-            <S.BookList>
-              {mockBookData.map((book) => (
-                <S.BookCard key={book.id}>
-                  <S.BookImage src={book.image} alt={book.title} />
-                  <S.BookInfo>
-                    <S.BookTitle>{book.title}</S.BookTitle>
-                    <S.BookSubtitle>{book.subtitle}</S.BookSubtitle>
-                    <S.BookMeta>
-                      <S.MetaText>{book.author}</S.MetaText>
-                      <S.MetaText>
-                        {book.publisher} · {book.publishDate}
-                      </S.MetaText>
-                      <S.MetaText>{book.pages}</S.MetaText>
-                    </S.BookMeta>
-                    <S.RatingSection>
-                      <S.TrophyIcon
-                        src="/trophy/trophy_filled.svg"
-                        alt="트로피"
-                        width={20}
-                        height={20}
-                      />
-                      <S.RatingText>{book.rating} / 5</S.RatingText>
-                      <S.ReviewCount>({book.reviews})</S.ReviewCount>
-                    </S.RatingSection>
-                  </S.BookInfo>
-                  <S.BookActions>
-                    <OutlineButton type="button">읽는 중 표시</OutlineButton>
-                    <Button type="button">바로 시 쓰기</Button>
-                  </S.BookActions>
-                </S.BookCard>
-              ))}
-            </S.BookList>
+              {isLoading ? (
+                <S.LoadingMessage>검색 중...</S.LoadingMessage>
+              ) : books.length > 0 ? (
+                <>
+                  <S.BookList>
+                    {books.map((book) => (
+                      <S.BookCard key={book.isbn}>
+                        <S.BookImage
+                          src={book.thumbnail || "/book-sample.jpg"}
+                          alt={book.title}
+                          onError={(e) => {
+                            e.currentTarget.src = "/book-sample.jpg";
+                          }}
+                        />
+                        <S.BookInfo>
+                          <S.BookTitle>{book.title}</S.BookTitle>
+                          <S.BookSubtitle>{book.contents}</S.BookSubtitle>
+                          <S.BookMeta>
+                            <S.MetaText>
+                              {book.authors.join(", ")}
+                              {book.translators.length > 0 &&
+                                ` · ${book.translators.join(", ")}`}
+                            </S.MetaText>
+                            <S.MetaText>
+                              {book.publisher} ·{" "}
+                              {new Date(book.datetime).toLocaleDateString(
+                                "ko-KR"
+                              )}
+                            </S.MetaText>
+                            <S.MetaText>
+                              {book.sale_price > 0
+                                ? `${book.sale_price.toLocaleString()} 원`
+                                : book.price > 0
+                                ? `${book.price.toLocaleString()} 원`
+                                : "가격 정보 없음"}
+                            </S.MetaText>
+                          </S.BookMeta>
+                          <S.RatingSection>
+                            <S.TrophyIcon
+                              src="/trophy/trophy_filled.svg"
+                              alt="트로피"
+                              width={20}
+                              height={20}
+                            />
+                            <S.RatingText>0 / 5</S.RatingText>
+                            <S.ReviewCount>(0)</S.ReviewCount>
+                          </S.RatingSection>
+                        </S.BookInfo>
+                        <S.BookActions>
+                          <OutlineButton type="button">
+                            읽는 중 표시
+                          </OutlineButton>
+                          <Button type="button">바로 시 쓰기</Button>
+                        </S.BookActions>
+                      </S.BookCard>
+                    ))}
+                  </S.BookList>
 
-            <S.Pagination>
-              {[1, 2, 3, 4, 5].map((page) => (
-                <S.PageNumber
-                  key={page}
-                  active={currentPage === page}
-                  onClick={() => setCurrentPage(page)}
-                >
-                  {page}
-                </S.PageNumber>
-              ))}
-              <S.PageNumber>...</S.PageNumber>
-            </S.Pagination>
-          </S.ResultsSection>
+                  <S.Pagination>
+                    {currentPage > 1 && (
+                      <S.PageNumber onClick={() => handlePageChange(1)}>
+                        1
+                      </S.PageNumber>
+                    )}
+                    {currentPage > 2 && <S.PageNumber>...</S.PageNumber>}
+                    {currentPage > 1 && (
+                      <S.PageNumber
+                        onClick={() => handlePageChange(currentPage - 1)}
+                      >
+                        {currentPage - 1}
+                      </S.PageNumber>
+                    )}
+                    <S.PageNumber active>{currentPage}</S.PageNumber>
+                    {!isLoading && books.length === 10 && (
+                      <>
+                        <S.PageNumber
+                          onClick={() => handlePageChange(currentPage + 1)}
+                        >
+                          {currentPage + 1}
+                        </S.PageNumber>
+                        <S.PageNumber>...</S.PageNumber>
+                      </>
+                    )}
+                  </S.Pagination>
+                </>
+              ) : (
+                <S.LoadingMessage>검색 결과가 없습니다.</S.LoadingMessage>
+              )}
+            </S.ResultsSection>
+          )}
         </S.SearchSection>
       </S.SearchInner>
     </S.SearchContainer>

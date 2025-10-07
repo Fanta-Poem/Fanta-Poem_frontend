@@ -174,9 +174,11 @@ export default function SearchPage() {
               ) : books.length > 0 ? (
                 <>
                   <S.BookList>
-                    {books.map((book) => (
-                      <BookCard
-                        key={book.isbn}
+                    {books
+                      .filter((book) => book.isbn && book.isbn.trim())
+                      .map((book) => (
+                        <BookCard
+                          key={book.isbn}
                         thumbnail={book.thumbnail || "/book-sample.jpg"}
                         title={book.title}
                         subtitle={book.contents}

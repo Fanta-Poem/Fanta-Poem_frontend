@@ -34,7 +34,7 @@ export default function BookCard({
   onClick,
 }: BookCardProps) {
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    e.currentTarget.src = "/book-sample.jpg";
+    e.currentTarget.src = "/book-sample.svg";
   };
 
   if (variant === "detail") {

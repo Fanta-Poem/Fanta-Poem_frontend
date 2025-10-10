@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import BackButton from "@/app/components/BackButton";
 import Button from "@/app/components/Button";
+import TrophyModal from "@/app/components/TrophyModal";
 import * as S from "./style";
 
 interface Book {
@@ -38,6 +39,8 @@ export default function WritePage() {
   const [review, setReview] = useState("");
   const [poemTitle, setPoemTitle] = useState("");
   const [poemContent, setPoemContent] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [trophyRating, setTrophyRating] = useState(0);
 
   const { data: book, isLoading } = useQuery({
     queryKey: ["book", isbn],
@@ -55,9 +58,15 @@ export default function WritePage() {
   };
 
   const handleSubmit = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleTrophySubmit = (rating: number) => {
+    setTrophyRating(rating);
     console.log("Review:", review);
     console.log("Poem Title:", poemTitle);
     console.log("Poem Content:", poemContent);
+    console.log("Trophy Rating:", rating);
     // TODO: API 호출하여 저장
   };
 
@@ -143,6 +152,12 @@ export default function WritePage() {
           </S.RightSection>
         </S.ContentWrapper>
       </S.WriteInner>
+
+      <TrophyModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleTrophySubmit}
+      />
     </S.WriteContainer>
   );
 }

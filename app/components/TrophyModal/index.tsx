@@ -72,12 +72,19 @@ export default function TrophyModal({
               />
             ))}
           </S.TrophyStars>
-          {message && (
-            <S.RatingText>
-              <S.RatingMainText>{message.text}</S.RatingMainText>
-              <S.RatingSubText>{message.subtext}</S.RatingSubText>
-            </S.RatingText>
-          )}
+          <S.RatingText>
+            {message ? (
+              <>
+                <S.RatingMainText>{message.text}</S.RatingMainText>
+                <S.RatingSubText>{message.subtext}</S.RatingSubText>
+              </>
+            ) : (
+              <>
+                <S.RatingMainText>그래서, 이 책은.</S.RatingMainText>
+                <S.RatingSubText>당신의 판결을 보여주세요.</S.RatingSubText>
+              </>
+            )}
+          </S.RatingText>
         </S.RatingSection>
 
         <S.ActionButtons>

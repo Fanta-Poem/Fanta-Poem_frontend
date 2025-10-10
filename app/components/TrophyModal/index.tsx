@@ -29,15 +29,21 @@ export default function TrophyModal({
   const handleSubmit = () => {
     if (selectedRating > 0) {
       onSubmit(selectedRating);
+      setSelectedRating(0);
       onClose();
     }
+  };
+
+  const handleClose = () => {
+    setSelectedRating(0);
+    onClose();
   };
 
   const message =
     selectedRating > 0 ? TROPHY_MESSAGES[selectedRating - 1] : null;
 
   return (
-    <S.Overlay onClick={onClose}>
+    <S.Overlay onClick={handleClose}>
       <S.ModalContainer onClick={(e) => e.stopPropagation()}>
         <S.Header>
           <S.IconContainer>
@@ -81,7 +87,7 @@ export default function TrophyModal({
           >
             다음으로
           </S.PrimaryButton>
-          <S.SecondaryButton onClick={onClose}>취소하기</S.SecondaryButton>
+          <S.SecondaryButton onClick={handleClose}>취소하기</S.SecondaryButton>
         </S.ActionButtons>
       </S.ModalContainer>
     </S.Overlay>

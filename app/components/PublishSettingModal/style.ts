@@ -27,35 +27,21 @@ export const ModalContainer = styled.div`
 export const Header = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
   align-items: center;
 `;
 
 export const IconContainer = styled.div`
-  display: flex;
   width: 80px;
   height: 80px;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
-  border-radius: 20px;
-  position: relative;
-
-  background: linear-gradient(
-    145deg,
-    rgba(20, 20, 20, 0.9) 0%,
-    rgba(28, 28, 28, 0.8) 50%,
-    rgba(60, 60, 60, 0.36) 100%
-  );
   border: 1px solid rgba(122, 25, 196, 0.5);
-  transition: all 0.3s ease;
-  filter: hue-rotate(0deg) saturate(1.2) brightness(1.1);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
-export const TrophyMainIcon = styled.img`
+export const KeyIcon = styled.img`
   width: 64px;
   height: 64px;
   user-select: none;
@@ -81,86 +67,115 @@ export const Title = styled.h2`
 export const Subtitle = styled.p`
   font-family: "IM_Hyemin", sans-serif;
   font-size: 14px;
-  line-height: 16.8px;
+  line-height: 21px;
   color: #a0a0a0;
   margin: 0;
 `;
 
-export const RatingSection = styled.div`
-  background: rgba(38, 38, 38, 0.2);
-  border: 1px solid rgba(122, 25, 196, 0.5);
-  border-radius: 16px;
-  padding: 20px 0;
+export const OptionsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  align-items: center;
-  min-height: 191px;
-  background: linear-gradient(
-    145deg,
-    rgba(20, 20, 20, 0.9) 0%,
-    rgba(28, 28, 28, 0.8) 50%,
-    rgba(60, 60, 60, 0.36) 100%
-  );
-  border: 1px solid rgba(122, 25, 196, 0.5);
-  transition: all 0.3s ease;
-  filter: hue-rotate(0deg) saturate(1.2) brightness(1.1);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  gap: 16px;
+  width: 100%;
 `;
 
-export const RatingTitle = styled.p`
-  font-family: "IM_Hyemin", sans-serif;
-  font-weight: bold;
-  font-size: 16px;
-  line-height: 19.2px;
-  color: white;
-  text-align: center;
-  margin: 0;
-`;
-
-export const TrophyStars = styled.div`
+export const OptionCard = styled.div<{ selected: boolean }>`
+  background: rgba(38, 38, 38, 0.2);
+  border: ${(props) =>
+    props.selected
+      ? "2px solid rgba(122, 25, 196, 0.5)"
+      : "1px solid #444444"};
+  border-radius: 16px;
+  padding: 20px;
   display: flex;
-  gap: 12px;
-  align-items: center;
-  justify-content: center;
-`;
-
-export const TrophyIcon = styled.img<{ active?: boolean }>`
-  width: 50px;
-  height: 50px;
+  flex-direction: column;
+  gap: 16px;
   cursor: pointer;
-  transition: transform 0.1s ease;
-  user-select: none;
-  -webkit-user-drag: none;
+  transition: all 0.3s ease;
 
   &:hover {
-    transform: scale(1.03);
+    border-color: ${(props) =>
+      props.selected ? "rgba(122, 25, 196, 0.5)" : "rgba(122, 25, 196, 0.3)"};
   }
 `;
 
-export const RatingText = styled.div`
+export const OptionHeader = styled.div`
+  display: flex;
+  gap: 12px;
+  align-items: center;
+`;
+
+export const OptionIconContainer = styled.div<{ selected: boolean }>`
+  width: 48px;
+  height: 48px;
+  border: 1px solid
+    ${(props) =>
+      props.selected ? "rgba(122, 25, 196, 0.5)" : "rgba(68, 68, 68, 0.5)"};
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+`;
+
+export const OptionIcon = styled.img`
+  width: 36px;
+  height: 36px;
+  user-select: none;
+  -webkit-user-drag: none;
+`;
+
+export const OptionTextSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
-  text-align: center;
+  flex: 1;
+`;
+
+export const OptionTitle = styled.p`
   font-family: "IM_Hyemin", sans-serif;
   font-weight: bold;
-`;
-
-export const RatingMainText = styled.p`
   font-size: 16px;
   line-height: 19.2px;
-  color: #7a19c4;
+  color: white;
   margin: 0;
 `;
 
-export const RatingSubText = styled.p`
-  font-size: 14px;
-  line-height: 16.8px;
-  color: white;
-  opacity: 0.8;
+export const OptionSubtitle = styled.p`
+  font-family: "IM_Hyemin", sans-serif;
+  font-size: 13px;
+  line-height: 15.6px;
+  color: #a0a0a0;
   margin: 0;
+`;
+
+export const BenefitsList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+export const BenefitItem = styled.div<{ selected: boolean }>`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+`;
+
+export const Dot = styled.div<{ selected: boolean }>`
+  width: 4px;
+  height: 4px;
+  border-radius: 2px;
+  background: ${(props) => (props.selected ? "#7a19c4" : "#666666")};
+  flex-shrink: 0;
+`;
+
+export const BenefitText = styled.p`
+  font-family: "IM_Hyemin", sans-serif;
+  font-size: 12px;
+  line-height: 14.4px;
+  color: #cccccc;
+  margin: 0;
+  flex: 1;
 `;
 
 export const ActionButtons = styled.div`

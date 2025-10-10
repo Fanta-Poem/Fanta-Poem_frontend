@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import BackButton from "@/app/components/BackButton";
 import Button from "@/app/components/Button";
 import TrophyModal from "@/app/components/TrophyModal";
+import PublishSettingModal from "@/app/components/PublishSettingModal";
 import * as S from "./style";
 
 interface Book {
@@ -39,8 +40,10 @@ export default function WritePage() {
   const [review, setReview] = useState("");
   const [poemTitle, setPoemTitle] = useState("");
   const [poemContent, setPoemContent] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isTrophyModalOpen, setIsTrophyModalOpen] = useState(false);
+  const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
   const [trophyRating, setTrophyRating] = useState(0);
+  const [isPublic, setIsPublic] = useState(false);
 
   const { data: book, isLoading } = useQuery({
     queryKey: ["book", isbn],
@@ -73,16 +76,23 @@ export default function WritePage() {
 
   const handleSubmit = () => {
     if (isPoemValid) {
-      setIsModalOpen(true);
+      setIsTrophyModalOpen(true);
     }
   };
 
   const handleTrophySubmit = (rating: number) => {
     setTrophyRating(rating);
+    setIsTrophyModalOpen(false);
+    setIsPublishModalOpen(true);
+  };
+
+  const handlePublishSubmit = (isPublic: boolean) => {
+    setIsPublic(isPublic);
     console.log("Review:", review);
     console.log("Poem Title:", poemTitle);
     console.log("Poem Content:", poemContent);
-    console.log("Trophy Rating:", rating);
+    console.log("Trophy Rating:", trophyRating);
+    console.log("Is Public:", isPublic);
     // TODO: API 호출하여 저장
   };
 
@@ -174,9 +184,15 @@ export default function WritePage() {
       </S.WriteInner>
 
       <TrophyModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isTrophyModalOpen}
+        onClose={() => setIsTrophyModalOpen(false)}
         onSubmit={handleTrophySubmit}
+      />
+
+      <PublishSettingModal
+        isOpen={isPublishModalOpen}
+        onClose={() => setIsPublishModalOpen(false)}
+        onSubmit={handlePublishSubmit}
       />
     </S.WriteContainer>
   );

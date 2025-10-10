@@ -10,11 +10,11 @@ interface TrophyModalProps {
 }
 
 const TROPHY_MESSAGES = [
-  { text: "1개의 트로피", subtext: "시작이 반이에요!" },
-  { text: "2개의 트로피", subtext: "괜찮은 작품이네요" },
-  { text: "3개의 트로피", subtext: "꽤 좋은 작품입니다" },
-  { text: "4개의 트로피", subtext: "오, 이거 레어템인데요?" },
-  { text: "5개의 트로피", subtext: "전설의 작품입니다!" },
+  { text: "1개의 트로피", subtext: "흠... 이건 회색 아이템", value: 1 },
+  { text: "2개의 트로피", subtext: "상점에서 팔기엔 애매한 물건", value: 2 },
+  { text: "3개의 트로피", subtext: "모험가 표준 장비 정도?", value: 3 },
+  { text: "4개의 트로피", subtext: "오, 이거 레어템인데요?", value: 4 },
+  { text: "5개의 트로피", subtext: "이건... 전설 등급 아이템입니다", value: 5 },
 ];
 
 export default function TrophyModal({
@@ -33,7 +33,8 @@ export default function TrophyModal({
     }
   };
 
-  const message = selectedRating > 0 ? TROPHY_MESSAGES[selectedRating - 1] : null;
+  const message =
+    selectedRating > 0 ? TROPHY_MESSAGES[selectedRating - 1] : null;
 
   return (
     <S.Overlay onClick={onClose}>
@@ -74,7 +75,10 @@ export default function TrophyModal({
         </S.RatingSection>
 
         <S.ActionButtons>
-          <S.PrimaryButton onClick={handleSubmit} disabled={selectedRating === 0}>
+          <S.PrimaryButton
+            onClick={handleSubmit}
+            disabled={selectedRating === 0}
+          >
             다음으로
           </S.PrimaryButton>
           <S.SecondaryButton onClick={onClose}>취소하기</S.SecondaryButton>

@@ -9,6 +9,7 @@ import { signOut } from "next-auth/react";
 
 const scrollImg = "/3d/scroll.svg";
 const castleImg = "/3d/castle.svg";
+const logoutImg = "/3d/logout.svg";
 
 const menuData = [
   {
@@ -41,8 +42,9 @@ const menuData = [
     id: 4,
     title: "로그아웃",
     slug: "logout",
-    image: scrollImg,
-    description: "로그아웃하고 처음 화면으로 돌아갑니다.<br />다음에 다시 만나요, 탐험가님!",
+    image: logoutImg,
+    description:
+      "로그아웃하고 처음 화면으로 돌아갑니다.<br />다음에 다시 만나요, 탐험가님!",
     link: "/logout",
   },
 ];
@@ -70,7 +72,8 @@ export default function MenuPage() {
 
   const handlePrev = () => {
     setDirection("left");
-    const newIndex = currentIndex === 0 ? menuData.length - 1 : currentIndex - 1;
+    const newIndex =
+      currentIndex === 0 ? menuData.length - 1 : currentIndex - 1;
     setCurrentIndex(newIndex);
     setAnimationKey((prev) => prev + 1);
     // URL 업데이트
@@ -79,7 +82,8 @@ export default function MenuPage() {
 
   const handleNext = () => {
     setDirection("right");
-    const newIndex = currentIndex === menuData.length - 1 ? 0 : currentIndex + 1;
+    const newIndex =
+      currentIndex === menuData.length - 1 ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
     setAnimationKey((prev) => prev + 1);
     // URL 업데이트

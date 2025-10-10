@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as S from "./style";
 import Link from "next/link";
 import Button from "../components/Button";
@@ -8,16 +8,26 @@ import OutlineButton from "../components/OutlineButton";
 import GoogleIcon from "../components/GoogleIcon";
 import BackButton from "../components/BackButton";
 import { Eye, EyeOff } from "lucide-react";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const scrollImg = "/3d/scroll.svg";
 const swardImg = "/3d/sword.svg";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const { data: session, status } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+
+  // 이미 로그인되어 있으면 /menu로 리다이렉트
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/menu");
+    }
+  }, [status, router]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();

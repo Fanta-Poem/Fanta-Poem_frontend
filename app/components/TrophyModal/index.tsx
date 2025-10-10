@@ -8,6 +8,7 @@ interface TrophyModalProps {
   onClose: () => void;
   onSubmit: (rating: number) => void;
   initialRating?: number;
+  onCancel?: () => void;
 }
 
 const TROPHY_MESSAGES = [
@@ -23,6 +24,7 @@ export default function TrophyModal({
   onClose,
   onSubmit,
   initialRating = 0,
+  onCancel,
 }: TrophyModalProps) {
   const [selectedRating, setSelectedRating] = useState(0);
 
@@ -43,7 +45,10 @@ export default function TrophyModal({
   };
 
   const handleClose = () => {
-    setSelectedRating(initialRating);
+    setSelectedRating(0);
+    if (onCancel) {
+      onCancel();
+    }
     onClose();
   };
 

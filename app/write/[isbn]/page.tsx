@@ -197,6 +197,12 @@ export default function WritePage() {
         onClose={() => setIsTrophyModalOpen(false)}
         onSubmit={handleTrophySubmit}
         initialRating={publishSettings.trophyRating}
+        onCancel={() => {
+          setPublishSettings({
+            trophyRating: 0,
+            isPublic: false,
+          });
+        }}
       />
 
       <PublishSettingModal

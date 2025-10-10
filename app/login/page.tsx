@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import * as S from "./style";
-import Link from "next/link";
 import Button from "../components/Button";
 import OutlineButton from "../components/OutlineButton";
 import GoogleIcon from "../components/GoogleIcon";
@@ -17,9 +16,13 @@ const swardImg = "/3d/sword.svg";
 export default function LoginPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
+  const [isSignup, setIsSignup] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
   // 이미 로그인되어 있으면 /menu로 리다이렉트
@@ -29,9 +32,17 @@ export default function LoginPage() {
     }
   }, [status, router]);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login:", { email, password, rememberMe });
+    if (isSignup) {
+      if (password !== confirmPassword) {
+        alert("비밀번호가 일치하지 않습니다.");
+        return;
+      }
+      console.log("Signup:", { name, email, password });
+    } else {
+      console.log("Login:", { email, password, rememberMe });
+    }
   };
 
   const handleGoogleLogin = async () => {
@@ -65,13 +76,32 @@ export default function LoginPage() {
         </S.LeftPanel>
 
         <S.RightPanel>
-          <S.FormWrapper onSubmit={handleLogin}>
+          <S.FormWrapper onSubmit={handleSubmit}>
             <S.FormHead>
-              <S.FormTitle>다시 오셨군요, 탐험가님!</S.FormTitle>
+              <S.FormTitle>
+                {isSignup
+                  ? "새로운 여정을 시작하세요!"
+                  : "다시 오셨군요, 탐험가님!"}
+              </S.FormTitle>
               <S.FormSubtitle>
-                읽다 멈춘 이야기가 당신을 기다리고 있어요.
+                {isSignup
+                  ? "판타시에 가입하고 당신만의 독서 연대기를 만들어보세요."
+                  : "읽다 멈춘 이야기가 당신을 기다리고 있어요."}
               </S.FormSubtitle>
             </S.FormHead>
+
+            {isSignup && (
+              <S.InputSection>
+                <S.InputLabel>닉네임</S.InputLabel>
+                <S.InputField
+                  type="text"
+                  placeholder="닉네임"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+              </S.InputSection>
+            )}
 
             <S.InputSection>
               <S.InputLabel>이메일</S.InputLabel>
@@ -107,40 +137,70 @@ export default function LoginPage() {
               </S.PasswordInputWrapper>
             </S.InputSection>
 
-            <S.OptionsRow>
-              <S.RememberMe>
-                <S.SwitcherLabel data-checked={rememberMe}>
-                  <S.HiddenCheckbox
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
+            {isSignup && (
+              <S.InputSection>
+                <S.InputLabel>비밀번호 확인</S.InputLabel>
+                <S.PasswordInputWrapper>
+                  <S.InputField
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="비밀번호 확인"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
                   />
-                </S.SwitcherLabel>
-              </S.RememberMe>
-              <S.ForgotText>비밀번호를 잊어버리셨나요?</S.ForgotText>
-            </S.OptionsRow>
+                  <S.EyeButton
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? (
+                      <Eye size={16} />
+                    ) : (
+                      <EyeOff size={16} color="gray" />
+                    )}
+                  </S.EyeButton>
+                </S.PasswordInputWrapper>
+              </S.InputSection>
+            )}
 
-            <Button type="submit">로그인</Button>
+            {!isSignup && (
+              <S.OptionsRow>
+                <S.RememberMe>
+                  <S.SwitcherLabel data-checked={rememberMe}>
+                    <S.HiddenCheckbox
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                    />
+                  </S.SwitcherLabel>
+                </S.RememberMe>
+                <S.ForgotText>비밀번호를 잊어버리셨나요?</S.ForgotText>
+              </S.OptionsRow>
+            )}
 
-            <S.DividerSection>
-              <S.DividerLine />
-              <S.DividerText>또는</S.DividerText>
-              <S.DividerLine />
-            </S.DividerSection>
+            <Button type="submit">{isSignup ? "회원가입" : "로그인"}</Button>
 
-            <Button onClick={handleGoogleLogin} icon={<GoogleIcon />}>
-              Google 계정으로 계속하기
-            </Button>
+            {!isSignup && (
+              <>
+                <S.DividerSection>
+                  <S.DividerLine />
+                  <S.DividerText>또는</S.DividerText>
+                  <S.DividerLine />
+                </S.DividerSection>
 
-            <OutlineButton onClick={handleGuestLogin}>
-              게스트로 둘러보기
-            </OutlineButton>
+                <Button onClick={handleGoogleLogin} icon={<GoogleIcon />}>
+                  Google 계정으로 계속하기
+                </Button>
 
+                <OutlineButton onClick={handleGuestLogin}>
+                  게스트로 둘러보기
+                </OutlineButton>
+              </>
+            )}
             <S.SignupText>
-              계정이 없으신가요?{" "}
-              <Link href="/signup">
-                <S.SignupLinkText>회원가입</S.SignupLinkText>
-              </Link>
+              {isSignup ? "이미 계정이 있으신가요? " : "계정이 없으신가요? "}
+              <S.SignupLinkText onClick={() => setIsSignup(!isSignup)}>
+                {isSignup ? "로그인" : "회원가입"}
+              </S.SignupLinkText>
             </S.SignupText>
           </S.FormWrapper>
         </S.RightPanel>

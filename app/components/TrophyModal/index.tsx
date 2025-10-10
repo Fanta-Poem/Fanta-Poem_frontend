@@ -47,7 +47,7 @@ export default function TrophyModal({
       <S.ModalContainer onClick={(e) => e.stopPropagation()}>
         <S.Header>
           <S.IconContainer>
-            <S.TrophyMainIcon src="/trophy-main.png" alt="트로피" />
+            <S.TrophyMainIcon src="/3d/trophy.svg" alt="트로피" />
           </S.IconContainer>
           <S.TitleSection>
             <S.Title>이야기에 트로피를 선사하세요</S.Title>
@@ -63,8 +63,8 @@ export default function TrophyModal({
                 key={rating}
                 src={
                   rating <= selectedRating
-                    ? "/trophy-active.png"
-                    : "/trophy-inactive.png"
+                    ? "/3d/trophy.svg"
+                    : "/3d/trophy_unfilled.svg"
                 }
                 alt={`트로피 ${rating}`}
                 onClick={() => setSelectedRating(rating)}

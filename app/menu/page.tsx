@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as S from "./style";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Button from "../components/Button";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const scrollImg = "/3d/scroll.svg";
 const castleImg = "/3d/castle.svg";
@@ -13,6 +13,7 @@ const menuData = [
   {
     id: 1,
     title: "서재",
+    slug: "library",
     image: scrollImg,
     description:
       "이야기를 검색하고 해당 이야기에 대해서 시를 쓸 수 있습니다.<br />서재에서 이야기를 검색해 시를 쓰는 것은 당신의 페이지를 채우는 첫걸음입니다.<br />모든 기록은 차곡차곡 쌓여 당신만의 고유한 독서 연대기가 될 것입니다.",
@@ -21,6 +22,7 @@ const menuData = [
   {
     id: 2,
     title: "마이 페이지",
+    slug: "mypage",
     image: castleImg,
     description:
       "자신의 여정을 돌아볼 수 있습니다.<br />완독한 이야기와 읽고 있는 이야기 별로 확인이 가능하며,<br/>각각의 이야기에 대해 수정 삭제 또한 가능합니다.",
@@ -29,6 +31,7 @@ const menuData = [
   {
     id: 3,
     title: "탐색",
+    slug: "explore",
     image: scrollImg,
     description: "탐색 페이지 설명입니다.",
     link: "/explore",
@@ -36,6 +39,7 @@ const menuData = [
   {
     id: 4,
     title: "프로필",
+    slug: "profile",
     image: scrollImg,
     description: "프로필 페이지 설명입니다.",
     link: "/profile",
@@ -44,20 +48,41 @@ const menuData = [
 
 export default function MenuPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState<"left" | "right">("right");
   const [animationKey, setAnimationKey] = useState(0);
 
+  // URL에서 탭 읽어오기 및 초기 URL 설정
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    if (tab) {
+      const index = menuData.findIndex((menu) => menu.slug === tab);
+      if (index !== -1) {
+        setCurrentIndex(index);
+      }
+    } else {
+      // tab 파라미터가 없으면 기본값(library)으로 URL 업데이트
+      router.replace("/menu?tab=library", { scroll: false });
+    }
+  }, [searchParams, router]);
+
   const handlePrev = () => {
     setDirection("left");
-    setCurrentIndex((prev) => (prev === 0 ? menuData.length - 1 : prev - 1));
+    const newIndex = currentIndex === 0 ? menuData.length - 1 : currentIndex - 1;
+    setCurrentIndex(newIndex);
     setAnimationKey((prev) => prev + 1);
+    // URL 업데이트
+    router.replace(`/menu?tab=${menuData[newIndex].slug}`, { scroll: false });
   };
 
   const handleNext = () => {
     setDirection("right");
-    setCurrentIndex((prev) => (prev === menuData.length - 1 ? 0 : prev + 1));
+    const newIndex = currentIndex === menuData.length - 1 ? 0 : currentIndex + 1;
+    setCurrentIndex(newIndex);
     setAnimationKey((prev) => prev + 1);
+    // URL 업데이트
+    router.replace(`/menu?tab=${menuData[newIndex].slug}`, { scroll: false });
   };
 
   const handleEnter = () => {

@@ -5,6 +5,7 @@ import * as S from "./style";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Button from "../components/Button";
 import { useRouter, useSearchParams } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 const scrollImg = "/3d/scroll.svg";
 const castleImg = "/3d/castle.svg";
@@ -38,11 +39,11 @@ const menuData = [
   },
   {
     id: 4,
-    title: "프로필",
-    slug: "profile",
+    title: "로그아웃",
+    slug: "logout",
     image: scrollImg,
-    description: "프로필 페이지 설명입니다.",
-    link: "/profile",
+    description: "로그아웃하고 처음 화면으로 돌아갑니다.<br />다음에 다시 만나요, 탐험가님!",
+    link: "/logout",
   },
 ];
 
@@ -85,8 +86,13 @@ export default function MenuPage() {
     router.replace(`/menu?tab=${menuData[newIndex].slug}`, { scroll: false });
   };
 
-  const handleEnter = () => {
-    router.push(currentMenu.link);
+  const handleEnter = async () => {
+    // 로그아웃 메뉴인 경우
+    if (currentMenu.slug === "logout") {
+      await signOut({ callbackUrl: "/" });
+    } else {
+      router.push(currentMenu.link);
+    }
   };
 
   const currentMenu = menuData[currentIndex];

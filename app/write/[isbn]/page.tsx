@@ -36,7 +36,8 @@ export default function WritePage() {
   const isbn = params.isbn as string;
 
   const [review, setReview] = useState("");
-  const [poem, setPoem] = useState("");
+  const [poemTitle, setPoemTitle] = useState("");
+  const [poemContent, setPoemContent] = useState("");
 
   const { data: book, isLoading } = useQuery({
     queryKey: ["book", isbn],
@@ -44,9 +45,19 @@ export default function WritePage() {
     enabled: !!isbn,
   });
 
+  const handlePoemChange = (text: string) => {
+    const lines = text.split("\n");
+    const title = lines[0] || "";
+    const content = lines.slice(1).join("\n");
+
+    setPoemTitle(title);
+    setPoemContent(content);
+  };
+
   const handleSubmit = () => {
     console.log("Review:", review);
-    console.log("Poem:", poem);
+    console.log("Poem Title:", poemTitle);
+    console.log("Poem Content:", poemContent);
     // TODO: API 호출하여 저장
   };
 
@@ -112,24 +123,20 @@ export default function WritePage() {
 
           <S.RightSection>
             <S.SectionTitle>판타시</S.SectionTitle>
-            <S.PoemTextarea
-              placeholder={`제목을 입력해주세요
-
-탐험가이름
-
-여기에 이렇게 글을
-작성해주세요
-
-여기에
-이렇게 글을
-작성해주세요
-
-여기에
-이렇게 글을
-작성해주세요`}
-              value={poem}
-              onChange={(e) => setPoem(e.target.value)}
-            />
+            <S.PoemContainer>
+              <S.PoemEditor
+                contentEditable
+                suppressContentEditableWarning
+                onInput={(e: React.FormEvent<HTMLDivElement>) =>
+                  handlePoemChange(e.currentTarget.textContent || "")
+                }
+                data-placeholder={
+                  poemTitle || poemContent
+                    ? ""
+                    : "제목을 입력해주세요\n\n여기에 이렇게 글을\n작성해주세요\n\n여기에\n이렇게 글을\n작성해주세요\n\n여기에\n이렇게 글을\n작성해주세요"
+                }
+              />
+            </S.PoemContainer>
             <S.ButtonWrapper>
               <Button onClick={handleSubmit}>작성완료</Button>
             </S.ButtonWrapper>

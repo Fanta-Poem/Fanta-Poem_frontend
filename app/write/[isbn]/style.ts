@@ -127,7 +127,7 @@ export const ReviewTextarea = styled.textarea`
   }
 `;
 
-export const PoemTextarea = styled.textarea`
+export const PoemContainer = styled.div`
   width: 100%;
   flex: 1;
   min-height: 400px;
@@ -141,21 +141,36 @@ export const PoemTextarea = styled.textarea`
   border: 1px solid rgba(122, 25, 196, 0.5);
   border-radius: 16px;
   padding: 40px;
+  display: flex;
+  flex-direction: column;
+
+  &:focus-within {
+    border-color: rgba(122, 25, 196, 0.8);
+  }
+`;
+
+export const PoemEditor = styled.div`
+  width: 100%;
+  height: 100%;
   font-family: "IM_Hyemin", sans-serif;
   font-size: 16px;
   line-height: 1.8;
   color: white;
   text-align: center;
-  resize: none;
   outline: none;
+  white-space: pre-wrap;
 
-  &::placeholder {
+  &:empty::before {
+    content: attr(data-placeholder);
     color: rgba(214, 188, 250, 0.3);
-    line-height: 1.8;
+    white-space: pre-wrap;
   }
 
-  &:focus {
-    border-color: rgba(122, 25, 196, 0.8);
+  /* 첫 번째 줄(제목)을 크게 */
+  &::first-line {
+    font-size: 28px;
+    font-weight: bold;
+    line-height: 2;
   }
 `;
 

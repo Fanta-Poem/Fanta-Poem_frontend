@@ -43,8 +43,8 @@ export default function TrophyModal({
     selectedRating > 0 ? TROPHY_MESSAGES[selectedRating - 1] : null;
 
   return (
-    <S.Overlay onClick={handleClose}>
-      <S.ModalContainer onClick={(e) => e.stopPropagation()}>
+    <S.Overlay>
+      <S.ModalContainer>
         <S.Header>
           <S.IconContainer>
             <S.TrophyMainIcon src="/3d/trophy.svg" alt="트로피" />

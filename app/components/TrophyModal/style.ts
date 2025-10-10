@@ -128,10 +128,10 @@ export const TrophyIcon = styled.img<{ active?: boolean }>`
   width: 50px;
   height: 50px;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: transform 0.1s ease;
 
   &:hover {
-    transform: scale(1.1);
+    transform: scale(1.03);
   }
 `;
 

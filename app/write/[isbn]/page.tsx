@@ -42,8 +42,13 @@ export default function WritePage() {
   const [poemContent, setPoemContent] = useState("");
   const [isTrophyModalOpen, setIsTrophyModalOpen] = useState(false);
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
-  const [trophyRating, setTrophyRating] = useState(0);
-  const [isPublic, setIsPublic] = useState(false);
+  const [publishSettings, setPublishSettings] = useState<{
+    trophyRating: number;
+    isPublic: boolean;
+  }>({
+    trophyRating: 0,
+    isPublic: false,
+  });
 
   const { data: book, isLoading } = useQuery({
     queryKey: ["book", isbn],
@@ -81,18 +86,22 @@ export default function WritePage() {
   };
 
   const handleTrophySubmit = (rating: number) => {
-    setTrophyRating(rating);
+    setPublishSettings((prev) => ({ ...prev, trophyRating: rating }));
     setIsTrophyModalOpen(false);
     setIsPublishModalOpen(true);
   };
 
   const handlePublishSubmit = (isPublic: boolean) => {
-    setIsPublic(isPublic);
+    const finalSettings = {
+      ...publishSettings,
+      isPublic,
+    };
+    setPublishSettings(finalSettings);
+
     console.log("Review:", review);
     console.log("Poem Title:", poemTitle);
     console.log("Poem Content:", poemContent);
-    console.log("Trophy Rating:", trophyRating);
-    console.log("Is Public:", isPublic);
+    console.log("Publish Settings:", finalSettings);
     // TODO: API 호출하여 저장
   };
 
@@ -193,6 +202,10 @@ export default function WritePage() {
         isOpen={isPublishModalOpen}
         onClose={() => setIsPublishModalOpen(false)}
         onSubmit={handlePublishSubmit}
+        onBack={() => {
+          setIsPublishModalOpen(false);
+          setIsTrophyModalOpen(true);
+        }}
       />
     </S.WriteContainer>
   );

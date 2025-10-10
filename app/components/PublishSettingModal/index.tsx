@@ -7,12 +7,14 @@ interface PublishSettingModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (isPublic: boolean) => void;
+  onBack: () => void;
 }
 
 export default function PublishSettingModal({
   isOpen,
   onClose,
   onSubmit,
+  onBack,
 }: PublishSettingModalProps) {
   const [selectedOption, setSelectedOption] = useState<"public" | "private" | null>(null);
 
@@ -28,6 +30,11 @@ export default function PublishSettingModal({
   const handleClose = () => {
     setSelectedOption(null);
     onClose();
+  };
+
+  const handleBack = () => {
+    setSelectedOption(null);
+    onBack();
   };
 
   return (
@@ -107,7 +114,7 @@ export default function PublishSettingModal({
           <S.PrimaryButton onClick={handleSubmit} disabled={selectedOption === null}>
             작성완료
           </S.PrimaryButton>
-          <S.SecondaryButton onClick={handleClose}>뒤로가기</S.SecondaryButton>
+          <S.SecondaryButton onClick={handleBack}>뒤로가기</S.SecondaryButton>
         </S.ActionButtons>
       </S.ModalContainer>
     </S.Overlay>

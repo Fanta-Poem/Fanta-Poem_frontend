@@ -24,6 +24,9 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   // 이미 로그인되어 있으면 /menu로 리다이렉트
   useEffect(() => {
@@ -32,16 +35,65 @@ export default function LoginPage() {
     }
   }, [status, router]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSignup) {
-      if (password !== confirmPassword) {
-        alert("비밀번호가 일치하지 않습니다.");
-        return;
+    setError("");
+    setSuccessMessage("");
+    setIsLoading(true);
+
+    try {
+      if (isSignup) {
+        // 회원가입 로직
+        if (password !== confirmPassword) {
+          setError("비밀번호가 일치하지 않습니다.");
+          setIsLoading(false);
+          return;
+        }
+
+        const response = await fetch("/api/auth/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password, name }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          setError(data.error || "회원가입에 실패했습니다.");
+          setIsLoading(false);
+          return;
+        }
+
+        // 회원가입 성공
+        setSuccessMessage(data.message);
+        setIsSignup(false);
+        setPassword("");
+        setConfirmPassword("");
+        setName("");
+      } else {
+        // 로그인 로직
+        const result = await signIn("credentials", {
+          email,
+          password,
+          redirect: false,
+        });
+
+        if (result?.error) {
+          setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+          setIsLoading(false);
+          return;
+        }
+
+        // 로그인 성공
+        router.push("/menu");
       }
-      console.log("Signup:", { name, email, password });
-    } else {
-      console.log("Login:", { email, password, rememberMe });
+    } catch (error) {
+      console.error("Auth error:", error);
+      setError("오류가 발생했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -177,7 +229,9 @@ export default function LoginPage() {
               </S.OptionsRow>
             )}
 
-            <Button type="submit">{isSignup ? "회원가입" : "로그인"}</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? "처리 중..." : isSignup ? "회원가입" : "로그인"}
+            </Button>
 
             {!isSignup && (
               <>

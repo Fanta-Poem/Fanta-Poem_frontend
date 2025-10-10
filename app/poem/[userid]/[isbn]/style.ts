@@ -303,6 +303,10 @@ export const PoemHeader = styled.div`
   width: 100%;
   margin-bottom: 100px;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 `;
 
 export const PoemTitle = styled.h3`
@@ -325,9 +329,7 @@ export const PoemAuthor = styled.p`
   margin: 0;
   white-space: nowrap;
   text-align: right;
-  position: absolute;
-  right: 0;
-  top: 71px;
+  align-self: flex-end;
 `;
 
 export const PoemTextWrapper = styled.div`

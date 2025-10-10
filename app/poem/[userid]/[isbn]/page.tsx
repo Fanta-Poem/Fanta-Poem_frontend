@@ -130,8 +130,8 @@ export default function PoemDetailPage({
               <S.PoemContentWrapper>
                 <S.PoemHeader>
                   <S.PoemTitle>{bookData.poem.title}</S.PoemTitle>
+                  <S.PoemAuthor>{bookData.poem.author}</S.PoemAuthor>
                 </S.PoemHeader>
-                <S.PoemAuthor>{bookData.poem.author}</S.PoemAuthor>
                 <S.PoemTextWrapper>
                   {bookData.poem.stanzas.map((stanza, stanzaIndex) => (
                     <S.PoemStanza key={stanzaIndex}>

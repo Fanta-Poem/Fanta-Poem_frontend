@@ -40,6 +40,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             return null;
           }
 
+          // 이메일 인증 확인
+          if (!user.emailVerified) {
+            throw new Error("이메일 인증이 필요합니다. 이메일을 확인해주세요.");
+          }
+
           // 비밀번호 확인
           const isPasswordValid = await bcrypt.compare(
             credentials.password as string,

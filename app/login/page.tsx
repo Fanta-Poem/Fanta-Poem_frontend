@@ -8,13 +8,14 @@ import GoogleIcon from "../components/GoogleIcon";
 import BackButton from "../components/BackButton";
 import { Eye, EyeOff } from "lucide-react";
 import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const scrollImg = "/3d/scroll.svg";
 const swardImg = "/3d/sword.svg";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: session, status } = useSession();
   const [isSignup, setIsSignup] = useState(false);
   const [email, setEmail] = useState("");
@@ -27,6 +28,22 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+
+  // URL 파라미터 확인 (이메일 인증 완료 또는 에러)
+  useEffect(() => {
+    const verified = searchParams.get("verified");
+    const errorParam = searchParams.get("error");
+
+    if (verified === "true") {
+      setSuccessMessage("이메일 인증이 완료되었습니다! 이제 로그인해주세요.");
+    } else if (errorParam === "invalid-token") {
+      setError("유효하지 않은 인증 링크입니다.");
+    } else if (errorParam === "token-expired") {
+      setError("인증 링크가 만료되었습니다. 다시 회원가입해주세요.");
+    } else if (errorParam === "verification-failed") {
+      setError("이메일 인증에 실패했습니다. 다시 시도해주세요.");
+    }
+  }, [searchParams]);
 
   // 이미 로그인되어 있으면 /menu로 리다이렉트
   useEffect(() => {

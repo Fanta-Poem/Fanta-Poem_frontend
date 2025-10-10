@@ -102,6 +102,12 @@ export const SectionTitle = styled.h3`
   margin-top: 8px;
 `;
 
+export const RequiredMark = styled.span`
+  color: var(--primary);
+  margin-left: 4px;
+  font-size: 200;
+`;
+
 export const ReviewTextarea = styled.textarea`
   width: 100%;
   flex: 1;

@@ -147,7 +147,9 @@ export default function WritePage() {
           </S.LeftSection>
 
           <S.RightSection>
-            <S.SectionTitle>판타시</S.SectionTitle>
+            <S.SectionTitle>
+              판타시<S.RequiredMark>*</S.RequiredMark>
+            </S.SectionTitle>
             <S.PoemContainer>
               <S.PoemEditor
                 contentEditable

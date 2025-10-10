@@ -78,7 +78,15 @@ export default function SearchPage() {
   });
 
   const books = data?.documents || [];
-  const totalCount = data?.meta.total_count || 0;
+
+  // ISBN이 유효한 책만 필터링
+  const validBooks = books.filter((book) => {
+    if (!book.isbn || !book.isbn.trim()) return false;
+    const firstISBN = book.isbn.split(" ")[0].trim();
+    return firstISBN.length > 0;
+  });
+
+  const totalCount = validBooks.length;
 
   // URL 파라미터 변경 감지 (뒤로가기/앞으로가기)
   useEffect(() => {
@@ -187,17 +195,10 @@ export default function SearchPage() {
 
               {isLoading ? (
                 <S.LoadingMessage>로딩 중...</S.LoadingMessage>
-              ) : books.length > 0 ? (
+              ) : validBooks.length > 0 ? (
                 <>
                   <S.BookList>
-                    {books
-                      .filter((book) => {
-                        if (!book.isbn || !book.isbn.trim()) return false;
-                        // 공백으로 구분된 경우 첫 번째 ISBN이 유효한지 확인
-                        const firstISBN = book.isbn.split(" ")[0].trim();
-                        return firstISBN.length > 0;
-                      })
-                      .map((book) => (
+                    {validBooks.map((book) => (
                         <BookCard
                           key={book.isbn}
                           thumbnail={book.thumbnail || "/book-sample.svg"}
@@ -243,7 +244,7 @@ export default function SearchPage() {
                       </S.PageNumber>
                     )}
                     <S.PageNumber active>{currentPage}</S.PageNumber>
-                    {!isLoading && books.length === 10 && (
+                    {!isLoading && validBooks.length === 10 && (
                       <>
                         <S.PageNumber
                           onClick={() => handlePageChange(currentPage + 1)}

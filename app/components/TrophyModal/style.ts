@@ -32,13 +32,27 @@ export const Header = styled.div`
 `;
 
 export const IconContainer = styled.div`
+  display: flex;
   width: 80px;
   height: 80px;
-  border: 1px solid rgba(122, 25, 196, 0.5);
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: 20px;
+  position: relative;
+
+  background: linear-gradient(
+    145deg,
+    rgba(20, 20, 20, 0.9) 0%,
+    rgba(28, 28, 28, 0.8) 50%,
+    rgba(60, 60, 60, 0.36) 100%
+  );
+  border: 1px solid rgba(122, 25, 196, 0.5);
+  transition: all 0.3s ease;
+  filter: hue-rotate(0deg) saturate(1.2) brightness(1.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 `;
 
 export const TrophyMainIcon = styled.img`
@@ -80,6 +94,17 @@ export const RatingSection = styled.div`
   gap: 20px;
   align-items: center;
   min-height: 191px;
+  background: linear-gradient(
+    145deg,
+    rgba(20, 20, 20, 0.9) 0%,
+    rgba(28, 28, 28, 0.8) 50%,
+    rgba(60, 60, 60, 0.36) 100%
+  );
+  border: 1px solid rgba(122, 25, 196, 0.5);
+  transition: all 0.3s ease;
+  filter: hue-rotate(0deg) saturate(1.2) brightness(1.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 `;
 
 export const RatingTitle = styled.p`

@@ -2,6 +2,7 @@
 
 import BackButton from "@/app/components/BackButton";
 import * as S from "./style";
+import { Heart } from "lucide-react";
 
 export default function PoemDetailPage({
   params,
@@ -10,7 +11,7 @@ export default function PoemDetailPage({
 }) {
   // Mock data - replace with actual API calls
   const bookData = {
-    coverImage: "/70ad43afb2cce230d7aab61201010217663a250d.png",
+    coverImage: "/book-sample.svg",
     title: "[국내도서] 체인소 맨 5",
     author: "Tatsuki Fujimoto",
     authorRole: "저자(글)",
@@ -37,7 +38,11 @@ export default function PoemDetailPage({
       stanzas: [
         ["고구마가 감자를 좋아하는", "이유가 뭔지 아나요"],
         ["두 작물 모두 구황작물이라는", "공통점이 있어요"],
-        ["만약 내가 고구마였어도", "지금의 고구마처럼 한결같이", "감자를 좋아할겁니다"],
+        [
+          "만약 내가 고구마였어도",
+          "지금의 고구마처럼 한결같이",
+          "감자를 좋아할겁니다",
+        ],
       ],
     },
   };
@@ -85,8 +90,8 @@ export default function PoemDetailPage({
                           key={index}
                           src={
                             index <= bookData.trophies
-                              ? "/6a3fecda4ff90c6f75c7c2c85556f3f8918e9e24.svg"
-                              : "/013cb20cb0c7357a5c57377d3929db0bf331b848.svg"
+                              ? "/trophy/trophy_filled.svg"
+                              : "/trophy/trophy_unfilled.svg"
                           }
                           alt="trophy"
                         />
@@ -103,10 +108,7 @@ export default function PoemDetailPage({
                     <S.LikesSection>
                       <S.SectionLabel>좋아요</S.SectionLabel>
                       <S.LikeButton>
-                        <S.HeartIcon
-                          src="/dea38351ff717cced18bce75dbc82aedadccae18.svg"
-                          alt="heart"
-                        />
+                        <Heart size={18} color="#888888" />
                         <S.LikeCount>{bookData.likes}</S.LikeCount>
                       </S.LikeButton>
                     </S.LikesSection>

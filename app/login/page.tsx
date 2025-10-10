@@ -8,6 +8,7 @@ import OutlineButton from "../components/OutlineButton";
 import GoogleIcon from "../components/GoogleIcon";
 import BackButton from "../components/BackButton";
 import { Eye, EyeOff } from "lucide-react";
+import { signIn } from "next-auth/react";
 
 const scrollImg = "/3d/scroll.svg";
 const swardImg = "/3d/sword.svg";
@@ -23,8 +24,14 @@ export default function LoginPage() {
     console.log("Login:", { email, password, rememberMe });
   };
 
-  const handleGoogleLogin = () => {
-    console.log("Google login");
+  const handleGoogleLogin = async () => {
+    try {
+      await signIn("google", {
+        callbackUrl: "/", // 로그인 성공 후 리다이렉트할 페이지
+      });
+    } catch (error) {
+      console.error("Google login error:", error);
+    }
   };
 
   const handleGuestLogin = () => {

@@ -49,16 +49,32 @@ export default function WritePage() {
   });
 
   const handlePoemChange = (text: string) => {
-    const lines = text.split("\n");
-    const title = lines[0] || "";
-    const content = lines.slice(1).join("\n");
+    const firstLineBreak = text.indexOf("\n");
+
+    let title = "";
+    let content = "";
+
+    if (firstLineBreak === -1) {
+      title = text;
+      content = "";
+    } else {
+      title = text.substring(0, firstLineBreak);
+      content = text.substring(firstLineBreak + 1);
+    }
+
+    // console.log("Title:", title);
+    // console.log("Content:", content);
 
     setPoemTitle(title);
     setPoemContent(content);
   };
 
+  const isPoemValid = poemTitle.trim() !== "" && poemContent.trim() !== "";
+
   const handleSubmit = () => {
-    setIsModalOpen(true);
+    if (isPoemValid) {
+      setIsModalOpen(true);
+    }
   };
 
   const handleTrophySubmit = (rating: number) => {
@@ -137,7 +153,7 @@ export default function WritePage() {
                 contentEditable
                 suppressContentEditableWarning
                 onInput={(e: React.FormEvent<HTMLDivElement>) =>
-                  handlePoemChange(e.currentTarget.textContent || "")
+                  handlePoemChange(e.currentTarget.innerText || "")
                 }
                 data-placeholder={
                   poemTitle || poemContent
@@ -147,7 +163,9 @@ export default function WritePage() {
               />
             </S.PoemContainer>
             <S.ButtonWrapper>
-              <Button onClick={handleSubmit}>작성완료</Button>
+              <Button onClick={handleSubmit} disabled={!isPoemValid}>
+                작성완료
+              </Button>
             </S.ButtonWrapper>
           </S.RightSection>
         </S.ContentWrapper>

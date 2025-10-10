@@ -462,3 +462,27 @@ export const FormHead = styled.div`
   flex-direction: column;
   gap: 8px;
 `;
+
+export const ErrorMessage = styled.div`
+  font-family: "IM_Hyemin", sans-serif;
+  font-size: 14px;
+  line-height: 18px;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  padding: 12px 16px;
+  text-align: center;
+`;
+
+export const SuccessMessage = styled.div`
+  font-family: "IM_Hyemin", sans-serif;
+  font-size: 14px;
+  line-height: 18px;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 8px;
+  padding: 12px 16px;
+  text-align: center;
+`;

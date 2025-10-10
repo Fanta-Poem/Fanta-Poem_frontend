@@ -142,6 +142,12 @@ export default function LoginPage() {
               </S.FormSubtitle>
             </S.FormHead>
 
+            {error && <S.ErrorMessage>{error}</S.ErrorMessage>}
+
+            {successMessage && (
+              <S.SuccessMessage>{successMessage}</S.SuccessMessage>
+            )}
+
             {isSignup && (
               <S.InputSection>
                 <S.InputLabel>닉네임</S.InputLabel>

@@ -29,6 +29,15 @@ export const HeaderSection = styled.div`
   gap: 20px;
 `;
 
+export const Greeting = styled.h2`
+  font-family: "IM_Hyemin", sans-serif;
+  font-weight: 700;
+  font-size: 36px;
+  color: #fafafa;
+  margin: 0;
+  line-height: normal;
+`;
+
 export const TitleSection = styled.div`
   display: flex;
   align-items: center;

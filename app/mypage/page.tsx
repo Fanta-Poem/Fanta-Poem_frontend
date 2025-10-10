@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import BackButton from "../components/BackButton";
 import SearchBar from "../components/SearchBar";
 import * as S from "./style";
@@ -56,11 +57,14 @@ const mockReadingBooks: Book[] = [
 
 export default function MyPage() {
   const router = useRouter();
+  const { data: session } = useSession();
   const [searchQuery, setSearchQuery] = useState("");
 
   const totalReadCount = 326;
   const readBooksCount = 322;
   const readingBooksCount = 4;
+
+  const userName = session?.user?.name || "사용자";
 
   const handleSearch = () => {
     // MyPage에서는 검색어로 필터링만 수행 (페이지 이동 없음)
@@ -87,6 +91,7 @@ export default function MyPage() {
         <BackButton />
 
         <S.HeaderSection>
+          <S.Greeting>안녕하세요, {userName}님!</S.Greeting>
           <S.TitleSection>
             <S.Title>현재</S.Title>
             <S.TitleHighlight>{totalReadCount}</S.TitleHighlight>

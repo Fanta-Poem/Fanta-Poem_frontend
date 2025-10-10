@@ -41,6 +41,15 @@ export default function BookCard({
     e.currentTarget.src = "/book-sample.svg";
   };
 
+  // ISBN 유효성 검사
+  const hasValidISBN = (isbnValue?: string) => {
+    if (!isbnValue || !isbnValue.trim()) return false;
+    const firstISBN = isbnValue.split(" ")[0].trim();
+    return firstISBN.length >= 10;
+  };
+
+  const isISBNValid = hasValidISBN(isbn);
+
   if (variant === "detail") {
     return (
       <S.DetailBookCard>
@@ -124,16 +133,22 @@ export default function BookCard({
         </S.RatingSection>
       </S.BookInfo>
       <S.BookActions onClick={handleButtonClick}>
-        <OutlineButton type="button">읽는 중 표시</OutlineButton>
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        >
-          <Button type="button" onClick={onWriteClick}>
-            바로 시 쓰기
-          </Button>
-        </div>
+        {isISBNValid ? (
+          <>
+            <OutlineButton type="button">읽는 중 표시</OutlineButton>
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <Button type="button" onClick={onWriteClick}>
+                바로 시 쓰기
+              </Button>
+            </div>
+          </>
+        ) : (
+          <S.UnsupportedMessage>현재는 지원하지 않는 책입니다.</S.UnsupportedMessage>
+        )}
       </S.BookActions>
     </S.SearchBookCard>
   );

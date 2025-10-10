@@ -118,6 +118,17 @@ export const BookActions = styled.div`
   }
 `;
 
+export const UnsupportedMessage = styled.p`
+  font-family: "IM_Hyemin", sans-serif;
+  font-size: 14px;
+  line-height: 18px;
+  color: rgba(214, 188, 250, 0.5);
+  margin: 0;
+  padding: 10px 20px;
+  text-align: center;
+  white-space: nowrap;
+`;
+
 // Detail variant styles
 export const DetailBookCard = styled.div`
   flex: 1;

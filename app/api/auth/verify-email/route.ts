@@ -35,11 +35,28 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // 사용자 이메일 인증 완료
-    await usersCollection.updateOne(
-      { _id: verificationToken.userId },
-      { $set: { emailVerified: new Date() } }
-    );
+    // 이메일이 이미 인증된 사용자인지 확인
+    const existingVerifiedUser = await usersCollection.findOne({
+      email: verificationToken.email,
+      emailVerified: { $ne: null }
+    });
+
+    if (existingVerifiedUser) {
+      await tokensCollection.deleteOne({ token });
+      return NextResponse.redirect(
+        new URL("/login?error=already-verified", request.url)
+      );
+    }
+
+    // 토큰에 저장된 정보로 실제 사용자 생성
+    await usersCollection.insertOne({
+      name: verificationToken.name,
+      email: verificationToken.email,
+      password: verificationToken.password,
+      emailVerified: new Date(), // 이메일 인증 완료
+      image: null,
+      createdAt: new Date(),
+    });
 
     // 사용된 토큰 삭제
     await tokensCollection.deleteOne({ token });

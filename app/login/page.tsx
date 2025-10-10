@@ -42,6 +42,8 @@ export default function LoginPage() {
       setError("인증 링크가 만료되었습니다. 다시 회원가입해주세요.");
     } else if (errorParam === "verification-failed") {
       setError("이메일 인증에 실패했습니다. 다시 시도해주세요.");
+    } else if (errorParam === "already-verified") {
+      setError("이미 인증된 계정입니다. 로그인해주세요.");
     }
   }, [searchParams]);
 

@@ -30,8 +30,12 @@ export async function POST(request: NextRequest) {
     const usersCollection = db.collection("user");
     const tokensCollection = db.collection("verification_tokens");
 
-    // 이메일 중복 확인
-    const existingUser = await usersCollection.findOne({ email });
+    // 이메일 중복 확인 (인증된 사용자만)
+    const existingUser = await usersCollection.findOne({
+      email,
+      emailVerified: { $ne: null } // 이메일 인증이 완료된 사용자만 중복 체크
+    });
+
     if (existingUser) {
       return NextResponse.json(
         { error: "이미 존재하는 이메일입니다." },
@@ -39,28 +43,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // 기존 미인증 사용자 및 토큰 삭제 (재가입 허용)
+    await usersCollection.deleteMany({
+      email,
+      emailVerified: null
+    });
+    await tokensCollection.deleteMany({ email });
+
     // 비밀번호 해싱
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // 인증 토큰 생성
     const verificationToken = crypto.randomBytes(32).toString("hex");
 
-    // 사용자 생성 (이메일 미인증 상태)
-    const newUser = {
-      name,
-      email,
-      password: hashedPassword,
-      emailVerified: null, // 이메일 인증 전
-      image: null,
-      createdAt: new Date(),
-    };
-
-    const result = await usersCollection.insertOne(newUser);
-
-    // 인증 토큰 저장 (24시간 유효)
+    // 임시 사용자 정보를 토큰과 함께 저장 (user 테이블에는 저장 안 함)
     await tokensCollection.insertOne({
-      userId: result.insertedId,
       email,
+      name,
+      password: hashedPassword,
       token: verificationToken,
       expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24시간 후 만료
       createdAt: new Date(),
@@ -81,9 +81,8 @@ export async function POST(request: NextRequest) {
         message: "회원가입이 완료되었습니다. 이메일을 확인하여 인증을 완료해주세요.",
         requiresEmailVerification: true,
         user: {
-          id: result.insertedId,
-          email: newUser.email,
-          name: newUser.name,
+          email: email,
+          name: name,
         },
       },
       { status: 201 }

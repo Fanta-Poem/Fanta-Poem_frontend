@@ -150,6 +150,11 @@ export default function BookDetailPage() {
             rating={0}
             reviewCount={0}
             variant="search"
+            isbn={book.isbn}
+            onWriteClick={() => {
+              const firstISBN = book.isbn.split(" ")[0].trim();
+              router.push(`/write/${firstISBN}`);
+            }}
           />
         </S.BookDetailSection>
 

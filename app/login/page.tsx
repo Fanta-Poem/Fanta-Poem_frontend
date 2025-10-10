@@ -27,7 +27,7 @@ export default function LoginPage() {
   const handleGoogleLogin = async () => {
     try {
       await signIn("google", {
-        callbackUrl: "/", // 로그인 성공 후 리다이렉트할 페이지
+        callbackUrl: "/menu", // 로그인 성공 후 메뉴 페이지로 리다이렉트
       });
     } catch (error) {
       console.error("Google login error:", error);

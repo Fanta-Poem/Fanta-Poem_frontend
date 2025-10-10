@@ -7,6 +7,9 @@ import bcrypt from "bcrypt";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: MongoDBAdapter(clientPromise),
+  session: {
+    strategy: "jwt", // Credentials Provider를 사용하려면 JWT 필요
+  },
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,

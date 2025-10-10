@@ -139,7 +139,7 @@ export default function SearchPage() {
 
     // 유효성 검사: ISBN이 비어있으면 동작하지 않음
     if (!firstISBN || firstISBN.length < 10) {
-      console.warn("⚠️ Invalid ISBN:", isbn);
+      // console.warn("⚠️ Invalid ISBN:", isbn);
       return;
     }
 
@@ -150,7 +150,7 @@ export default function SearchPage() {
     const firstISBN = isbn.split(" ")[0].trim();
 
     if (!firstISBN || firstISBN.length < 10) {
-      console.warn("⚠️ Invalid ISBN:", isbn);
+      // console.warn("⚠️ Invalid ISBN:", isbn);
       return;
     }
 
@@ -199,32 +199,32 @@ export default function SearchPage() {
                 <>
                   <S.BookList>
                     {validBooks.map((book) => (
-                        <BookCard
-                          key={book.isbn}
-                          thumbnail={book.thumbnail || "/book-sample.svg"}
-                          title={book.title}
-                          subtitle={book.contents}
-                          authors={book.authors}
-                          translators={book.translators}
-                          publisher={book.publisher}
-                          publishDate={new Date(
-                            book.datetime
-                          ).toLocaleDateString("ko-KR")}
-                          price={
-                            book.sale_price > 0
-                              ? `${book.sale_price.toLocaleString()} 원`
-                              : book.price > 0
-                              ? `${book.price.toLocaleString()} 원`
-                              : "가격 정보 없음"
-                          }
-                          rating={0}
-                          reviewCount={0}
-                          variant="search"
-                          isbn={book.isbn}
-                          onClick={() => handleBookClick(book.isbn)}
-                          onWriteClick={() => handleWriteClick(book.isbn)}
-                        />
-                      ))}
+                      <BookCard
+                        key={book.isbn}
+                        thumbnail={book.thumbnail || "/book-sample.svg"}
+                        title={book.title}
+                        subtitle={book.contents}
+                        authors={book.authors}
+                        translators={book.translators}
+                        publisher={book.publisher}
+                        publishDate={new Date(book.datetime).toLocaleDateString(
+                          "ko-KR"
+                        )}
+                        price={
+                          book.sale_price > 0
+                            ? `${book.sale_price.toLocaleString()} 원`
+                            : book.price > 0
+                            ? `${book.price.toLocaleString()} 원`
+                            : "가격 정보 없음"
+                        }
+                        rating={0}
+                        reviewCount={0}
+                        variant="search"
+                        isbn={book.isbn}
+                        onClick={() => handleBookClick(book.isbn)}
+                        onWriteClick={() => handleWriteClick(book.isbn)}
+                      />
+                    ))}
                   </S.BookList>
 
                   <S.Pagination>

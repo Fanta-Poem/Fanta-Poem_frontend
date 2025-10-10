@@ -6,6 +6,7 @@ import * as S from "./style";
 import BackButton from "../components/BackButton";
 import Dropdown from "../components/Dropdown";
 import BookCard from "../components/BookCard";
+import SearchBar from "../components/SearchBar";
 import { useQuery } from "@tanstack/react-query";
 import LoadingNotFound from "./LoadingNotFound";
 
@@ -163,20 +164,12 @@ export default function SearchPage() {
         <BackButton />
 
         <S.SearchSection>
-          <S.SearchBar>
-            <S.SearchInput
-              type="text"
-              placeholder="이야기 검색"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            />
-            <S.SearchIcon
-              src="/icons/search.svg"
-              alt="검색"
-              onClick={handleSearch}
-            />
-          </S.SearchBar>
+          <SearchBar
+            value={inputValue}
+            onChange={setInputValue}
+            onSearch={handleSearch}
+            placeholder="이야기 검색"
+          />
 
           {searchQuery && (
             <S.ResultsSection>

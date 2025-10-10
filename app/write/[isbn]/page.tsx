@@ -196,6 +196,7 @@ export default function WritePage() {
         isOpen={isTrophyModalOpen}
         onClose={() => setIsTrophyModalOpen(false)}
         onSubmit={handleTrophySubmit}
+        initialRating={publishSettings.trophyRating}
       />
 
       <PublishSettingModal

@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as S from "./style";
 
 interface TrophyModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (rating: number) => void;
+  initialRating?: number;
 }
 
 const TROPHY_MESSAGES = [
@@ -21,21 +22,28 @@ export default function TrophyModal({
   isOpen,
   onClose,
   onSubmit,
+  initialRating = 0,
 }: TrophyModalProps) {
   const [selectedRating, setSelectedRating] = useState(0);
+
+  // 모달이 열릴 때마다 initialRating으로 설정
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedRating(initialRating);
+    }
+  }, [isOpen, initialRating]);
 
   if (!isOpen) return null;
 
   const handleSubmit = () => {
     if (selectedRating > 0) {
       onSubmit(selectedRating);
-      setSelectedRating(0);
       onClose();
     }
   };
 
   const handleClose = () => {
-    setSelectedRating(0);
+    setSelectedRating(initialRating);
     onClose();
   };
 

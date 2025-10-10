@@ -7,7 +7,7 @@ import BackButton from "../components/BackButton";
 import Dropdown from "../components/Dropdown";
 import BookCard from "../components/BookCard";
 import SearchBar from "../components/SearchBar";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import LoadingNotFound from "./LoadingNotFound";
 
 interface Book {
@@ -59,6 +59,7 @@ const sortOptions = [
 export default function SearchPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
 
   // URL에서 초기 값 읽기
   const [searchQuery, setSearchQuery] = useState(
@@ -80,14 +81,15 @@ export default function SearchPage() {
 
   const books = data?.documents || [];
 
-  // ISBN이 유효한 책만 필터링
-  const validBooks = books.filter((book) => {
-    if (!book.isbn || !book.isbn.trim()) return false;
-    const firstISBN = book.isbn.split(" ")[0].trim();
-    return firstISBN.length > 0;
-  });
+  // ISBN 유효성 체크 함수
+  const hasValidISBN = (isbn: string) => {
+    if (!isbn || !isbn.trim()) return false;
+    const firstISBN = isbn.split(" ")[0].trim();
+    return firstISBN.length >= 10;
+  };
 
-  const totalCount = validBooks.length;
+  // API에서 제공하는 전체 개수 사용
+  const totalCount = data?.meta.total_count || 0;
 
   // URL 파라미터 변경 감지 (뒤로가기/앞으로가기)
   useEffect(() => {
@@ -134,28 +136,24 @@ export default function SearchPage() {
     updateURL(searchQuery, 1, value);
   };
 
-  const handleBookClick = (isbn: string) => {
-    // ISBN이 공백으로 구분된 경우 첫 번째 값만 사용
-    const firstISBN = isbn.split(" ")[0].trim();
+  const handleBookClick = (book: Book) => {
+    // ISBN이 있는 경우 ISBN 사용, 없는 경우 title 사용
+    const firstISBN = book.isbn?.split(" ")[0].trim();
+    const identifier = firstISBN && firstISBN.length >= 10
+      ? firstISBN
+      : encodeURIComponent(book.title);
 
-    // 유효성 검사: ISBN이 비어있으면 동작하지 않음
-    if (!firstISBN || firstISBN.length < 10) {
-      // console.warn("⚠️ Invalid ISBN:", isbn);
-      return;
-    }
+    // React Query 캐시에 책 데이터 저장
+    queryClient.setQueryData(["book", identifier], book);
 
-    router.push(`/book/${firstISBN}`);
+    router.push(`/book/${identifier}`);
   };
 
   const handleWriteClick = (isbn: string) => {
     const firstISBN = isbn.split(" ")[0].trim();
-
-    if (!firstISBN || firstISBN.length < 10) {
-      // console.warn("⚠️ Invalid ISBN:", isbn);
-      return;
+    if (firstISBN && firstISBN.length >= 10) {
+      router.push(`/write/${firstISBN}`);
     }
-
-    router.push(`/write/${firstISBN}`);
   };
 
   return (
@@ -188,36 +186,39 @@ export default function SearchPage() {
 
               {isLoading ? (
                 <S.LoadingMessage>로딩 중...</S.LoadingMessage>
-              ) : validBooks.length > 0 ? (
+              ) : books.length > 0 ? (
                 <>
                   <S.BookList>
-                    {validBooks.map((book) => (
-                      <BookCard
-                        key={book.isbn}
-                        thumbnail={book.thumbnail || "/book-sample.svg"}
-                        title={book.title}
-                        subtitle={book.contents}
-                        authors={book.authors}
-                        translators={book.translators}
-                        publisher={book.publisher}
-                        publishDate={new Date(book.datetime).toLocaleDateString(
-                          "ko-KR"
-                        )}
-                        price={
-                          book.sale_price > 0
-                            ? `${book.sale_price.toLocaleString()} 원`
-                            : book.price > 0
-                            ? `${book.price.toLocaleString()} 원`
-                            : "가격 정보 없음"
-                        }
-                        rating={0}
-                        reviewCount={0}
-                        variant="search"
-                        isbn={book.isbn}
-                        onClick={() => handleBookClick(book.isbn)}
-                        onWriteClick={() => handleWriteClick(book.isbn)}
-                      />
-                    ))}
+                    {books.map((book, index) => {
+                      const isISBNValid = hasValidISBN(book.isbn);
+                      return (
+                        <BookCard
+                          key={book.isbn || `book-${index}`}
+                          thumbnail={book.thumbnail || "/book-sample.svg"}
+                          title={book.title}
+                          subtitle={book.contents}
+                          authors={book.authors}
+                          translators={book.translators}
+                          publisher={book.publisher}
+                          publishDate={new Date(book.datetime).toLocaleDateString(
+                            "ko-KR"
+                          )}
+                          price={
+                            book.sale_price > 0
+                              ? `${book.sale_price.toLocaleString()} 원`
+                              : book.price > 0
+                              ? `${book.price.toLocaleString()} 원`
+                              : "가격 정보 없음"
+                          }
+                          rating={0}
+                          reviewCount={0}
+                          variant="search"
+                          isbn={book.isbn}
+                          onClick={() => handleBookClick(book)}
+                          onWriteClick={() => isISBNValid && handleWriteClick(book.isbn)}
+                        />
+                      );
+                    })}
                   </S.BookList>
 
                   <S.Pagination>
@@ -237,7 +238,7 @@ export default function SearchPage() {
                       </S.PageNumber>
                     )}
                     <S.PageNumber active>{currentPage}</S.PageNumber>
-                    {!isLoading && validBooks.length === 10 && (
+                    {!isLoading && data?.meta && (!data.meta.is_end || books.length === 10) && (
                       <>
                         <S.PageNumber
                           onClick={() => handlePageChange(currentPage + 1)}

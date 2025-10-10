@@ -24,14 +24,31 @@ interface Book {
   datetime: string;
 }
 
-const fetchBookByISBN = async (isbn: string): Promise<Book> => {
-  const response = await fetch(`/api/books/${isbn}`);
+const fetchBookByISBN = async (identifier: string): Promise<Book> => {
+  // URL 인코딩된 제목인 경우 디코딩하여 제목으로 검색
+  const decodedIdentifier = decodeURIComponent(identifier);
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch book");
+  // ISBN 형식인지 확인 (숫자만 포함, 10자 이상)
+  const isISBN = /^\d{10,}$/.test(identifier.replace(/[\s-]/g, ''));
+
+  if (isISBN) {
+    const response = await fetch(`/api/books/${identifier}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch book");
+    }
+    return response.json();
+  } else {
+    // 제목으로 검색
+    const response = await fetch(`/api/books/search?query=${encodeURIComponent(decodedIdentifier)}&size=1`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch book");
+    }
+    const data = await response.json();
+    if (data.documents && data.documents.length > 0) {
+      return data.documents[0];
+    }
+    throw new Error("Book not found");
   }
-
-  return response.json();
 };
 
 const mockComments = [
@@ -78,7 +95,7 @@ const sortOptions = [
 export default function BookDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const isbn = params.id as string;
+  const identifier = params.id as string;
   const [sortBy, setSortBy] = useState("likes");
 
   const {
@@ -86,9 +103,10 @@ export default function BookDetailPage() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["book", isbn],
-    queryFn: () => fetchBookByISBN(isbn),
-    enabled: !!isbn,
+    queryKey: ["book", identifier],
+    queryFn: () => fetchBookByISBN(identifier),
+    enabled: !!identifier,
+    staleTime: 1000 * 60 * 5, // 캐시된 데이터는 5분간 유지
   });
 
   if (isLoading) {
@@ -152,8 +170,10 @@ export default function BookDetailPage() {
             variant="search"
             isbn={book.isbn}
             onWriteClick={() => {
-              const firstISBN = book.isbn.split(" ")[0].trim();
-              router.push(`/write/${firstISBN}`);
+              const firstISBN = book.isbn?.split(" ")[0].trim();
+              if (firstISBN && firstISBN.length >= 10) {
+                router.push(`/write/${firstISBN}`);
+              }
             }}
           />
         </S.BookDetailSection>

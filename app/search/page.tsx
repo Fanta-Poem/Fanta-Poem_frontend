@@ -9,6 +9,7 @@ import BookCard from "../components/BookCard";
 import SearchBar from "../components/SearchBar";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import LoadingNotFound from "./LoadingNotFound";
+import ReadingDateModal from "../components/ReadingDateModal";
 
 interface Book {
   isbn: string;
@@ -70,6 +71,8 @@ export default function SearchPage() {
     Number(searchParams.get("page")) || 1
   );
   const [sortBy, setSortBy] = useState(searchParams.get("sort") || "accuracy");
+  const [isDateModalOpen, setIsDateModalOpen] = useState(false);
+  const [selectedISBN, setSelectedISBN] = useState<string>("");
 
   const { data, isLoading } = useQuery({
     queryKey: ["books", searchQuery, currentPage, sortBy],
@@ -152,7 +155,16 @@ export default function SearchPage() {
   const handleWriteClick = (isbn: string) => {
     const firstISBN = isbn.split(" ")[0].trim();
     if (firstISBN && firstISBN.length >= 10) {
-      router.push(`/write/${firstISBN}`);
+      setSelectedISBN(firstISBN);
+      setIsDateModalOpen(true);
+    }
+  };
+
+  const handleDateSubmit = (startDate: string, endDate: string) => {
+    if (selectedISBN) {
+      router.push(
+        `/write/${selectedISBN}?startDate=${startDate}&endDate=${endDate}`
+      );
     }
   };
 
@@ -257,6 +269,12 @@ export default function SearchPage() {
           )}
         </S.SearchSection>
       </S.SearchInner>
+
+      <ReadingDateModal
+        isOpen={isDateModalOpen}
+        onClose={() => setIsDateModalOpen(false)}
+        onSubmit={handleDateSubmit}
+      />
     </S.SearchContainer>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import BackButton from "@/app/components/BackButton";
 import Button from "@/app/components/Button";
@@ -35,7 +35,10 @@ const fetchBookByISBN = async (isbn: string): Promise<Book> => {
 
 export default function WritePage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const isbn = params.isbn as string;
+  const startDate = searchParams.get("startDate");
+  const endDate = searchParams.get("endDate");
 
   const [review, setReview] = useState("");
   const [poemTitle, setPoemTitle] = useState("");
@@ -152,7 +155,17 @@ export default function WritePage() {
                 <S.ReadingPeriod>
                   읽은 날짜
                   <br />
-                  2024년 12월 09일 ~ 2025년 12월 09일
+                  {startDate && endDate
+                    ? `${new Date(startDate).toLocaleDateString("ko-KR", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })} ~ ${new Date(endDate).toLocaleDateString("ko-KR", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}`
+                    : "날짜 정보 없음"}
                 </S.ReadingPeriod>
               </S.BookDetails>
             </S.BookInfoCard>

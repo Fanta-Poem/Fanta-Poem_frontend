@@ -221,11 +221,25 @@ export const LikesSection = styled.div`
   flex: 1;
 `;
 
-export const LikeButton = styled.div`
+export const LikeButton = styled.button<{ isLiked: boolean }>`
   display: flex;
   gap: 8px;
   align-items: center;
   justify-content: flex-start;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(122, 25, 196, 0.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
 `;
 
 export const HeartIcon = styled.img`
@@ -233,11 +247,12 @@ export const HeartIcon = styled.img`
   height: 18px;
 `;
 
-export const LikeCount = styled.span`
+export const LikeCount = styled.span<{ isLiked: boolean }>`
   font-family: "IM_Hyemin", sans-serif;
   font-size: 13px;
   line-height: 15.6px;
-  color: #888888;
+  color: ${(props) => (props.isLiked ? "#b794f6" : "#888888")};
+  font-weight: ${(props) => (props.isLiked ? "bold" : "normal")};
   white-space: nowrap;
 `;
 

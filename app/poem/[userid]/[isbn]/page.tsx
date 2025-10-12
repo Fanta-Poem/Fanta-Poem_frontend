@@ -1,7 +1,9 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
 import BackButton from "@/app/components/BackButton";
 import * as S from "./style";
 import { Heart } from "lucide-react";
@@ -65,8 +67,26 @@ const fetchUser = async (userId: string): Promise<User> => {
   return result.data;
 };
 
+// 좋아요 정보 가져오기
+const fetchLikeInfo = async (
+  userId: string,
+  isbn: string
+): Promise<{ likeCount: number; isLiked: boolean }> => {
+  try {
+    const response = await fetch(`/api/poems/${userId}/${isbn}/likes`);
+    if (!response.ok) return { likeCount: 0, isLiked: false };
+    const result = await response.json();
+    return result.data;
+  } catch (error) {
+    console.error(`Failed to fetch likes:`, error);
+    return { likeCount: 0, isLiked: false };
+  }
+};
+
 export default function PoemDetailPage() {
   const params = useParams();
+  const queryClient = useQueryClient();
+  const { data: session } = useSession();
   const userid = params.userid as string;
   const rawIsbn = params.isbn as string;
 
@@ -106,7 +126,46 @@ export default function PoemDetailPage() {
     enabled: !!userid,
   });
 
-  if (poemLoading || bookLoading || userLoading) {
+  // 좋아요 정보 가져오기
+  const {
+    data: likeInfo,
+    isLoading: likeLoading,
+  } = useQuery({
+    queryKey: ["likes", userid, cleanIsbn],
+    queryFn: () => fetchLikeInfo(userid, cleanIsbn),
+    enabled: !!userid && !!cleanIsbn,
+  });
+
+  // 좋아요 버튼 클릭 핸들러
+  const handleLikeClick = async () => {
+    if (!session?.user?.id) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `/api/poems/${userid}/${cleanIsbn}/likes`,
+        {
+          method: "POST",
+        }
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        alert(error.error || "좋아요 처리 중 오류가 발생했습니다.");
+        return;
+      }
+
+      // 좋아요 정보 다시 가져오기
+      queryClient.invalidateQueries({ queryKey: ["likes", userid, cleanIsbn] });
+    } catch (error) {
+      console.error("좋아요 처리 오류:", error);
+      alert("좋아요 처리 중 오류가 발생했습니다.");
+    }
+  };
+
+  if (poemLoading || bookLoading || userLoading || likeLoading) {
     return (
       <S.PageContainer>
         <S.PageInner>
@@ -157,7 +216,8 @@ export default function PoemDetailPage() {
     readEndDate: formatDate(poem.end_date),
     trophies: poem.rating,
     status: poem.is_public ? "공개" : "비공개",
-    likes: 0, // TODO: 좋아요 기능 구현 시 추가
+    likes: likeInfo?.likeCount || 0,
+    isLiked: likeInfo?.isLiked || false,
     review: poem.review || "",
     poem: {
       title: poem.poem_title,
@@ -226,9 +286,19 @@ export default function PoemDetailPage() {
 
                     <S.LikesSection>
                       <S.SectionLabel>좋아요</S.SectionLabel>
-                      <S.LikeButton>
-                        <Heart size={18} color="#888888" />
-                        <S.LikeCount>{bookData.likes}</S.LikeCount>
+                      <S.LikeButton
+                        isLiked={bookData.isLiked}
+                        onClick={handleLikeClick}
+                      >
+                        <Heart
+                          size={18}
+                          fill={bookData.isLiked ? "#b794f6" : "none"}
+                          color={bookData.isLiked ? "#b794f6" : "#888888"}
+                          strokeWidth={2}
+                        />
+                        <S.LikeCount isLiked={bookData.isLiked}>
+                          {bookData.likes}
+                        </S.LikeCount>
                       </S.LikeButton>
                     </S.LikesSection>
                   </S.StatusLikesWrapper>

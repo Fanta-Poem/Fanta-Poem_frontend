@@ -151,3 +151,49 @@ export const DateText = styled.span`
   line-height: 1.4;
   color: #888888;
 `;
+
+export const LikeSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(122, 25, 196, 0.2);
+`;
+
+export const LikeButton = styled.button<{ isLiked: boolean }>`
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  transition: all 0.2s ease;
+  color: ${(props) => (props.isLiked ? "#b794f6" : "#888888")};
+  background: ${(props) =>
+    props.isLiked ? "rgba(122, 25, 196, 0.15)" : "rgba(255, 255, 255, 0.05)"};
+
+  &:hover {
+    background: rgba(122, 25, 196, 0.2);
+    color: #b794f6;
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  svg {
+    transition: all 0.2s ease;
+  }
+`;
+
+export const LikeCount = styled.span`
+  font-family: "IM_Hyemin", sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: ${(props: { isLiked: boolean }) =>
+    props.isLiked ? "bold" : "normal"};
+`;

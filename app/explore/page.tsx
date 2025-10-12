@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import BackButton from "../components/BackButton";
+import { Heart } from "lucide-react";
 import * as S from "./style";
 
 interface Poem {
@@ -35,6 +37,8 @@ interface User {
 interface PoemWithDetails extends Poem {
   book?: Book;
   user?: User;
+  likeCount?: number;
+  isLiked?: boolean;
 }
 
 // 공개된 시 목록 가져오기
@@ -78,8 +82,26 @@ const fetchUserInfo = async (userId: string): Promise<User | null> => {
   }
 };
 
+// 좋아요 정보 가져오기
+const fetchLikeInfo = async (
+  userId: string,
+  isbn: string
+): Promise<{ likeCount: number; isLiked: boolean }> => {
+  try {
+    const response = await fetch(`/api/poems/${userId}/${isbn}/likes`);
+    if (!response.ok) return { likeCount: 0, isLiked: false };
+    const result = await response.json();
+    return result.data;
+  } catch (error) {
+    console.error(`Failed to fetch likes for ${userId}/${isbn}:`, error);
+    return { likeCount: 0, isLiked: false };
+  }
+};
+
 export default function ExplorePage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const { data: session } = useSession();
   const [poemsWithDetails, setPoemsWithDetails] = useState<PoemWithDetails[]>(
     []
   );
@@ -90,7 +112,7 @@ export default function ExplorePage() {
     queryFn: fetchPublicPoems,
   });
 
-  // 시에 대한 책과 사용자 정보 가져오기
+  // 시에 대한 책, 사용자, 좋아요 정보 가져오기
   useEffect(() => {
     if (!poems || poems.length === 0) {
       setPoemsWithDetails([]);
@@ -99,15 +121,18 @@ export default function ExplorePage() {
 
     const fetchAllDetails = async () => {
       const poemsPromises = poems.map(async (poem) => {
-        const [book, user] = await Promise.all([
+        const [book, user, likeInfo] = await Promise.all([
           fetchBookInfo(poem.isbn),
           fetchUserInfo(poem.user_id),
+          fetchLikeInfo(poem.user_id, poem.isbn),
         ]);
 
         return {
           ...poem,
           book: book || undefined,
           user: user || undefined,
+          likeCount: likeInfo.likeCount,
+          isLiked: likeInfo.isLiked,
         };
       });
 
@@ -121,6 +146,53 @@ export default function ExplorePage() {
   const handlePoemClick = (poem: PoemWithDetails) => {
     const cleanIsbn = poem.isbn.split(" ")[0].split("%")[0].trim();
     router.push(`/poem/${poem.user_id}/${cleanIsbn}`);
+  };
+
+  const handleLikeClick = async (
+    e: React.MouseEvent,
+    poem: PoemWithDetails
+  ) => {
+    e.stopPropagation(); // 카드 클릭 이벤트 방지
+
+    if (!session?.user?.id) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
+    try {
+      const cleanIsbn = poem.isbn.split(" ")[0].split("%")[0].trim();
+      const response = await fetch(
+        `/api/poems/${poem.user_id}/${cleanIsbn}/likes`,
+        {
+          method: "POST",
+        }
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        alert(error.error || "좋아요 처리 중 오류가 발생했습니다.");
+        return;
+      }
+
+      // 좋아요 상태 업데이트
+      setPoemsWithDetails((prev) =>
+        prev.map((p) => {
+          if (p.isbn === poem.isbn && p.user_id === poem.user_id) {
+            return {
+              ...p,
+              isLiked: !p.isLiked,
+              likeCount: p.isLiked
+                ? (p.likeCount || 1) - 1
+                : (p.likeCount || 0) + 1,
+            };
+          }
+          return p;
+        })
+      );
+    } catch (error) {
+      console.error("좋아요 처리 오류:", error);
+      alert("좋아요 처리 중 오류가 발생했습니다.");
+    }
   };
 
   if (isLoading) {
@@ -176,6 +248,21 @@ export default function ExplorePage() {
                         {new Date(poem.created_at).toLocaleDateString("ko-KR")}
                       </S.DateText>
                     </S.PoemMeta>
+                    <S.LikeSection>
+                      <S.LikeButton
+                        isLiked={poem.isLiked || false}
+                        onClick={(e) => handleLikeClick(e, poem)}
+                      >
+                        <Heart
+                          size={18}
+                          fill={poem.isLiked ? "#b794f6" : "none"}
+                          strokeWidth={2}
+                        />
+                        <S.LikeCount isLiked={poem.isLiked || false}>
+                          {poem.likeCount || 0}
+                        </S.LikeCount>
+                      </S.LikeButton>
+                    </S.LikeSection>
                   </S.PoemInfo>
                 </S.PoemCard>
               ))}

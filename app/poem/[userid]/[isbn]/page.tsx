@@ -1,9 +1,8 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
 import BackButton from "@/app/components/BackButton";
 import * as S from "./style";
 import { Heart } from "lucide-react";
@@ -83,6 +82,21 @@ const fetchLikeInfo = async (
   }
 };
 
+// 좋아요 토글 API 호출
+const toggleLike = async (userId: string, isbn: string): Promise<{ isLiked: boolean }> => {
+  const response = await fetch(`/api/poems/${userId}/${isbn}/likes`, {
+    method: "POST",
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || "좋아요 처리 중 오류가 발생했습니다.");
+  }
+
+  const result = await response.json();
+  return { isLiked: result.isLiked };
+};
+
 export default function PoemDetailPage() {
   const params = useParams();
   const queryClient = useQueryClient();
@@ -136,33 +150,57 @@ export default function PoemDetailPage() {
     enabled: !!userid && !!cleanIsbn,
   });
 
+  // 좋아요 토글 mutation (Optimistic Updates)
+  const likeMutation = useMutation({
+    mutationFn: () => toggleLike(userid, cleanIsbn),
+    onMutate: async () => {
+      // 진행 중인 refetch 취소
+      await queryClient.cancelQueries({ queryKey: ["likes", userid, cleanIsbn] });
+
+      // 이전 상태 저장
+      const previousLikeInfo = queryClient.getQueryData<{ likeCount: number; isLiked: boolean }>([
+        "likes",
+        userid,
+        cleanIsbn,
+      ]);
+
+      // 낙관적 업데이트
+      if (previousLikeInfo) {
+        queryClient.setQueryData(["likes", userid, cleanIsbn], {
+          likeCount: previousLikeInfo.isLiked
+            ? Math.max(0, previousLikeInfo.likeCount - 1)
+            : previousLikeInfo.likeCount + 1,
+          isLiked: !previousLikeInfo.isLiked,
+        });
+      }
+
+      // 롤백을 위해 이전 상태 반환
+      return { previousLikeInfo };
+    },
+    onError: (error, _variables, context) => {
+      // 에러 발생 시 이전 상태로 롤백
+      if (context?.previousLikeInfo) {
+        queryClient.setQueryData(
+          ["likes", userid, cleanIsbn],
+          context.previousLikeInfo
+        );
+      }
+      alert(error instanceof Error ? error.message : "좋아요 처리 중 오류가 발생했습니다.");
+    },
+    onSettled: () => {
+      // 성공/실패와 관계없이 서버 데이터로 재동기화
+      queryClient.invalidateQueries({ queryKey: ["likes", userid, cleanIsbn] });
+    },
+  });
+
   // 좋아요 버튼 클릭 핸들러
-  const handleLikeClick = async () => {
+  const handleLikeClick = () => {
     if (!session?.user?.id) {
       alert("로그인이 필요합니다.");
       return;
     }
 
-    try {
-      const response = await fetch(
-        `/api/poems/${userid}/${cleanIsbn}/likes`,
-        {
-          method: "POST",
-        }
-      );
-
-      if (!response.ok) {
-        const error = await response.json();
-        alert(error.error || "좋아요 처리 중 오류가 발생했습니다.");
-        return;
-      }
-
-      // 좋아요 정보 다시 가져오기
-      queryClient.invalidateQueries({ queryKey: ["likes", userid, cleanIsbn] });
-    } catch (error) {
-      console.error("좋아요 처리 오류:", error);
-      alert("좋아요 처리 중 오류가 발생했습니다.");
-    }
+    likeMutation.mutate();
   };
 
   if (poemLoading || bookLoading || userLoading || likeLoading) {
@@ -289,6 +327,7 @@ export default function PoemDetailPage() {
                       <S.LikeButton
                         isLiked={bookData.isLiked}
                         onClick={handleLikeClick}
+                        disabled={likeMutation.isPending}
                       >
                         <Heart
                           size={18}

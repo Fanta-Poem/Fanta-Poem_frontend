@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import BackButton from "../components/BackButton";
 import { Heart } from "lucide-react";
@@ -98,6 +98,21 @@ const fetchLikeInfo = async (
   }
 };
 
+// 좋아요 토글 API 호출
+const toggleLike = async (userId: string, isbn: string): Promise<{ isLiked: boolean }> => {
+  const response = await fetch(`/api/poems/${userId}/${isbn}/likes`, {
+    method: "POST",
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || "좋아요 처리 중 오류가 발생했습니다.");
+  }
+
+  const result = await response.json();
+  return { isLiked: result.isLiked };
+};
+
 export default function ExplorePage() {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -143,15 +158,55 @@ export default function ExplorePage() {
     fetchAllDetails();
   }, [poems]);
 
+  // 좋아요 토글 mutation (Optimistic Updates)
+  const likeMutation = useMutation({
+    mutationFn: ({ userId, isbn }: { userId: string; isbn: string }) =>
+      toggleLike(userId, isbn),
+    onMutate: async ({ userId, isbn }) => {
+      // 진행 중인 refetch 취소
+      await queryClient.cancelQueries({ queryKey: ["publicPoems"] });
+
+      // 이전 상태 저장
+      const previousPoems = poemsWithDetails;
+
+      // 낙관적 업데이트
+      setPoemsWithDetails((prev) =>
+        prev.map((p) => {
+          if (p.isbn === isbn && p.user_id === userId) {
+            return {
+              ...p,
+              isLiked: !p.isLiked,
+              likeCount: p.isLiked
+                ? Math.max(0, (p.likeCount || 1) - 1)
+                : (p.likeCount || 0) + 1,
+            };
+          }
+          return p;
+        })
+      );
+
+      // 롤백을 위해 이전 상태 반환
+      return { previousPoems };
+    },
+    onError: (error, _variables, context) => {
+      // 에러 발생 시 이전 상태로 롤백
+      if (context?.previousPoems) {
+        setPoemsWithDetails(context.previousPoems);
+      }
+      alert(error instanceof Error ? error.message : "좋아요 처리 중 오류가 발생했습니다.");
+    },
+    onSettled: () => {
+      // 성공/실패와 관계없이 서버 데이터로 재동기화
+      queryClient.invalidateQueries({ queryKey: ["publicPoems"] });
+    },
+  });
+
   const handlePoemClick = (poem: PoemWithDetails) => {
     const cleanIsbn = poem.isbn.split(" ")[0].split("%")[0].trim();
     router.push(`/poem/${poem.user_id}/${cleanIsbn}`);
   };
 
-  const handleLikeClick = async (
-    e: React.MouseEvent,
-    poem: PoemWithDetails
-  ) => {
+  const handleLikeClick = (e: React.MouseEvent, poem: PoemWithDetails) => {
     e.stopPropagation(); // 카드 클릭 이벤트 방지
 
     if (!session?.user?.id) {
@@ -159,40 +214,11 @@ export default function ExplorePage() {
       return;
     }
 
-    try {
-      const cleanIsbn = poem.isbn.split(" ")[0].split("%")[0].trim();
-      const response = await fetch(
-        `/api/poems/${poem.user_id}/${cleanIsbn}/likes`,
-        {
-          method: "POST",
-        }
-      );
-
-      if (!response.ok) {
-        const error = await response.json();
-        alert(error.error || "좋아요 처리 중 오류가 발생했습니다.");
-        return;
-      }
-
-      // 좋아요 상태 업데이트
-      setPoemsWithDetails((prev) =>
-        prev.map((p) => {
-          if (p.isbn === poem.isbn && p.user_id === poem.user_id) {
-            return {
-              ...p,
-              isLiked: !p.isLiked,
-              likeCount: p.isLiked
-                ? (p.likeCount || 1) - 1
-                : (p.likeCount || 0) + 1,
-            };
-          }
-          return p;
-        })
-      );
-    } catch (error) {
-      console.error("좋아요 처리 오류:", error);
-      alert("좋아요 처리 중 오류가 발생했습니다.");
-    }
+    const cleanIsbn = poem.isbn.split(" ")[0].split("%")[0].trim();
+    likeMutation.mutate({
+      userId: poem.user_id,
+      isbn: cleanIsbn,
+    });
   };
 
   if (isLoading) {
@@ -252,6 +278,7 @@ export default function ExplorePage() {
                       <S.LikeButton
                         isLiked={poem.isLiked || false}
                         onClick={(e) => handleLikeClick(e, poem)}
+                        disabled={likeMutation.isPending}
                       >
                         <Heart
                           size={18}

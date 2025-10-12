@@ -233,12 +233,17 @@ export const LikeButton = styled.button<{ isLiked: boolean }>`
   border-radius: 8px;
   transition: all 0.2s ease;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: rgba(122, 25, 196, 0.1);
   }
 
-  &:active {
+  &:active:not(:disabled) {
     transform: scale(0.95);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 `;
 

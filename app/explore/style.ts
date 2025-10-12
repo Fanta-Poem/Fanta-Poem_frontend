@@ -175,14 +175,19 @@ export const LikeButton = styled.button<{ isLiked: boolean }>`
   background: ${(props) =>
     props.isLiked ? "rgba(122, 25, 196, 0.15)" : "rgba(255, 255, 255, 0.05)"};
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: rgba(122, 25, 196, 0.2);
     color: #b794f6;
     transform: scale(1.05);
   }
 
-  &:active {
+  &:active:not(:disabled) {
     transform: scale(0.95);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 
   svg {

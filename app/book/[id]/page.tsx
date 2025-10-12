@@ -8,6 +8,7 @@ import CommentCard from "@/app/components/CommentCard";
 import Dropdown from "@/app/components/Dropdown";
 import BookCard from "@/app/components/BookCard";
 import Button from "@/app/components/Button";
+import ReadingDateModal from "@/app/components/ReadingDateModal";
 import * as S from "./style";
 
 interface Book {
@@ -97,6 +98,8 @@ export default function BookDetailPage() {
   const router = useRouter();
   const identifier = params.id as string;
   const [sortBy, setSortBy] = useState("likes");
+  const [isDateModalOpen, setIsDateModalOpen] = useState(false);
+  const [selectedISBN, setSelectedISBN] = useState<string | null>(null);
 
   const {
     data: book,
@@ -172,7 +175,8 @@ export default function BookDetailPage() {
             onWriteClick={() => {
               const firstISBN = book.isbn?.split(" ")[0].trim();
               if (firstISBN && firstISBN.length >= 10) {
-                router.push(`/write/${firstISBN}`);
+                setSelectedISBN(firstISBN);
+                setIsDateModalOpen(true);
               }
             }}
           />
@@ -212,6 +216,16 @@ export default function BookDetailPage() {
           </S.LoadMoreButton>
         </S.PoetryCommentsContainer>
       </S.BookDetailInner>
+
+      <ReadingDateModal
+        isOpen={isDateModalOpen}
+        onClose={() => setIsDateModalOpen(false)}
+        onSubmit={(startDate: string, endDate: string) => {
+          if (selectedISBN) {
+            router.push(`/write/${selectedISBN}?startDate=${startDate}&endDate=${endDate}`);
+          }
+        }}
+      />
     </S.BookDetailContainer>
   );
 }

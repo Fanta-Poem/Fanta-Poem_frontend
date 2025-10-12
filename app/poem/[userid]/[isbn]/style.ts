@@ -84,7 +84,7 @@ export const BookTitle = styled.h1`
 
 export const AuthorInfo = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 6px;
   align-items: center;
   justify-content: flex-start;
   font-family: "IM_Hyemin", sans-serif;
@@ -108,7 +108,11 @@ export const Series = styled.p`
   color: #c7c7c7;
   margin: 0;
   text-align: start;
-  white-space: nowrap;
+  word-break: break-word;
+  white-space: normal;
+  width: 100%;
+  max-width: 380px;
+  overflow-wrap: break-word;
 `;
 
 export const PublishInfo = styled.div`

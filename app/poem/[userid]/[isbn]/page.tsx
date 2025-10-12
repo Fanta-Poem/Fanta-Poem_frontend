@@ -31,6 +31,11 @@ interface Book {
   datetime: string;
 }
 
+interface User {
+  id: string;
+  nickname: string;
+}
+
 // Poem 데이터 가져오기
 const fetchPoem = async (userid: string, isbn: string): Promise<Poem> => {
   const response = await fetch(`/api/poems/${userid}/${isbn}`);
@@ -48,6 +53,16 @@ const fetchBookInfo = async (isbn: string): Promise<Book> => {
     throw new Error("Failed to fetch book");
   }
   return response.json();
+};
+
+// 사용자 정보 가져오기
+const fetchUser = async (userId: string): Promise<User> => {
+  const response = await fetch(`/api/users/${userId}`);
+  if (!response.ok) {
+    throw new Error("Failed to fetch user");
+  }
+  const result = await response.json();
+  return result.data;
 };
 
 export default function PoemDetailPage() {
@@ -80,7 +95,18 @@ export default function PoemDetailPage() {
     enabled: !!cleanIsbn,
   });
 
-  if (poemLoading || bookLoading) {
+  // 사용자 정보 가져오기
+  const {
+    data: user,
+    isLoading: userLoading,
+    error: userError,
+  } = useQuery({
+    queryKey: ["user", userid],
+    queryFn: () => fetchUser(userid),
+    enabled: !!userid,
+  });
+
+  if (poemLoading || bookLoading || userLoading) {
     return (
       <S.PageContainer>
         <S.PageInner>
@@ -93,7 +119,7 @@ export default function PoemDetailPage() {
     );
   }
 
-  if (poemError || bookError || !poem || !book) {
+  if (poemError || bookError || userError || !poem || !book || !user) {
     return (
       <S.PageContainer>
         <S.PageInner>
@@ -135,7 +161,7 @@ export default function PoemDetailPage() {
     review: poem.review || "",
     poem: {
       title: poem.poem_title,
-      author: "", // TODO: 작성자 이름 추가 시
+      author: user.nickname,
       content: poem.poem_content,
     },
   };

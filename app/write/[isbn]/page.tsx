@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import BackButton from "@/app/components/BackButton";
 import Button from "@/app/components/Button";
 import TrophyModal from "@/app/components/TrophyModal";
@@ -23,6 +24,20 @@ interface Book {
   datetime: string;
 }
 
+interface Poem {
+  isbn: string;
+  user_id: string;
+  start_date: string;
+  end_date: string;
+  review: string | null;
+  poem_title: string;
+  poem_content: string;
+  rating: number;
+  is_public: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 const fetchBookByISBN = async (isbn: string): Promise<Book> => {
   const response = await fetch(`/api/books/${isbn}`);
 
@@ -33,6 +48,29 @@ const fetchBookByISBN = async (isbn: string): Promise<Book> => {
   return response.json();
 };
 
+const checkExistingPoem = async (
+  userId: string,
+  isbn: string
+): Promise<Poem | null> => {
+  try {
+    const response = await fetch(`/api/poems/${userId}/${isbn}`);
+
+    if (response.status === 404) {
+      return null; // 시가 없음
+    }
+
+    if (!response.ok) {
+      throw new Error("Failed to check existing poem");
+    }
+
+    const result = await response.json();
+    return result.data;
+  } catch (error) {
+    // 404 에러는 시가 없다는 의미이므로 null 반환
+    return null;
+  }
+};
+
 export default function WritePage() {
   const params = useParams();
   const searchParams = useSearchParams();
@@ -40,6 +78,8 @@ export default function WritePage() {
   const isbn = params.isbn as string;
   const startDate = searchParams.get("startDate");
   const endDate = searchParams.get("endDate");
+
+  const { data: session, status: sessionStatus } = useSession();
 
   const [review, setReview] = useState("");
   const [poemTitle, setPoemTitle] = useState("");
@@ -55,11 +95,36 @@ export default function WritePage() {
     isPublic: false,
   });
 
-  const { data: book, isLoading } = useQuery({
+  const { data: book, isLoading: isBookLoading } = useQuery({
     queryKey: ["book", isbn],
     queryFn: () => fetchBookByISBN(isbn),
     enabled: !!isbn,
   });
+
+  // 기존 시 확인
+  const {
+    data: existingPoem,
+    isLoading: isPoemCheckLoading,
+    error: poemCheckError,
+  } = useQuery({
+    queryKey: ["existingPoem", session?.user?.id, isbn],
+    queryFn: () => checkExistingPoem(session!.user!.id!, isbn),
+    enabled: !!session?.user?.id && !!isbn,
+  });
+
+  // 미인증 사용자 리다이렉트
+  useEffect(() => {
+    if (sessionStatus === "unauthenticated") {
+      router.replace("/login");
+    }
+  }, [sessionStatus, router]);
+
+  // 이미 시를 작성한 경우 리다이렉트 (replace 사용하여 히스토리 대체)
+  useEffect(() => {
+    if (existingPoem && session?.user?.id) {
+      router.replace(`/poem/${session.user.id}/${isbn}`);
+    }
+  }, [existingPoem, session, isbn, router]);
 
   const handlePoemChange = (text: string) => {
     const firstLineBreak = text.indexOf("\n");
@@ -149,12 +214,42 @@ export default function WritePage() {
     }
   };
 
-  if (isLoading) {
+  // 로딩 상태 체크 (세션, 책 정보, 기존 시 확인)
+  if (sessionStatus === "loading" || isBookLoading || isPoemCheckLoading) {
     return (
       <S.WriteContainer>
         <S.WriteInner>
           <BackButton />
           <S.LoadingMessage>로딩 중...</S.LoadingMessage>
+        </S.WriteInner>
+      </S.WriteContainer>
+    );
+  }
+
+  // 인증되지 않은 경우
+  if (sessionStatus === "unauthenticated" || !session?.user?.id) {
+    return (
+      <S.WriteContainer>
+        <S.WriteInner>
+          <BackButton />
+          <S.ErrorMessage>
+            로그인이 필요합니다. 로그인 페이지로 이동합니다.
+          </S.ErrorMessage>
+        </S.WriteInner>
+      </S.WriteContainer>
+    );
+  }
+
+  // 이미 시를 작성한 경우 (리다이렉트 전 임시 메시지)
+  if (existingPoem) {
+    return (
+      <S.WriteContainer>
+        <S.WriteInner>
+          <BackButton />
+          <S.LoadingMessage>
+            이미 이 책에 대한 시를 작성하셨습니다. 작성한 시 페이지로
+            이동합니다...
+          </S.LoadingMessage>
         </S.WriteInner>
       </S.WriteContainer>
     );

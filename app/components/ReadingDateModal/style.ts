@@ -142,6 +142,33 @@ export const DateInput = styled.input`
   }
 `;
 
+export const ReadingPeriodInfo = styled.div`
+  margin-top: 4px;
+  padding: 16px;
+  background: rgba(122, 25, 196, 0.1);
+  border-radius: 12px;
+  border: 1px solid rgba(122, 25, 196, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+`;
+
+export const DateRangeText = styled.div`
+  font-family: "IM_Hyemin", sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 19.2px;
+  color: white;
+`;
+
+export const DurationText = styled.div`
+  font-family: "IM_Hyemin", sans-serif;
+  font-size: 14px;
+  line-height: 16.8px;
+  color: #b794f6;
+`;
+
 export const ActionButtons = styled.div`
   display: flex;
   flex-direction: column;

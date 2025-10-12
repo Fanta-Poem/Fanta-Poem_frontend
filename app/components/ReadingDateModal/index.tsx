@@ -110,6 +110,14 @@ export default function ReadingDateModal({
   const endISO = parseToISODate(endDateInput);
   const isValid = startISO && endISO && startISO <= endISO;
 
+  const calculateDaysDifference = (start: string, end: string): number => {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
   return (
     <S.Overlay>
       <S.ModalContainer>
@@ -145,6 +153,18 @@ export default function ReadingDateModal({
               maxLength={10}
             />
           </S.DateInputGroup>
+
+          {isValid && startISO && endISO && (
+            <S.ReadingPeriodInfo>
+              <S.DateRangeText>
+                {startDateInput} ~ {endDateInput}
+              </S.DateRangeText>
+              <S.DurationText>
+                총 {calculateDaysDifference(startISO, endISO)}일 동안의
+                여정이였군요!
+              </S.DurationText>
+            </S.ReadingPeriodInfo>
+          )}
         </S.DateSection>
 
         <S.ActionButtons>

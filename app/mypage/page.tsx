@@ -174,14 +174,19 @@ export default function MyPage() {
                 </div>
               ) : (
                 <>
-                  {filteredReadBooks.map((bookWithPoem) => (
-                    <S.BookItem
-                      key={bookWithPoem.isbn}
-                      onClick={() =>
-                        router.push(`/book/${bookWithPoem.isbn}`)
-                      }
-                      style={{ cursor: "pointer" }}
-                    >
+                  {filteredReadBooks.map((bookWithPoem) => {
+                    // ISBN에서 % 이후 부분 제거
+                    const cleanIsbn = bookWithPoem.isbn.split('%')[0].trim();
+                    return (
+                      <S.BookItem
+                        key={bookWithPoem.isbn}
+                        onClick={() =>
+                          router.push(
+                            `/poem/${bookWithPoem.poem.user_id}/${cleanIsbn}`
+                          )
+                        }
+                        style={{ cursor: "pointer" }}
+                      >
                       <S.BookThumbnail
                         src={bookWithPoem.thumbnail || "/book-sample.svg"}
                         alt={bookWithPoem.title}
@@ -196,7 +201,8 @@ export default function MyPage() {
                         </S.BookAuthor>
                       </S.BookInfo>
                     </S.BookItem>
-                  ))}
+                    );
+                  })}
                   <S.AddBookItem onClick={() => router.push("/search")}>
                     <S.AddBookPlaceholder>+</S.AddBookPlaceholder>
                   </S.AddBookItem>

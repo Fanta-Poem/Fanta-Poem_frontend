@@ -10,6 +10,7 @@ import { signOut } from "next-auth/react";
 const scrollImg = "/3d/scroll.svg";
 const castleImg = "/3d/castle.svg";
 const logoutImg = "/3d/logout.svg";
+const butterflyImg = "/3d/butterfly.svg";
 
 const menuData = [
   {
@@ -34,7 +35,7 @@ const menuData = [
     id: 3,
     title: "탐색",
     slug: "explore",
-    image: scrollImg,
+    image: butterflyImg,
     description:
       "다른 탐험가들의 시를 감상할 수 있습니다.<br />공유 중인 시들을 둘러보고 다양한 감상을 만나보세요.<br />같은 이야기에 대한 서로 다른 해석이 기다리고 있습니다.",
     link: "/explore",

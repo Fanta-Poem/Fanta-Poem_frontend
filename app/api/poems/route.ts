@@ -114,6 +114,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // 시 저장 성공 시 읽는 중인 책 목록에서 제거
+    const { error: deleteError } = await supabaseAdmin
+      .from("reading_books")
+      .delete()
+      .eq("isbn", isbn)
+      .eq("user_id", userId);
+
+    if (deleteError) {
+      console.error("Reading books delete error:", deleteError);
+      // 삭제 실패해도 시 저장은 성공했으므로 경고만 로그
+    }
+
     return NextResponse.json({
       success: true,
       message: "시가 저장되었습니다",

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import BackButton from "@/app/components/BackButton";
 import Button from "@/app/components/Button";
@@ -75,6 +75,7 @@ export default function WritePage() {
   const params = useParams();
   const searchParams = useSearchParams();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const isbn = params.isbn as string;
   const startDate = searchParams.get("startDate");
   const endDate = searchParams.get("endDate");
@@ -199,6 +200,10 @@ export default function WritePage() {
       if (!response.ok) {
         throw new Error(data.error || "시 저장에 실패했습니다");
       }
+
+      // React Query 캐시 무효화 - 읽는 중인 책 목록과 읽은 책 목록 새로고침
+      queryClient.invalidateQueries({ queryKey: ["readingBooks"] });
+      queryClient.invalidateQueries({ queryKey: ["userPoems"] });
 
       // 성공 시 마이페이지나 책 상세 페이지로 이동
       // alert(data.message || "시가 성공적으로 저장되었습니다!");

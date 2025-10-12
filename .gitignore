@@ -43,3 +43,5 @@ next-env.d.ts
 # LLM agent
 CLAUDE.md
 GEMINI.md
+
+/supabase

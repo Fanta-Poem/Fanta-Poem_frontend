@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import BackButton from "@/app/components/BackButton";
 import Button from "@/app/components/Button";
@@ -36,6 +36,7 @@ const fetchBookByISBN = async (isbn: string): Promise<Book> => {
 export default function WritePage() {
   const params = useParams();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const isbn = params.isbn as string;
   const startDate = searchParams.get("startDate");
   const endDate = searchParams.get("endDate");
@@ -45,6 +46,7 @@ export default function WritePage() {
   const [poemContent, setPoemContent] = useState("");
   const [isTrophyModalOpen, setIsTrophyModalOpen] = useState(false);
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [publishSettings, setPublishSettings] = useState<{
     trophyRating: number;
     isPublic: boolean;
@@ -94,18 +96,57 @@ export default function WritePage() {
     setIsPublishModalOpen(true);
   };
 
-  const handlePublishSubmit = (isPublic: boolean) => {
+  const handlePublishSubmit = async (isPublic: boolean) => {
     const finalSettings = {
       ...publishSettings,
       isPublic,
     };
     setPublishSettings(finalSettings);
 
-    console.log("Review:", review);
-    console.log("Poem Title:", poemTitle);
-    console.log("Poem Content:", poemContent);
-    console.log("Publish Settings:", finalSettings);
-    // TODO: API 호출하여 저장
+    // 날짜 정보가 없으면 저장하지 않음
+    if (!startDate || !endDate) {
+      // alert("독서 날짜 정보가 없습니다.");
+      return;
+    }
+
+    setIsSaving(true);
+
+    try {
+      const response = await fetch("/api/poems", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          isbn,
+          startDate,
+          endDate,
+          review: review.trim() || null,
+          poemTitle: poemTitle.trim(),
+          poemContent: poemContent.trim(),
+          rating: finalSettings.trophyRating,
+          isPublic: finalSettings.isPublic,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "시 저장에 실패했습니다");
+      }
+
+      // 성공 시 마이페이지나 책 상세 페이지로 이동
+      // alert(data.message || "시가 성공적으로 저장되었습니다!");
+      router.push(`/book/${isbn}`);
+    } catch (error) {
+      // console.error("시 저장 오류:", error);
+      // alert(
+      //   error instanceof Error ? error.message : "시 저장 중 오류가 발생했습니다"
+      // );
+    } finally {
+      setIsSaving(false);
+      setIsPublishModalOpen(false);
+    }
   };
 
   if (isLoading) {
@@ -197,8 +238,11 @@ export default function WritePage() {
               />
             </S.PoemContainer>
             <S.ButtonWrapper>
-              <Button onClick={handleSubmit} disabled={!isPoemValid}>
-                작성완료
+              <Button
+                onClick={handleSubmit}
+                disabled={!isPoemValid || isSaving}
+              >
+                {isSaving ? "저장 중..." : "작성완료"}
               </Button>
             </S.ButtonWrapper>
           </S.RightSection>

@@ -289,7 +289,7 @@ export const PoemSectionTitle = styled.h2`
 export const PoemCard = styled.div`
   border: 1px solid #7a19c4;
   border-radius: 10px;
-  height: 864px;
+  min-height: 400px;
   background: radial-gradient(
     ellipse at center,
     rgba(75, 27, 112, 1) 0%,
@@ -300,7 +300,6 @@ export const PoemCard = styled.div`
   padding: 39px 60px 70px 100px;
   display: flex;
   justify-content: center;
-  overflow: hidden;
 `;
 
 export const PoemContentWrapper = styled.div`
@@ -309,13 +308,12 @@ export const PoemContentWrapper = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 100%;
   position: relative;
 `;
 
 export const PoemHeader = styled.div`
   width: 100%;
-  margin-bottom: 100px;
+  margin-bottom: 40px;
   position: relative;
   display: flex;
   flex-direction: column;

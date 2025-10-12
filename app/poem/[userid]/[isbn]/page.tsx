@@ -256,9 +256,19 @@ export default function PoemDetailPage() {
                   )}
                 </S.PoemHeader>
                 <S.PoemTextWrapper>
-                  {bookData.poem.content.split("\n").map((line, index) => (
-                    <S.PoemLine key={index}>{line || "\u00A0"}</S.PoemLine>
-                  ))}
+                  {bookData.poem.content
+                    .split("\n")
+                    .reduce((acc: string[], line) => {
+                      // 빈 줄이고 이전 줄도 빈 줄이었다면 건너뛰기
+                      if (line.trim() === "" && acc.length > 0 && acc[acc.length - 1] === "") {
+                        return acc;
+                      }
+                      acc.push(line);
+                      return acc;
+                    }, [])
+                    .map((line, index) => (
+                      <S.PoemLine key={index}>{line || "\u00A0"}</S.PoemLine>
+                    ))}
                 </S.PoemTextWrapper>
               </S.PoemContentWrapper>
             </S.PoemCard>

@@ -12,6 +12,7 @@ interface CommentCardProps {
   poemQuote: string;
   likeCount: number;
   isLiked?: boolean;
+  onClick?: () => void;
 }
 
 export default function CommentCard({
@@ -22,9 +23,10 @@ export default function CommentCard({
   poemQuote,
   likeCount,
   isLiked = false,
+  onClick,
 }: CommentCardProps) {
   return (
-    <S.CommentCard>
+    <S.CommentCard onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default' }}>
       <S.UserInfoLeft>
         <S.UserDetails>
           <S.Username>{username}</S.Username>

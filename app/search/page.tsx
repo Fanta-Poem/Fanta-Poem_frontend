@@ -209,6 +209,9 @@ export default function SearchPage() {
         throw new Error(data.error || "읽는 중인 책 등록에 실패했습니다");
       }
 
+      // React Query 캐시 무효화 - 읽는 중인 책 목록 새로고침
+      queryClient.invalidateQueries({ queryKey: ["readingBooks"] });
+
       // 성공 시 마이페이지로 이동
       router.push("/mypage");
     } catch (error) {

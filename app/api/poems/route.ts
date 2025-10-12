@@ -2,6 +2,48 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { supabaseAdmin } from "@/app/lib/supabase";
 
+export async function GET(request: NextRequest) {
+  try {
+    // 인증 확인
+    const session = await auth();
+    if (!session || !session.user) {
+      return NextResponse.json(
+        { error: "인증이 필요합니다" },
+        { status: 401 }
+      );
+    }
+
+    const userId = session.user.id;
+
+    // 사용자의 모든 시 가져오기 (최신순)
+    const { data: poems, error } = await supabaseAdmin
+      .from("poems")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Supabase select error:", error);
+      return NextResponse.json(
+        { error: "시 목록을 불러오는 중 오류가 발생했습니다: " + error.message },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: poems || [],
+      count: poems?.length || 0,
+    });
+  } catch (error) {
+    console.error("시 목록 조회 오류:", error);
+    return NextResponse.json(
+      { error: "시 목록을 불러오는 중 오류가 발생했습니다" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     // 인증 확인

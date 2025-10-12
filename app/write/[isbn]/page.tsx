@@ -137,7 +137,7 @@ export default function WritePage() {
 
       // 성공 시 마이페이지나 책 상세 페이지로 이동
       // alert(data.message || "시가 성공적으로 저장되었습니다!");
-      router.push(`/book/${isbn}`);
+      router.push(`/mypage`);
     } catch (error) {
       // console.error("시 저장 오류:", error);
       // alert(

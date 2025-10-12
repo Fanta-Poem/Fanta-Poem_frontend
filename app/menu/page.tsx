@@ -35,7 +35,8 @@ const menuData = [
     title: "탐색",
     slug: "explore",
     image: scrollImg,
-    description: "탐색 페이지 설명입니다.",
+    description:
+      "다른 탐험가들의 시를 감상할 수 있습니다.<br />공유 중인 시들을 둘러보고 다양한 감상을 만나보세요.<br />같은 이야기에 대한 서로 다른 해석이 기다리고 있습니다.",
     link: "/explore",
   },
   {

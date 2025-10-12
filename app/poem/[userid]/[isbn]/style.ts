@@ -37,6 +37,8 @@ export const BookSection = styled.div`
   display: flex;
   gap: 24px;
   align-items: flex-start;
+  width: 100%;
+  max-width: 652px;
 `;
 
 export const BookCover = styled.img`
@@ -52,13 +54,17 @@ export const BookInfoWrapper = styled.div`
   align-items: flex-start;
   justify-content: space-between;
   height: 342px;
-  width: 401px;
+  width: 380px;
+  min-width: 0;
+  flex-shrink: 1;
 `;
 
 export const BookMetaSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: 100%;
+  max-width: 380px;
 `;
 
 export const BookTitle = styled.h1`
@@ -68,8 +74,12 @@ export const BookTitle = styled.h1`
   line-height: 1.6;
   color: #fafafa;
   margin: 0;
-  text-align: center;
-  white-space: nowrap;
+  text-align: start;
+  word-break: break-word;
+  white-space: normal;
+  width: 100%;
+  max-width: 380px;
+  overflow-wrap: break-word;
 `;
 
 export const AuthorInfo = styled.div`

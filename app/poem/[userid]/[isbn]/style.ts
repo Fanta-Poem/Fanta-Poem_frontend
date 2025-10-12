@@ -297,9 +297,10 @@ export const PoemCard = styled.div`
     rgba(34, 22, 43, 1) 75%,
     rgba(20, 20, 20, 1) 100%
   );
-  padding: 39px 60px 70px 100px;
+  padding: 39px 80px 70px 80px;
   display: flex;
   justify-content: center;
+  align-items: center;
 `;
 
 export const PoemContentWrapper = styled.div`

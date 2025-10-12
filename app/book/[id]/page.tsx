@@ -131,7 +131,6 @@ export default function BookDetailPage() {
   const [sortBy, setSortBy] = useState("latest");
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
   const [selectedISBN, setSelectedISBN] = useState<string | null>(null);
-  const [poemsWithDetails, setPoemsWithDetails] = useState<PoemWithUser[]>([]);
 
   const {
     data: book,
@@ -156,14 +155,17 @@ export default function BookDetailPage() {
     enabled: !!book?.isbn,
   });
 
-  // 시에 대한 사용자 및 좋아요 정보 가져오기
-  useEffect(() => {
-    if (!poems || poems.length === 0) {
-      setPoemsWithDetails([]);
-      return;
-    }
+  // 시에 대한 사용자 및 좋아요 정보 가져오기 (TanStack Query로 캐싱)
+  const {
+    data: poemsWithDetails = [],
+    isLoading: detailsLoading,
+  } = useQuery({
+    queryKey: ["poemsWithDetails", poems?.map(p => `${p.user_id}-${p.isbn}`).join(",")],
+    queryFn: async () => {
+      if (!poems || poems.length === 0) {
+        return [];
+      }
 
-    const fetchAllDetails = async () => {
       const poemsPromises = poems.map(async (poem) => {
         const [user, likeInfo] = await Promise.all([
           fetchUserInfo(poem.user_id),
@@ -178,12 +180,11 @@ export default function BookDetailPage() {
         };
       });
 
-      const results = await Promise.all(poemsPromises);
-      setPoemsWithDetails(results);
-    };
-
-    fetchAllDetails();
-  }, [poems]);
+      return await Promise.all(poemsPromises);
+    },
+    enabled: !!poems && poems.length > 0,
+    staleTime: 1000 * 60 * 2, // 2분간 캐시 유지
+  });
 
   // 정렬 로직
   const sortedPoems = [...poemsWithDetails].sort((a, b) => {
@@ -305,7 +306,7 @@ export default function BookDetailPage() {
           </S.CommentsHeader>
 
           <S.CommentsList>
-            {poemsLoading ? (
+            {poemsLoading || detailsLoading ? (
               <div
                 style={{ textAlign: "center", padding: "2rem", color: "#888" }}
               >

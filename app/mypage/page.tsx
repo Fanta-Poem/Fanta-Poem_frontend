@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 import BackButton from "../components/BackButton";
 import SearchBar from "../components/SearchBar";
+import ReadingBookActionModal from "../components/ReadingBookActionModal";
 import * as S from "./style";
 
 interface Poem {
@@ -90,6 +91,9 @@ export default function MyPage() {
   const [booksWithReading, setBooksWithReading] = useState<BookWithReading[]>(
     []
   );
+  const [isActionModalOpen, setIsActionModalOpen] = useState(false);
+  const [selectedReadingBook, setSelectedReadingBook] =
+    useState<BookWithReading | null>(null);
 
   const userName = session?.user?.name || "사용자";
 
@@ -161,6 +165,38 @@ export default function MyPage() {
     // MyPage에서는 검색어로 필터링만 수행 (페이지 이동 없음)
   };
 
+  const handleReadingBookClick = (book: BookWithReading) => {
+    setSelectedReadingBook(book);
+    setIsActionModalOpen(true);
+  };
+
+  const handleViewDetail = () => {
+    if (selectedReadingBook) {
+      const cleanIsbn = selectedReadingBook.isbn
+        .split(" ")[0]
+        .split("%")[0]
+        .trim();
+      console.log(cleanIsbn);
+      router.push(`/book/${cleanIsbn}`);
+      setIsActionModalOpen(false);
+    }
+  };
+
+  const handleWritePoem = () => {
+    if (selectedReadingBook) {
+      const cleanIsbn = selectedReadingBook.isbn
+        .split(" ")[0]
+        .split("%")[0]
+        .trim();
+      const startDate = selectedReadingBook.reading.start_date;
+      const today = new Date().toISOString().split("T")[0];
+      router.push(
+        `/write/${cleanIsbn}?startDate=${startDate}&endDate=${today}`
+      );
+      setIsActionModalOpen(false);
+    }
+  };
+
   // 검색어로 책 필터링
   const filterBooks = (books: BookWithPoem[]) => {
     if (!searchQuery.trim()) return books;
@@ -183,9 +219,7 @@ export default function MyPage() {
       <S.MyPageContainer>
         <S.MyPageInner>
           <BackButton />
-          <div style={{ textAlign: "center", padding: "2rem" }}>
-            로딩 중...
-          </div>
+          <div style={{ textAlign: "center", padding: "2rem" }}>로딩 중...</div>
         </S.MyPageInner>
       </S.MyPageContainer>
     );
@@ -234,13 +268,10 @@ export default function MyPage() {
               ) : (
                 <>
                   {filteredReadingBooks.map((bookWithReading) => {
-                    const cleanIsbn = bookWithReading.isbn.split("%")[0].trim();
                     return (
                       <S.BookItem
                         key={bookWithReading.isbn}
-                        onClick={() =>
-                          router.push(`/book/${cleanIsbn}`)
-                        }
+                        onClick={() => handleReadingBookClick(bookWithReading)}
                         style={{ cursor: "pointer" }}
                       >
                         <S.BookThumbnail
@@ -289,7 +320,7 @@ export default function MyPage() {
                 <>
                   {filteredReadBooks.map((bookWithPoem) => {
                     // ISBN에서 % 이후 부분 제거
-                    const cleanIsbn = bookWithPoem.isbn.split('%')[0].trim();
+                    const cleanIsbn = bookWithPoem.isbn.split("%")[0].trim();
                     return (
                       <S.BookItem
                         key={bookWithPoem.isbn}
@@ -300,20 +331,20 @@ export default function MyPage() {
                         }
                         style={{ cursor: "pointer" }}
                       >
-                      <S.BookThumbnail
-                        src={bookWithPoem.thumbnail || "/book-sample.svg"}
-                        alt={bookWithPoem.title}
-                        onError={(e) => {
-                          e.currentTarget.src = "/book-sample.svg";
-                        }}
-                      />
-                      <S.BookInfo>
-                        <S.BookTitle>{bookWithPoem.title}</S.BookTitle>
-                        <S.BookAuthor>
-                          {bookWithPoem.authors.join(", ")}
-                        </S.BookAuthor>
-                      </S.BookInfo>
-                    </S.BookItem>
+                        <S.BookThumbnail
+                          src={bookWithPoem.thumbnail || "/book-sample.svg"}
+                          alt={bookWithPoem.title}
+                          onError={(e) => {
+                            e.currentTarget.src = "/book-sample.svg";
+                          }}
+                        />
+                        <S.BookInfo>
+                          <S.BookTitle>{bookWithPoem.title}</S.BookTitle>
+                          <S.BookAuthor>
+                            {bookWithPoem.authors.join(", ")}
+                          </S.BookAuthor>
+                        </S.BookInfo>
+                      </S.BookItem>
                     );
                   })}
                   <S.AddBookItem onClick={() => router.push("/search")}>
@@ -325,6 +356,14 @@ export default function MyPage() {
           </S.BookCategory>
         </S.BooksSection>
       </S.MyPageInner>
+
+      <ReadingBookActionModal
+        isOpen={isActionModalOpen}
+        onClose={() => setIsActionModalOpen(false)}
+        onViewDetail={handleViewDetail}
+        onWritePoem={handleWritePoem}
+        bookTitle={selectedReadingBook?.title || ""}
+      />
     </S.MyPageContainer>
   );
 }

@@ -99,7 +99,10 @@ const fetchLikeInfo = async (
 };
 
 // 좋아요 토글 API 호출
-const toggleLike = async (userId: string, isbn: string): Promise<{ isLiked: boolean }> => {
+const toggleLike = async (
+  userId: string,
+  isbn: string
+): Promise<{ isLiked: boolean }> => {
   const response = await fetch(`/api/poems/${userId}/${isbn}/likes`, {
     method: "POST",
   });
@@ -120,6 +123,7 @@ export default function ExplorePage() {
   const [poemsWithDetails, setPoemsWithDetails] = useState<PoemWithDetails[]>(
     []
   );
+  const [isLoadingDetails, setIsLoadingDetails] = useState(false);
 
   // 공개된 시 목록 가져오기
   const { data: poems, isLoading } = useQuery({
@@ -131,10 +135,12 @@ export default function ExplorePage() {
   useEffect(() => {
     if (!poems || poems.length === 0) {
       setPoemsWithDetails([]);
+      setIsLoadingDetails(false);
       return;
     }
 
     const fetchAllDetails = async () => {
+      setIsLoadingDetails(true);
       const poemsPromises = poems.map(async (poem) => {
         const [book, user, likeInfo] = await Promise.all([
           fetchBookInfo(poem.isbn),
@@ -153,6 +159,7 @@ export default function ExplorePage() {
 
       const results = await Promise.all(poemsPromises);
       setPoemsWithDetails(results);
+      setIsLoadingDetails(false);
     };
 
     fetchAllDetails();
@@ -193,7 +200,11 @@ export default function ExplorePage() {
       if (context?.previousPoems) {
         setPoemsWithDetails(context.previousPoems);
       }
-      alert(error instanceof Error ? error.message : "좋아요 처리 중 오류가 발생했습니다.");
+      alert(
+        error instanceof Error
+          ? error.message
+          : "좋아요 처리 중 오류가 발생했습니다."
+      );
     },
     onSettled: () => {
       // 성공/실패와 관계없이 서버 데이터로 재동기화
@@ -221,17 +232,6 @@ export default function ExplorePage() {
     });
   };
 
-  if (isLoading) {
-    return (
-      <S.ExploreContainer>
-        <S.ExploreInner>
-          <BackButton />
-          <S.LoadingMessage>로딩 중...</S.LoadingMessage>
-        </S.ExploreInner>
-      </S.ExploreContainer>
-    );
-  }
-
   return (
     <S.ExploreContainer>
       <S.ExploreInner>
@@ -243,9 +243,25 @@ export default function ExplorePage() {
         </S.HeaderSection>
 
         <S.PoemsSection>
-          {poemsWithDetails.length === 0 ? (
+          {isLoading || isLoadingDetails ? (
+            // 로딩 중: 스켈레톤 UI 표시
+            <S.PoemGrid>
+              {[...Array(8)].map((_, index) => (
+                <S.SkeletonCard key={index}>
+                  <S.SkeletonImage />
+                  <S.SkeletonInfo>
+                    <S.SkeletonText height="24px" width="80%" />
+                    <S.SkeletonText height="16px" width="60%" />
+                    <S.SkeletonText height="14px" width="40%" />
+                  </S.SkeletonInfo>
+                </S.SkeletonCard>
+              ))}
+            </S.PoemGrid>
+          ) : poemsWithDetails.length === 0 ? (
+            // 데이터 없음
             <S.EmptyMessage>아직 공유된 시가 없습니다.</S.EmptyMessage>
           ) : (
+            // 데이터 로드 완료
             <S.PoemGrid>
               {poemsWithDetails.map((poem) => (
                 <S.PoemCard
@@ -263,9 +279,7 @@ export default function ExplorePage() {
                   )}
                   <S.PoemInfo>
                     <S.PoemTitle>{poem.poem_title}</S.PoemTitle>
-                    {poem.book && (
-                      <S.BookTitle>{poem.book.title}</S.BookTitle>
-                    )}
+                    {poem.book && <S.BookTitle>{poem.book.title}</S.BookTitle>}
                     <S.PoemMeta>
                       <S.AuthorName>
                         {poem.user?.nickname || "익명"}

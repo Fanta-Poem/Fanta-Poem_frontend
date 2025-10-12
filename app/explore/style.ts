@@ -202,3 +202,71 @@ export const LikeCount = styled.span`
   font-weight: ${(props: { isLiked: boolean }) =>
     props.isLiked ? "bold" : "normal"};
 `;
+
+// Skeleton UI
+export const SkeletonCard = styled.div`
+  background: linear-gradient(
+    145deg,
+    rgba(20, 20, 20, 0.9) 0%,
+    rgba(28, 28, 28, 0.8) 50%,
+    rgba(40, 40, 40, 0.4) 100%
+  );
+  border: 1px solid rgba(122, 25, 196, 0.3);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;
+
+export const SkeletonImage = styled.div`
+  width: 100%;
+  height: 320px;
+  border-radius: 12px;
+  background: linear-gradient(
+    90deg,
+    rgba(40, 40, 40, 0.4) 0%,
+    rgba(60, 60, 60, 0.6) 50%,
+    rgba(40, 40, 40, 0.4) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+`;
+
+export const SkeletonText = styled.div<{ width?: string; height?: string }>`
+  width: ${(props) => props.width || "100%"};
+  height: ${(props) => props.height || "16px"};
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    rgba(40, 40, 40, 0.4) 0%,
+    rgba(60, 60, 60, 0.6) 50%,
+    rgba(40, 40, 40, 0.4) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+`;
+
+export const SkeletonInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;

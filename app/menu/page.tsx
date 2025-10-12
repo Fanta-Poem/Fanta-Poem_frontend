@@ -46,7 +46,7 @@ const menuData = [
     slug: "logout",
     image: logoutImg,
     description:
-      "로그아웃하고 처음 화면으로 돌아갑니다.<br />다음에 다시 만나요, 탐험가님!",
+      "로그아웃하고 처음 화면으로 돌아갑니다.<br />모험은 많은 피로를 동원하죠.<br />다음에 다시 만나요, 탐험가님!",
     link: "/logout",
   },
 ];

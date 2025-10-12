@@ -10,6 +10,8 @@ import SearchBar from "../components/SearchBar";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import LoadingNotFound from "./LoadingNotFound";
 import ReadingDateModal from "../components/ReadingDateModal";
+import StartDateModal from "../components/StartDateModal";
+import { useSession } from "next-auth/react";
 
 interface Book {
   isbn: string;
@@ -61,6 +63,7 @@ export default function SearchPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
+  const { data: session } = useSession();
 
   // URL에서 초기 값 읽기
   const [searchQuery, setSearchQuery] = useState(
@@ -72,6 +75,7 @@ export default function SearchPage() {
   );
   const [sortBy, setSortBy] = useState(searchParams.get("sort") || "accuracy");
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
+  const [isStartDateModalOpen, setIsStartDateModalOpen] = useState(false);
   const [selectedISBN, setSelectedISBN] = useState<string>("");
 
   const { data, isLoading } = useQuery({
@@ -168,6 +172,55 @@ export default function SearchPage() {
     }
   };
 
+  const handleReadingClick = (isbn: string) => {
+    // 로그인 체크
+    if (!session?.user?.id) {
+      router.push("/login");
+      return;
+    }
+
+    const firstISBN = isbn.split(" ")[0].trim();
+    if (firstISBN && firstISBN.length >= 10) {
+      setSelectedISBN(firstISBN);
+      setIsStartDateModalOpen(true);
+    }
+  };
+
+  const handleStartDateSubmit = async (startDate: string) => {
+    if (!selectedISBN || !session?.user?.id) {
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/reading-books", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          isbn: selectedISBN,
+          startDate,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "읽는 중인 책 등록에 실패했습니다");
+      }
+
+      // 성공 시 마이페이지로 이동
+      router.push("/mypage");
+    } catch (error) {
+      console.error("읽는 중인 책 등록 오류:", error);
+      alert(
+        error instanceof Error
+          ? error.message
+          : "읽는 중인 책 등록 중 오류가 발생했습니다"
+      );
+    }
+  };
+
   return (
     <S.SearchContainer>
       <S.SearchInner>
@@ -228,6 +281,7 @@ export default function SearchPage() {
                           isbn={book.isbn}
                           onClick={() => handleBookClick(book)}
                           onWriteClick={() => isISBNValid && handleWriteClick(book.isbn)}
+                          onReadingClick={() => isISBNValid && handleReadingClick(book.isbn)}
                         />
                       );
                     })}
@@ -274,6 +328,12 @@ export default function SearchPage() {
         isOpen={isDateModalOpen}
         onClose={() => setIsDateModalOpen(false)}
         onSubmit={handleDateSubmit}
+      />
+
+      <StartDateModal
+        isOpen={isStartDateModalOpen}
+        onClose={() => setIsStartDateModalOpen(false)}
+        onSubmit={handleStartDateSubmit}
       />
     </S.SearchContainer>
   );

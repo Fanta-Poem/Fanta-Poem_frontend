@@ -19,6 +19,7 @@ export interface BookCardProps {
   onClick?: () => void;
   isbn?: string;
   onWriteClick?: () => void;
+  onReadingClick?: () => void;
 }
 
 export default function BookCard({
@@ -36,6 +37,7 @@ export default function BookCard({
   onClick,
   isbn,
   onWriteClick,
+  onReadingClick,
 }: BookCardProps) {
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     e.currentTarget.src = "/book-sample.svg";
@@ -135,7 +137,15 @@ export default function BookCard({
       <S.BookActions onClick={handleButtonClick}>
         {isISBNValid ? (
           <>
-            <OutlineButton type="button">읽는 중 표시</OutlineButton>
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <OutlineButton type="button" onClick={onReadingClick}>
+                읽는 중 표시
+              </OutlineButton>
+            </div>
             <div
               onClick={(e) => {
                 e.stopPropagation();

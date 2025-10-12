@@ -29,8 +29,19 @@ interface Book {
   thumbnail: string;
 }
 
+interface ReadingBook {
+  isbn: string;
+  user_id: string;
+  start_date: string;
+  created_at: string;
+}
+
 interface BookWithPoem extends Book {
   poem: Poem;
+}
+
+interface BookWithReading extends Book {
+  reading: ReadingBook;
 }
 
 // Poems 데이터 가져오기
@@ -38,6 +49,16 @@ const fetchUserPoems = async (): Promise<Poem[]> => {
   const response = await fetch("/api/poems");
   if (!response.ok) {
     throw new Error("Failed to fetch poems");
+  }
+  const result = await response.json();
+  return result.data || [];
+};
+
+// 읽는 중인 책 데이터 가져오기
+const fetchReadingBooks = async (): Promise<ReadingBook[]> => {
+  const response = await fetch("/api/reading-books");
+  if (!response.ok) {
+    throw new Error("Failed to fetch reading books");
   }
   const result = await response.json();
   return result.data || [];
@@ -66,6 +87,9 @@ export default function MyPage() {
   const { data: session } = useSession();
   const [searchQuery, setSearchQuery] = useState("");
   const [booksWithPoems, setBooksWithPoems] = useState<BookWithPoem[]>([]);
+  const [booksWithReading, setBooksWithReading] = useState<BookWithReading[]>(
+    []
+  );
 
   const userName = session?.user?.name || "사용자";
 
@@ -73,6 +97,13 @@ export default function MyPage() {
   const { data: poems, isLoading: poemsLoading } = useQuery({
     queryKey: ["userPoems"],
     queryFn: fetchUserPoems,
+    enabled: !!session,
+  });
+
+  // 읽는 중인 책 데이터 가져오기
+  const { data: readingBooks, isLoading: readingBooksLoading } = useQuery({
+    queryKey: ["readingBooks"],
+    queryFn: fetchReadingBooks,
     enabled: !!session,
   });
 
@@ -100,6 +131,30 @@ export default function MyPage() {
     fetchAllBooks();
   }, [poems]);
 
+  // 읽는 중인 책의 정보 가져오기
+  useEffect(() => {
+    if (!readingBooks || readingBooks.length === 0) {
+      setBooksWithReading([]);
+      return;
+    }
+
+    const fetchAllReadingBooks = async () => {
+      const booksPromises = readingBooks.map(async (reading) => {
+        const book = await fetchBookInfo(reading.isbn);
+        if (!book) return null;
+        return { ...book, reading };
+      });
+
+      const results = await Promise.all(booksPromises);
+      const validBooks = results.filter(
+        (book): book is BookWithReading => book !== null
+      );
+      setBooksWithReading(validBooks);
+    };
+
+    fetchAllReadingBooks();
+  }, [readingBooks]);
+
   const totalReadCount = poems?.length || 0;
 
   const handleSearch = () => {
@@ -119,8 +174,11 @@ export default function MyPage() {
   };
 
   const filteredReadBooks = filterBooks(booksWithPoems);
+  const filteredReadingBooks = filterBooks(
+    booksWithReading as unknown as BookWithPoem[]
+  ) as unknown as BookWithReading[];
 
-  if (poemsLoading) {
+  if (poemsLoading || readingBooksLoading) {
     return (
       <S.MyPageContainer>
         <S.MyPageInner>
@@ -155,6 +213,61 @@ export default function MyPage() {
         </S.HeaderSection>
 
         <S.BooksSection>
+          {/* 읽는 중인 책 섹션 */}
+          <S.BookCategory>
+            <S.CategoryHeader>
+              <S.CategoryTitle>읽는 중인 이야기</S.CategoryTitle>
+              <S.CategoryCount>{filteredReadingBooks.length}권</S.CategoryCount>
+            </S.CategoryHeader>
+            <S.BookGrid>
+              {filteredReadingBooks.length === 0 ? (
+                <div
+                  style={{
+                    gridColumn: "1 / -1",
+                    textAlign: "center",
+                    padding: "2rem",
+                    color: "#a0a0a0",
+                  }}
+                >
+                  읽는 중인 책이 없습니다. 새로운 이야기를 시작해보세요!
+                </div>
+              ) : (
+                <>
+                  {filteredReadingBooks.map((bookWithReading) => {
+                    const cleanIsbn = bookWithReading.isbn.split("%")[0].trim();
+                    return (
+                      <S.BookItem
+                        key={bookWithReading.isbn}
+                        onClick={() =>
+                          router.push(`/book/${cleanIsbn}`)
+                        }
+                        style={{ cursor: "pointer" }}
+                      >
+                        <S.BookThumbnail
+                          src={bookWithReading.thumbnail || "/book-sample.svg"}
+                          alt={bookWithReading.title}
+                          onError={(e) => {
+                            e.currentTarget.src = "/book-sample.svg";
+                          }}
+                        />
+                        <S.BookInfo>
+                          <S.BookTitle>{bookWithReading.title}</S.BookTitle>
+                          <S.BookAuthor>
+                            {bookWithReading.authors.join(", ")}
+                          </S.BookAuthor>
+                        </S.BookInfo>
+                      </S.BookItem>
+                    );
+                  })}
+                  <S.AddBookItem onClick={() => router.push("/search")}>
+                    <S.AddBookPlaceholder>+</S.AddBookPlaceholder>
+                  </S.AddBookItem>
+                </>
+              )}
+            </S.BookGrid>
+          </S.BookCategory>
+
+          {/* 읽은 책 섹션 */}
           <S.BookCategory>
             <S.CategoryHeader>
               <S.CategoryTitle>이때동안 읽은 이야기</S.CategoryTitle>

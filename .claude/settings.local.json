@@ -12,7 +12,8 @@
       "WebFetch(domain:www.figma.com)",
       "Bash(echo:*)",
       "Bash(npm run dev:*)",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__getDiagnostics",
+      "WebFetch(domain:authjs.dev)"
     ],
     "deny": [],
     "ask": []

@@ -6,7 +6,15 @@ import clientPromise from "./database";
 import bcrypt from "bcrypt";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  adapter: MongoDBAdapter(clientPromise),
+  adapter: MongoDBAdapter(clientPromise, {
+    databaseName: "fanta",
+    collections: {
+      Users: "user", // 현재 사용 중인 "user" 컬렉션 지정
+      Accounts: "accounts", // 소셜 계정 연동 정보 저장용
+      Sessions: "sessions", // 세션 관리용
+      VerificationTokens: "verification_tokens", // 이메일 인증 토큰용
+    },
+  }),
   session: {
     strategy: "jwt", // Credentials Provider를 사용하려면 JWT 필요
   },
@@ -14,6 +22,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      allowDangerousEmailAccountLinking: true,
     }),
     Credentials({
       name: "Credentials",

@@ -28,7 +28,9 @@ export const EditButtonGroup = styled.div`
   z-index: 10;
 `;
 
-export const EditButton = styled.button<{ variant?: "primary" | "secondary" | "danger" }>`
+export const EditButton = styled.button<{
+  variant?: "primary" | "secondary" | "danger";
+}>`
   display: flex;
   align-items: center;
   gap: 6px;
@@ -96,7 +98,9 @@ export const EditableTextarea = styled.textarea`
   font-size: 14px;
   line-height: 1.6;
   min-height: 150px;
-  resize: vertical;
+  resize: none;
+  overflow: hidden;
+  height: auto;
 
   &:focus {
     outline: none;
@@ -115,7 +119,9 @@ export const EditablePoemTextarea = styled.textarea`
   font-size: 20px;
   line-height: 1.8;
   min-height: 200px;
-  resize: vertical;
+  resize: none;
+  overflow: hidden;
+  height: auto;
   text-align: center;
 
   &:focus {

@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import BackButton from "@/app/components/BackButton";
 import * as S from "./style";
 import { Heart, Edit2, Save, X } from "lucide-react";
@@ -147,6 +147,32 @@ export default function PoemDetailPage() {
 
   // 본인의 시인지 확인
   const isOwner = session?.user?.id === userid;
+
+  // textarea ref들
+  const reviewTextareaRef = useRef<HTMLTextAreaElement>(null);
+  const poemTextareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // textarea 자동 높이 조절 함수
+  const adjustTextareaHeight = (textarea: HTMLTextAreaElement | null) => {
+    if (textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  };
+
+  // 감상문 textarea 높이 자동 조절
+  useEffect(() => {
+    if (isEditMode) {
+      adjustTextareaHeight(reviewTextareaRef.current);
+    }
+  }, [editedReview, isEditMode]);
+
+  // 시 내용 textarea 높이 자동 조절
+  useEffect(() => {
+    if (isEditMode) {
+      adjustTextareaHeight(poemTextareaRef.current);
+    }
+  }, [editedPoemContent, isEditMode]);
 
   // Poem 데이터 가져오기 (정리된 ISBN 사용)
   const {
@@ -496,8 +522,12 @@ export default function PoemDetailPage() {
                 <S.ReviewTitle>감상문</S.ReviewTitle>
                 {isEditMode && isOwner ? (
                   <S.EditableTextarea
+                    ref={reviewTextareaRef}
                     value={editedReview}
-                    onChange={(e) => setEditedReview(e.target.value)}
+                    onChange={(e) => {
+                      setEditedReview(e.target.value);
+                      adjustTextareaHeight(e.target);
+                    }}
                     placeholder="감상문을 입력하세요..."
                   />
                 ) : (
@@ -528,8 +558,12 @@ export default function PoemDetailPage() {
                 </S.PoemHeader>
                 {isEditMode && isOwner ? (
                   <S.EditablePoemTextarea
+                    ref={poemTextareaRef}
                     value={editedPoemContent}
-                    onChange={(e) => setEditedPoemContent(e.target.value)}
+                    onChange={(e) => {
+                      setEditedPoemContent(e.target.value);
+                      adjustTextareaHeight(e.target);
+                    }}
                     placeholder="시 내용을 입력하세요..."
                   />
                 ) : (

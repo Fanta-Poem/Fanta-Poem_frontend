@@ -1,4 +1,5 @@
 ## 프로젝트 개요
+<img width="1440" height="900" alt="image" src="https://github.com/user-attachments/assets/c11d5b12-5611-4243-8d9f-f4f6ce75ed39" />
 
 ### 프로젝트 제목
 

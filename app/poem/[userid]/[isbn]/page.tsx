@@ -5,6 +5,7 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useState, useRef, useEffect } from "react";
 import BackButton from "@/app/components/BackButton";
+import TrophyModal from "@/app/components/TrophyModal";
 import * as S from "./style";
 import { Heart, Edit2, Save, X } from "lucide-react";
 
@@ -144,6 +145,9 @@ export default function PoemDetailPage() {
   const [editedReview, setEditedReview] = useState<string>("");
   const [editedPoemTitle, setEditedPoemTitle] = useState<string>("");
   const [editedPoemContent, setEditedPoemContent] = useState<string>("");
+
+  // 트로피 모달 상태
+  const [isTrophyModalOpen, setIsTrophyModalOpen] = useState(false);
 
   // 본인의 시인지 확인
   const isOwner = session?.user?.id === userid;
@@ -312,13 +316,29 @@ export default function PoemDetailPage() {
 
   // 수정 저장
   const handleSaveEdit = () => {
-    updateMutation.mutate({
+    const updateData = {
       rating: editedRating,
       is_public: editedIsPublic,
       review: editedReview,
       poem_title: editedPoemTitle,
       poem_content: editedPoemContent,
-    });
+    };
+    console.log("💾 Saving poem with data:", updateData);
+    updateMutation.mutate(updateData);
+  };
+
+  // 트로피 모달 열기
+  const handleTrophyClick = () => {
+    if (isEditMode && isOwner) {
+      setIsTrophyModalOpen(true);
+    }
+  };
+
+  // 트로피 모달에서 트로피 선택
+  const handleTrophySubmit = (rating: number) => {
+    console.log("🏆 Trophy selected:", rating);
+    setEditedRating(rating);
+    setIsTrophyModalOpen(false);
   };
 
   if (poemLoading || bookLoading || userLoading || likeLoading) {
@@ -447,7 +467,7 @@ export default function PoemDetailPage() {
                   <S.TrophySection>
                     <S.SectionLabel>내가 준 트로피</S.SectionLabel>
                     {isEditMode && isOwner ? (
-                      <S.TrophySelectWrapper>
+                      <S.TrophySelectWrapper onClick={handleTrophyClick}>
                         {[1, 2, 3, 4, 5].map((index) => (
                           <S.TrophySelectIcon
                             key={index}
@@ -458,7 +478,6 @@ export default function PoemDetailPage() {
                             }
                             alt="trophy"
                             clickable
-                            onClick={() => setEditedRating(index)}
                           />
                         ))}
                       </S.TrophySelectWrapper>
@@ -587,6 +606,15 @@ export default function PoemDetailPage() {
             </S.PoemCard>
           </S.RightSection>
         </S.ContentWrapper>
+
+        {/* 트로피 모달 */}
+        <TrophyModal
+          isOpen={isTrophyModalOpen}
+          onClose={() => setIsTrophyModalOpen(false)}
+          onSubmit={handleTrophySubmit}
+          initialRating={editedRating}
+          onCancel={() => setIsTrophyModalOpen(false)}
+        />
       </S.PageInner>
     </S.PageContainer>
   );

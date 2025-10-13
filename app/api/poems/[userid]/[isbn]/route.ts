@@ -80,16 +80,20 @@ export async function PUT(
     const body = await request.json();
     const { rating, is_public, review, poem_title, poem_content } = body;
 
+    console.log("📝 Update request body:", { rating, is_public, review, poem_title, poem_content });
+
     // 업데이트할 데이터 준비
     const updateData: any = {
       updated_at: new Date().toISOString(),
     };
 
-    if (rating !== undefined) updateData.rating = rating;
+    if (rating !== undefined && rating > 0) updateData.rating = rating;
     if (is_public !== undefined) updateData.is_public = is_public;
     if (review !== undefined) updateData.review = review;
     if (poem_title !== undefined) updateData.poem_title = poem_title;
     if (poem_content !== undefined) updateData.poem_content = poem_content;
+
+    console.log("📊 Update data to be saved:", updateData);
 
     // 시 업데이트
     const { data: updatedPoem, error } = await supabaseAdmin
@@ -101,12 +105,14 @@ export async function PUT(
       .single();
 
     if (error) {
-      console.error("Supabase update error:", error);
+      console.error("❌ Supabase update error:", error);
       return NextResponse.json(
         { error: "시 수정 중 오류가 발생했습니다" },
         { status: 500 }
       );
     }
+
+    console.log("✅ Successfully updated poem:", updatedPoem);
 
     return NextResponse.json({
       success: true,

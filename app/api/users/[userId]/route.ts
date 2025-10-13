@@ -4,10 +4,10 @@ import { ObjectId } from "mongodb";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { userId: string } }
+  context: any // ✅ 타입을 임시로 완화
 ) {
   try {
-    const { userId } = params;
+    const { userId } = await context.params;
 
     if (!userId) {
       return NextResponse.json(

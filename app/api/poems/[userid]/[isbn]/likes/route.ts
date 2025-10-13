@@ -52,7 +52,7 @@ export async function GET(request: NextRequest, context: any) {
 // 좋아요 토글 (추가/제거)
 export async function POST(
   request: NextRequest,
-  { params }: { params: { userid: string; isbn: string } }
+  context: any // ✅ 타입을 임시로 완화
 ) {
   try {
     const session = await auth();
@@ -64,7 +64,7 @@ export async function POST(
       );
     }
 
-    const { userid, isbn } = params;
+    const { userid, isbn } = await context.params;
     const currentUserId = session.user.id;
 
     // 본인의 시에는 좋아요를 누를 수 없음

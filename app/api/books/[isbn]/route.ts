@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ isbn: string }> }
+  context: any // ✅ 타입을 임시로 완화
 ) {
-  const { isbn } = await params;
+  const { isbn } = await context.params;
 
   if (!isbn) {
     return NextResponse.json(

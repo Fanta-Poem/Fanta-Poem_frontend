@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/app/lib/supabase";
 
-export async function GET(request: NextRequest, context: { params: any }) {
+export async function GET(request: NextRequest, context: any) { // ✅ 타입을 임시로 완화
   try {
     const { isbn } = await context.params;
 

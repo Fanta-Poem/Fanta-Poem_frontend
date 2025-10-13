@@ -3,10 +3,10 @@ import { supabaseAdmin } from "@/app/lib/supabase";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { isbn: string } }
+  context: any // ✅ 타입을 임시로 완화
 ) {
   try {
-    const { isbn } = params;
+    const { isbn } = await context.params;
 
     if (!isbn) {
       return NextResponse.json(

@@ -7,6 +7,7 @@ import Button from "../components/Button";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { menuData } from "./data";
+import { Suspense } from "react";
 
 export default function MenuPage() {
   const router = useRouter();
@@ -61,51 +62,53 @@ export default function MenuPage() {
   const currentMenu = menuData[currentIndex];
 
   return (
-    <S.MenuContainer>
-      <S.MenuInner>
-        <S.DotsIndicator>
-          {menuData.map((_, index) => (
-            <S.Dot key={index} active={index === currentIndex} />
-          ))}
-        </S.DotsIndicator>
+    <Suspense fallback={<div>Loading menu...</div>}>
+      <S.MenuContainer>
+        <S.MenuInner>
+          <S.DotsIndicator>
+            {menuData.map((_, index) => (
+              <S.Dot key={index} active={index === currentIndex} />
+            ))}
+          </S.DotsIndicator>
 
-        <S.ContentWrapper>
-          <S.ArrowButton onClick={handlePrev} direction="left">
-            <ChevronLeft size={36} color="white" />
-          </S.ArrowButton>
+          <S.ContentWrapper>
+            <S.ArrowButton onClick={handlePrev} direction="left">
+              <ChevronLeft size={36} color="white" />
+            </S.ArrowButton>
 
-          <S.ContentArea key={animationKey} direction={direction}>
-            <S.TitleArea>
-              <S.MenuTitle>{currentMenu.title}</S.MenuTitle>
-            </S.TitleArea>
+            <S.ContentArea key={animationKey} direction={direction}>
+              <S.TitleArea>
+                <S.MenuTitle>{currentMenu.title}</S.MenuTitle>
+              </S.TitleArea>
 
-            <S.ImageArea>
-              <S.MenuImage
-                key={animationKey}
-                src={currentMenu.image}
-                alt={currentMenu.title}
-                direction={direction}
-              />
-            </S.ImageArea>
+              <S.ImageArea>
+                <S.MenuImage
+                  key={animationKey}
+                  src={currentMenu.image}
+                  alt={currentMenu.title}
+                  direction={direction}
+                />
+              </S.ImageArea>
 
-            <S.DescriptionArea>
-              <S.Description
-                dangerouslySetInnerHTML={{ __html: currentMenu.description }}
-              />
-            </S.DescriptionArea>
+              <S.DescriptionArea>
+                <S.Description
+                  dangerouslySetInnerHTML={{ __html: currentMenu.description }}
+                />
+              </S.DescriptionArea>
 
-            <S.ButtonArea>
-              <Button type="button" onClick={handleEnter}>
-                입장하기
-              </Button>
-            </S.ButtonArea>
-          </S.ContentArea>
+              <S.ButtonArea>
+                <Button type="button" onClick={handleEnter}>
+                  입장하기
+                </Button>
+              </S.ButtonArea>
+            </S.ContentArea>
 
-          <S.ArrowButton onClick={handleNext} direction="right">
-            <ChevronRight size={36} color="white" />
-          </S.ArrowButton>
-        </S.ContentWrapper>
-      </S.MenuInner>
-    </S.MenuContainer>
+            <S.ArrowButton onClick={handleNext} direction="right">
+              <ChevronRight size={36} color="white" />
+            </S.ArrowButton>
+          </S.ContentWrapper>
+        </S.MenuInner>
+      </S.MenuContainer>
+    </Suspense>
   );
 }

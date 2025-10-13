@@ -3,10 +3,10 @@ import { supabaseAdmin } from "@/app/lib/supabase";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { isbn: string } }
+  context: { params: Promise<{ isbn: string }> }
 ) {
   try {
-    const { isbn } = params;
+    const { isbn } = await context.params;
 
     if (!isbn) {
       return NextResponse.json(
@@ -20,7 +20,9 @@ export async function GET(
     const { data: poems, error } = await supabaseAdmin
       .from("poems")
       .select("rating")
-      .or(`isbn.eq.${isbn},isbn.like.${isbn} %,isbn.like.% ${isbn} %,isbn.like.% ${isbn}`)
+      .or(
+        `isbn.eq.${isbn},isbn.like.${isbn} %,isbn.like.% ${isbn} %,isbn.like.% ${isbn}`
+      )
       .eq("is_public", true);
 
     if (error) {

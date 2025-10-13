@@ -9,6 +9,7 @@ import Dropdown from "@/app/components/Dropdown";
 import BookCard from "@/app/components/BookCard";
 import Button from "@/app/components/Button";
 import ReadingDateModal from "@/app/components/ReadingDateModal";
+import StartDateModal from "@/app/components/StartDateModal";
 import * as S from "./style";
 
 interface Book {
@@ -130,6 +131,7 @@ export default function BookDetailPage() {
   const identifier = params.id as string;
   const [sortBy, setSortBy] = useState("latest");
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
+  const [isStartDateModalOpen, setIsStartDateModalOpen] = useState(false);
   const [selectedISBN, setSelectedISBN] = useState<string | null>(null);
 
   const {
@@ -284,6 +286,13 @@ export default function BookDetailPage() {
                 setIsDateModalOpen(true);
               }
             }}
+            onReadingClick={() => {
+              const firstISBN = book.isbn?.split(" ")[0].trim();
+              if (firstISBN && firstISBN.length >= 10) {
+                setSelectedISBN(firstISBN);
+                setIsStartDateModalOpen(true);
+              }
+            }}
           />
         </S.BookDetailSection>
 
@@ -372,6 +381,16 @@ export default function BookDetailPage() {
             router.push(
               `/write/${selectedISBN}?startDate=${startDate}&endDate=${endDate}`
             );
+          }
+        }}
+      />
+
+      <StartDateModal
+        isOpen={isStartDateModalOpen}
+        onClose={() => setIsStartDateModalOpen(false)}
+        onSubmit={(startDate: string) => {
+          if (selectedISBN) {
+            router.push(`/write/${selectedISBN}?startDate=${startDate}`);
           }
         }}
       />

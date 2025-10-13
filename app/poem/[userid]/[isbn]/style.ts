@@ -16,6 +16,146 @@ export const PageInner = styled.div`
   min-width: fit-content;
   margin: 0 auto;
   padding: 30px 60px;
+  position: relative;
+`;
+
+export const EditButtonGroup = styled.div`
+  position: absolute;
+  top: 30px;
+  right: 60px;
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+`;
+
+export const EditButton = styled.button<{ variant?: "primary" | "secondary" | "danger" }>`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: ${(props) =>
+    props.variant === "primary"
+      ? "#7a19c4"
+      : props.variant === "danger"
+      ? "#dc2626"
+      : "#2a2a2a"};
+  color: white;
+  border: 1px solid
+    ${(props) =>
+      props.variant === "primary"
+        ? "#9333ea"
+        : props.variant === "danger"
+        ? "#ef4444"
+        : "#404040"};
+  border-radius: 8px;
+  font-family: "IM_Hyemin", sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: ${(props) =>
+      props.variant === "primary"
+        ? "#6b15b0"
+        : props.variant === "danger"
+        ? "#b91c1c"
+        : "#3a3a3a"};
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+export const EditableInput = styled.input`
+  width: 100%;
+  background: #2a2a2a;
+  border: 1px solid #7a19c4;
+  border-radius: 8px;
+  padding: 10px 15px;
+  color: #fafafa;
+  font-family: "IM_Hyemin", sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+
+  &:focus {
+    outline: none;
+    border-color: #9333ea;
+  }
+`;
+
+export const EditableTextarea = styled.textarea`
+  width: 100%;
+  background: #2a2a2a;
+  border: 1px solid #7a19c4;
+  border-radius: 8px;
+  padding: 15px;
+  color: #fafafa;
+  font-family: "IM_Hyemin", sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 150px;
+  resize: vertical;
+
+  &:focus {
+    outline: none;
+    border-color: #9333ea;
+  }
+`;
+
+export const EditablePoemTextarea = styled.textarea`
+  width: 100%;
+  background: rgba(42, 42, 42, 0.5);
+  border: 1px solid #7a19c4;
+  border-radius: 8px;
+  padding: 20px;
+  color: white;
+  font-family: "IM_Hyemin", sans-serif;
+  font-size: 20px;
+  line-height: 1.8;
+  min-height: 200px;
+  resize: vertical;
+  text-align: center;
+
+  &:focus {
+    outline: none;
+    border-color: #9333ea;
+  }
+`;
+
+export const TrophySelectWrapper = styled.div`
+  display: flex;
+  gap: 4px;
+  cursor: pointer;
+`;
+
+export const TrophySelectIcon = styled.img<{ clickable?: boolean }>`
+  width: 20px;
+  height: 20px;
+  cursor: ${(props) => (props.clickable ? "pointer" : "default")};
+  transition: transform 0.1s ease;
+
+  &:hover {
+    transform: ${(props) => (props.clickable ? "scale(1.1)" : "none")};
+  }
+`;
+
+export const StatusToggle = styled.button<{ active: boolean }>`
+  padding: 8px 16px;
+  background: ${(props) => (props.active ? "#7a19c4" : "#2a2a2a")};
+  color: white;
+  border: 1px solid ${(props) => (props.active ? "#9333ea" : "#404040")};
+  border-radius: 6px;
+  font-family: "IM_Hyemin", sans-serif;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: ${(props) => (props.active ? "#6b15b0" : "#3a3a3a")};
+  }
 `;
 
 export const ContentWrapper = styled.div`

@@ -3,9 +3,10 @@
 import { useParams } from "next/navigation";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
+import { useState } from "react";
 import BackButton from "@/app/components/BackButton";
 import * as S from "./style";
-import { Heart } from "lucide-react";
+import { Heart, Edit2, Save, X } from "lucide-react";
 
 interface Poem {
   isbn: string;
@@ -97,6 +98,35 @@ const toggleLike = async (userId: string, isbn: string): Promise<{ isLiked: bool
   return { isLiked: result.isLiked };
 };
 
+// 시 수정 API 호출
+const updatePoem = async (
+  userId: string,
+  isbn: string,
+  data: {
+    rating?: number;
+    is_public?: boolean;
+    review?: string;
+    poem_title?: string;
+    poem_content?: string;
+  }
+): Promise<Poem> => {
+  const response = await fetch(`/api/poems/${userId}/${isbn}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || "시 수정 중 오류가 발생했습니다.");
+  }
+
+  const result = await response.json();
+  return result.data;
+};
+
 export default function PoemDetailPage() {
   const params = useParams();
   const queryClient = useQueryClient();
@@ -106,6 +136,17 @@ export default function PoemDetailPage() {
 
   // ISBN 정리: 공백으로 구분된 경우 첫 번째 값만, % 이후는 제거
   const cleanIsbn = rawIsbn.split(' ')[0].split('%')[0].trim();
+
+  // 수정 모드 상태
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editedRating, setEditedRating] = useState<number>(0);
+  const [editedIsPublic, setEditedIsPublic] = useState<boolean>(true);
+  const [editedReview, setEditedReview] = useState<string>("");
+  const [editedPoemTitle, setEditedPoemTitle] = useState<string>("");
+  const [editedPoemContent, setEditedPoemContent] = useState<string>("");
+
+  // 본인의 시인지 확인
+  const isOwner = session?.user?.id === userid;
 
   // Poem 데이터 가져오기 (정리된 ISBN 사용)
   const {
@@ -207,6 +248,53 @@ export default function PoemDetailPage() {
     likeMutation.mutate();
   };
 
+  // 시 수정 mutation
+  const updateMutation = useMutation({
+    mutationFn: (data: {
+      rating?: number;
+      is_public?: boolean;
+      review?: string;
+      poem_title?: string;
+      poem_content?: string;
+    }) => updatePoem(userid, cleanIsbn, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["poem", userid, cleanIsbn] });
+      setIsEditMode(false);
+      alert("수정이 완료되었습니다.");
+    },
+    onError: (error) => {
+      alert(error instanceof Error ? error.message : "수정 중 오류가 발생했습니다.");
+    },
+  });
+
+  // 수정 모드 진입
+  const handleEditClick = () => {
+    if (poem) {
+      setEditedRating(poem.rating);
+      setEditedIsPublic(poem.is_public);
+      setEditedReview(poem.review || "");
+      setEditedPoemTitle(poem.poem_title);
+      setEditedPoemContent(poem.poem_content);
+      setIsEditMode(true);
+    }
+  };
+
+  // 수정 취소
+  const handleCancelEdit = () => {
+    setIsEditMode(false);
+  };
+
+  // 수정 저장
+  const handleSaveEdit = () => {
+    updateMutation.mutate({
+      rating: editedRating,
+      is_public: editedIsPublic,
+      review: editedReview,
+      poem_title: editedPoemTitle,
+      poem_content: editedPoemContent,
+    });
+  };
+
   if (poemLoading || bookLoading || userLoading || likeLoading) {
     return (
       <S.PageContainer>
@@ -273,6 +361,33 @@ export default function PoemDetailPage() {
       <S.PageInner>
         <BackButton />
 
+        {/* 수정/저장/취소 버튼 */}
+        {isOwner && (
+          <S.EditButtonGroup>
+            {!isEditMode ? (
+              <S.EditButton onClick={handleEditClick}>
+                <Edit2 size={16} />
+                수정
+              </S.EditButton>
+            ) : (
+              <>
+                <S.EditButton
+                  variant="primary"
+                  onClick={handleSaveEdit}
+                  disabled={updateMutation.isPending}
+                >
+                  <Save size={16} />
+                  저장
+                </S.EditButton>
+                <S.EditButton variant="danger" onClick={handleCancelEdit}>
+                  <X size={16} />
+                  취소
+                </S.EditButton>
+              </>
+            )}
+          </S.EditButtonGroup>
+        )}
+
         <S.ContentWrapper>
           {/* Left Section - Book Details */}
           <S.LeftSection>
@@ -305,25 +420,52 @@ export default function PoemDetailPage() {
                 <S.BottomInfoWrapper>
                   <S.TrophySection>
                     <S.SectionLabel>내가 준 트로피</S.SectionLabel>
-                    <S.TrophyWrapper>
-                      {[1, 2, 3, 4, 5].map((index) => (
-                        <S.TrophyIcon
-                          key={index}
-                          src={
-                            index <= bookData.trophies
-                              ? "/trophy/trophy_filled.svg"
-                              : "/trophy/trophy_unfilled.svg"
-                          }
-                          alt="trophy"
-                        />
-                      ))}
-                    </S.TrophyWrapper>
+                    {isEditMode && isOwner ? (
+                      <S.TrophySelectWrapper>
+                        {[1, 2, 3, 4, 5].map((index) => (
+                          <S.TrophySelectIcon
+                            key={index}
+                            src={
+                              index <= editedRating
+                                ? "/trophy/trophy_filled.svg"
+                                : "/trophy/trophy_unfilled.svg"
+                            }
+                            alt="trophy"
+                            clickable
+                            onClick={() => setEditedRating(index)}
+                          />
+                        ))}
+                      </S.TrophySelectWrapper>
+                    ) : (
+                      <S.TrophyWrapper>
+                        {[1, 2, 3, 4, 5].map((index) => (
+                          <S.TrophyIcon
+                            key={index}
+                            src={
+                              index <= bookData.trophies
+                                ? "/trophy/trophy_filled.svg"
+                                : "/trophy/trophy_unfilled.svg"
+                            }
+                            alt="trophy"
+                          />
+                        ))}
+                      </S.TrophyWrapper>
+                    )}
                   </S.TrophySection>
 
                   <S.StatusLikesWrapper>
                     <S.StatusSection>
                       <S.SectionLabel>상태</S.SectionLabel>
-                      <S.StatusText>{bookData.status}</S.StatusText>
+                      {isEditMode && isOwner ? (
+                        <S.StatusToggle
+                          active={editedIsPublic}
+                          onClick={() => setEditedIsPublic(!editedIsPublic)}
+                        >
+                          {editedIsPublic ? "공개" : "비공개"}
+                        </S.StatusToggle>
+                      ) : (
+                        <S.StatusText>{bookData.status}</S.StatusText>
+                      )}
                     </S.StatusSection>
 
                     <S.LikesSection>
@@ -349,10 +491,18 @@ export default function PoemDetailPage() {
               </S.BookInfoWrapper>
             </S.BookSection>
 
-            {bookData.review && (
+            {(bookData.review || (isEditMode && isOwner)) && (
               <S.ReviewSection>
                 <S.ReviewTitle>감상문</S.ReviewTitle>
-                <S.ReviewContent>{bookData.review}</S.ReviewContent>
+                {isEditMode && isOwner ? (
+                  <S.EditableTextarea
+                    value={editedReview}
+                    onChange={(e) => setEditedReview(e.target.value)}
+                    placeholder="감상문을 입력하세요..."
+                  />
+                ) : (
+                  <S.ReviewContent>{bookData.review}</S.ReviewContent>
+                )}
               </S.ReviewSection>
             )}
           </S.LeftSection>
@@ -363,26 +513,42 @@ export default function PoemDetailPage() {
             <S.PoemCard>
               <S.PoemContentWrapper>
                 <S.PoemHeader>
-                  <S.PoemTitle>{bookData.poem.title}</S.PoemTitle>
+                  {isEditMode && isOwner ? (
+                    <S.EditableInput
+                      value={editedPoemTitle}
+                      onChange={(e) => setEditedPoemTitle(e.target.value)}
+                      placeholder="시 제목을 입력하세요..."
+                    />
+                  ) : (
+                    <S.PoemTitle>{bookData.poem.title}</S.PoemTitle>
+                  )}
                   {bookData.poem.author && (
                     <S.PoemAuthor>{bookData.poem.author}</S.PoemAuthor>
                   )}
                 </S.PoemHeader>
-                <S.PoemTextWrapper>
-                  {bookData.poem.content
-                    .split("\n")
-                    .reduce((acc: string[], line) => {
-                      // 빈 줄이고 이전 줄도 빈 줄이었다면 건너뛰기
-                      if (line.trim() === "" && acc.length > 0 && acc[acc.length - 1] === "") {
+                {isEditMode && isOwner ? (
+                  <S.EditablePoemTextarea
+                    value={editedPoemContent}
+                    onChange={(e) => setEditedPoemContent(e.target.value)}
+                    placeholder="시 내용을 입력하세요..."
+                  />
+                ) : (
+                  <S.PoemTextWrapper>
+                    {bookData.poem.content
+                      .split("\n")
+                      .reduce((acc: string[], line) => {
+                        // 빈 줄이고 이전 줄도 빈 줄이었다면 건너뛰기
+                        if (line.trim() === "" && acc.length > 0 && acc[acc.length - 1] === "") {
+                          return acc;
+                        }
+                        acc.push(line);
                         return acc;
-                      }
-                      acc.push(line);
-                      return acc;
-                    }, [])
-                    .map((line, index) => (
-                      <S.PoemLine key={index}>{line || "\u00A0"}</S.PoemLine>
-                    ))}
-                </S.PoemTextWrapper>
+                      }, [])
+                      .map((line, index) => (
+                        <S.PoemLine key={index}>{line || "\u00A0"}</S.PoemLine>
+                      ))}
+                  </S.PoemTextWrapper>
+                )}
               </S.PoemContentWrapper>
             </S.PoemCard>
           </S.RightSection>

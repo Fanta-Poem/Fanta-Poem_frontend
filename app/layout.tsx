@@ -16,8 +16,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Fanta Poem",
+  title: "판타시",
   description: "A Reading Platform to Chronicle Books with Poetry",
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 
 export default function RootLayout({

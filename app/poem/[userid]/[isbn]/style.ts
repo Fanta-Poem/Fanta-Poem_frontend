@@ -7,6 +7,7 @@ export const PageContainer = styled.div`
   display: flex;
   justify-content: center;
   padding: 41px 80px;
+  overflow-x: auto;
 `;
 
 export const PageInner = styled.div`
@@ -15,6 +16,7 @@ export const PageInner = styled.div`
   gap: 50px;
   width: 100%;
   max-width: 1280px;
+  min-width: fit-content;
 `;
 
 export const ContentWrapper = styled.div`
@@ -22,6 +24,7 @@ export const ContentWrapper = styled.div`
   justify-content: space-between;
   width: 100%;
   gap: 50px;
+  min-width: fit-content;
 `;
 
 // Left Section - Book Details

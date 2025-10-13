@@ -275,8 +275,6 @@ export default function BookDetailPage() {
                 ? `${book.price.toLocaleString()} 원`
                 : "가격 정보 없음"
             }
-            rating={0}
-            reviewCount={0}
             variant="search"
             isbn={book.isbn}
             onWriteClick={() => {

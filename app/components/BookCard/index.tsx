@@ -1,8 +1,27 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import * as S from "./style";
 import Button from "@/app/components/Button";
 import OutlineButton from "@/app/components/OutlineButton";
+
+// ISBN으로 평균 평점 가져오기
+const fetchAverageRating = async (
+  isbn: string
+): Promise<{ averageRating: number; reviewCount: number }> => {
+  try {
+    const cleanIsbn = isbn.split(" ")[0].split("%")[0].trim();
+    const response = await fetch(`/api/books/${cleanIsbn}/rating`);
+    if (!response.ok) {
+      return { averageRating: 0, reviewCount: 0 };
+    }
+    const result = await response.json();
+    return result.data;
+  } catch (error) {
+    console.error("Failed to fetch rating:", error);
+    return { averageRating: 0, reviewCount: 0 };
+  }
+};
 
 export interface BookCardProps {
   thumbnail: string;
@@ -31,24 +50,37 @@ export default function BookCard({
   publisher,
   publishDate,
   price,
-  rating = 0,
-  reviewCount = 0,
+  rating: ratingProp = 0,
+  reviewCount: reviewCountProp = 0,
   variant = "search",
   onClick,
   isbn,
   onWriteClick,
   onReadingClick,
 }: BookCardProps) {
+  // ISBN으로 평균 평점 가져오기
+  const { data: ratingData } = useQuery({
+    queryKey: ["bookRating", isbn],
+    queryFn: () => fetchAverageRating(isbn!),
+    enabled: !!isbn && hasValidISBN(isbn),
+    staleTime: 1000 * 60 * 5, // 5분간 캐시 유지
+  });
+
+  // prop으로 전달된 값이 있으면 그것을 우선, 없으면 fetch한 값 사용
+  const rating = ratingProp > 0 ? ratingProp : ratingData?.averageRating || 0;
+  const reviewCount =
+    reviewCountProp > 0 ? reviewCountProp : ratingData?.reviewCount || 0;
+
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     e.currentTarget.src = "/book-sample.svg";
   };
 
   // ISBN 유효성 검사
-  const hasValidISBN = (isbnValue?: string) => {
+  function hasValidISBN(isbnValue?: string) {
     if (!isbnValue || !isbnValue.trim()) return false;
     const firstISBN = isbnValue.split(" ")[0].trim();
     return firstISBN.length >= 10;
-  };
+  }
 
   const isISBNValid = hasValidISBN(isbn);
 
@@ -157,7 +189,9 @@ export default function BookCard({
             </div>
           </>
         ) : (
-          <S.UnsupportedMessage>현재는 지원하지 않는 책입니다.</S.UnsupportedMessage>
+          <S.UnsupportedMessage>
+            현재는 지원하지 않는 책입니다.
+          </S.UnsupportedMessage>
         )}
       </S.BookActions>
     </S.SearchBookCard>

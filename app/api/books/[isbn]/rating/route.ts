@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/app/lib/supabase";
 
-export async function GET(
-  request: NextRequest,
-  context: { params: Promise<{ isbn: string }> }
-) {
+export async function GET(request: NextRequest, context: { params: any }) {
   try {
     const { isbn } = await context.params;
 

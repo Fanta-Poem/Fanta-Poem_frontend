@@ -84,7 +84,21 @@ export default function LandingPage() {
 
         <S.FeatureCardsContainer>
           <S.FeatureRow>
-            <S.VideoContainer>{/* 동영상이 들어갈 예정 */}</S.VideoContainer>
+            <S.VideoContainer>
+              <video
+                src="/video/1.mov"
+                autoPlay
+                loop
+                muted
+                playsInline
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  borderRadius: "24px",
+                }}
+              />
+            </S.VideoContainer>
             <S.FeatureCard>
               <S.IconContainer>
                 <S.IconImage src={scrollImg} alt="시적 감상문 아이콘" />
@@ -131,11 +145,39 @@ export default function LandingPage() {
                 </S.Tag>
               </S.TagsContainer>
             </S.FeatureCard>
-            <S.VideoContainer>{/* 동영상이 들어갈 예정 */}</S.VideoContainer>
+            <S.VideoContainer>
+              <video
+                src="/video/2.mov"
+                autoPlay
+                loop
+                muted
+                playsInline
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  borderRadius: "24px",
+                }}
+              />
+            </S.VideoContainer>
           </S.FeatureRow>
 
           <S.FeatureRow>
-            <S.VideoContainer>{/* 동영상이 들어갈 예정 */}</S.VideoContainer>
+            <S.VideoContainer>
+              <video
+                src="/video/3.mov"
+                autoPlay
+                loop
+                muted
+                playsInline
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  borderRadius: "24px",
+                }}
+              />
+            </S.VideoContainer>
             <S.FeatureCard>
               <S.IconContainer>
                 <S.IconImage src={keyImg} alt="공유 소장 아이콘" />

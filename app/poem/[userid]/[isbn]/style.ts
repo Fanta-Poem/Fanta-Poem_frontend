@@ -4,26 +4,25 @@ export const PageContainer = styled.div`
   width: 100%;
   min-height: 100vh;
   background: #1a1a1a;
-  display: flex;
-  justify-content: center;
-  padding: 41px 80px;
   overflow-x: auto;
 `;
 
 export const PageInner = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 50px;
+  gap: 35px;
   width: 100%;
-  max-width: 1280px;
+  max-width: 1100px;
   min-width: fit-content;
+  margin: 0 auto;
+  padding: 30px 60px;
 `;
 
 export const ContentWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  gap: 50px;
+  gap: 40px;
   min-width: fit-content;
 `;
 
@@ -31,22 +30,22 @@ export const ContentWrapper = styled.div`
 export const LeftSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 48px;
-  width: 652px;
+  gap: 35px;
+  width: 550px;
   flex-shrink: 0;
 `;
 
 export const BookSection = styled.div`
   display: flex;
-  gap: 24px;
+  gap: 20px;
   align-items: flex-start;
   width: 100%;
-  max-width: 652px;
+  max-width: 550px;
 `;
 
 export const BookCover = styled.img`
-  width: 227px;
-  height: 342px;
+  width: 180px;
+  height: 270px;
   object-fit: cover;
   flex-shrink: 0;
 `;
@@ -56,8 +55,8 @@ export const BookInfoWrapper = styled.div`
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-between;
-  height: 342px;
-  width: 380px;
+  height: 270px;
+  width: 330px;
   min-width: 0;
   flex-shrink: 1;
 `;
@@ -65,15 +64,15 @@ export const BookInfoWrapper = styled.div`
 export const BookMetaSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
-  max-width: 380px;
+  max-width: 330px;
 `;
 
 export const BookTitle = styled.h1`
   font-family: "IM_Hyemin", sans-serif;
   font-weight: bold;
-  font-size: 24px;
+  font-size: 20px;
   line-height: 1.6;
   color: #fafafa;
   margin: 0;
@@ -81,7 +80,7 @@ export const BookTitle = styled.h1`
   word-break: break-word;
   white-space: normal;
   width: 100%;
-  max-width: 380px;
+  max-width: 330px;
   overflow-wrap: break-word;
 `;
 
@@ -91,7 +90,7 @@ export const AuthorInfo = styled.div`
   align-items: center;
   justify-content: flex-start;
   font-family: "IM_Hyemin", sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.6;
   color: #c7c7c7;
 `;
@@ -106,7 +105,7 @@ export const AuthorRole = styled.span`
 
 export const Series = styled.p`
   font-family: "IM_Hyemin", sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.6;
   color: #c7c7c7;
   margin: 0;
@@ -114,17 +113,17 @@ export const Series = styled.p`
   word-break: break-word;
   white-space: normal;
   width: 100%;
-  max-width: 380px;
+  max-width: 330px;
   overflow-wrap: break-word;
 `;
 
 export const PublishInfo = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
   justify-content: flex-start;
   font-family: "IM_Hyemin", sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.6;
   color: #c7c7c7;
 `;
@@ -149,7 +148,7 @@ export const ReadDateSection = styled.div`
 
 export const SectionLabel = styled.p`
   font-family: "IM_Hyemin", sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.6;
   color: #c7c7c7;
   margin: 0;
@@ -163,7 +162,7 @@ export const DateWrapper = styled.div`
 
 export const DateText = styled.p`
   font-family: "IM_Hyemin", sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.6;
   color: #fafafa;
   margin: 0;
@@ -210,7 +209,7 @@ export const StatusSection = styled.div`
 export const StatusText = styled.p`
   font-family: "IM_Hyemin", sans-serif;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.6;
   color: white;
   margin: 0;
@@ -273,7 +272,7 @@ export const ReviewSection = styled.div`
 export const ReviewTitle = styled.h2`
   font-family: "IM_Hyemin", sans-serif;
   font-weight: bold;
-  font-size: 34px;
+  font-size: 28px;
   line-height: 1.6;
   color: #fafafa;
   margin: 0;
@@ -283,9 +282,9 @@ export const ReviewContent = styled.div`
   background: #1a1a1a;
   border: 1px solid #7a19c4;
   border-radius: 10px;
-  padding: 23px 25px;
+  padding: 18px 20px;
   font-family: "IM_Hyemin", sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.6;
   color: #c7c7c7;
   white-space: pre-wrap;
@@ -303,7 +302,7 @@ export const RightSection = styled.div`
 export const PoemSectionTitle = styled.h2`
   font-family: "IM_Hyemin", sans-serif;
   font-weight: bold;
-  font-size: 34px;
+  font-size: 28px;
   line-height: 1.6;
   color: #fafafa;
   margin: 0;
@@ -312,7 +311,7 @@ export const PoemSectionTitle = styled.h2`
 export const PoemCard = styled.div`
   border: 1px solid #7a19c4;
   border-radius: 10px;
-  min-height: 400px;
+  min-height: 350px;
   background: radial-gradient(
     ellipse at center,
     rgba(75, 27, 112, 1) 0%,
@@ -320,7 +319,7 @@ export const PoemCard = styled.div`
     rgba(34, 22, 43, 1) 75%,
     rgba(20, 20, 20, 1) 100%
   );
-  padding: 39px 80px 70px 80px;
+  padding: 30px 60px 50px 60px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -337,18 +336,18 @@ export const PoemContentWrapper = styled.div`
 
 export const PoemHeader = styled.div`
   width: 100%;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 15px;
 `;
 
 export const PoemTitle = styled.h3`
   font-family: "IM_Hyemin", sans-serif;
   font-weight: bold;
-  font-size: 32px;
+  font-size: 26px;
   line-height: normal;
   color: #fafafa;
   margin: 0;
@@ -359,7 +358,7 @@ export const PoemTitle = styled.h3`
 export const PoemAuthor = styled.p`
   font-family: "IM_Hyemin", sans-serif;
   font-weight: bold;
-  font-size: 24px;
+  font-size: 20px;
   line-height: normal;
   color: #c7c7c7;
   margin: 0;
@@ -389,7 +388,7 @@ export const PoemStanza = styled.div`
 
 export const PoemLine = styled.p`
   font-family: "IM_Hyemin", sans-serif;
-  font-size: 24px;
+  font-size: 20px;
   line-height: normal;
   color: white;
   margin: 0;

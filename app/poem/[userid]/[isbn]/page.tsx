@@ -190,6 +190,10 @@ export default function PoemDetailPage() {
     onSettled: () => {
       // 성공/실패와 관계없이 서버 데이터로 재동기화
       queryClient.invalidateQueries({ queryKey: ["likes", userid, cleanIsbn] });
+      // book detail page의 comment 리스트도 무효화
+      queryClient.invalidateQueries({ queryKey: ["poemsWithDetails"] });
+      // explore page의 공개 시 목록도 무효화
+      queryClient.invalidateQueries({ queryKey: ["publicPoems"] });
     },
   });
 

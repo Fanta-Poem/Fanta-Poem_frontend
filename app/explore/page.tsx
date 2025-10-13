@@ -206,9 +206,13 @@ export default function ExplorePage() {
           : "좋아요 처리 중 오류가 발생했습니다."
       );
     },
-    onSettled: () => {
+    onSettled: (_data, _error, variables) => {
       // 성공/실패와 관계없이 서버 데이터로 재동기화
       queryClient.invalidateQueries({ queryKey: ["publicPoems"] });
+      // poem detail page의 좋아요 정보도 무효화
+      queryClient.invalidateQueries({ queryKey: ["likes", variables.userId, variables.isbn] });
+      // book detail page의 comment 리스트도 무효화
+      queryClient.invalidateQueries({ queryKey: ["poemsWithDetails"] });
     },
   });
 

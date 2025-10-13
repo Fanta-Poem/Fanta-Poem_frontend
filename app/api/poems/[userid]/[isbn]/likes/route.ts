@@ -3,12 +3,9 @@ import { supabaseAdmin } from "@/app/lib/supabase";
 import { auth } from "@/lib/auth";
 
 // 좋아요 수와 현재 사용자의 좋아요 여부 조회
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { userid: string; isbn: string } }
-) {
+export async function GET(request: NextRequest, context: any) {
   try {
-    const { userid, isbn } = params;
+    const { userid, isbn } = await context.params;
     const session = await auth();
     const currentUserId = session?.user?.id;
 

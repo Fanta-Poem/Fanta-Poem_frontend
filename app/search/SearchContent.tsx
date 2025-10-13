@@ -1,0 +1,350 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import * as S from "./style";
+import BackButton from "../components/BackButton";
+import Dropdown from "../components/Dropdown";
+import BookCard from "../components/BookCard";
+import SearchBar from "../components/SearchBar";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import LoadingNotFound from "./LoadingNotFound";
+import ReadingDateModal from "../components/ReadingDateModal";
+import StartDateModal from "../components/StartDateModal";
+import { useSession } from "next-auth/react";
+
+interface Book {
+  isbn: string;
+  title: string;
+  contents: string;
+  url: string;
+  authors: string[];
+  publisher: string;
+  translators: string[];
+  price: number;
+  sale_price: number;
+  thumbnail: string;
+  datetime: string;
+}
+
+interface SearchResponse {
+  meta: {
+    total_count: number;
+    pageable_count: number;
+    is_end: boolean;
+  };
+  documents: Book[];
+}
+
+const fetchBooks = async (
+  query: string,
+  page: number,
+  sort: string
+): Promise<SearchResponse> => {
+  const response = await fetch(
+    `/api/books/search?query=${encodeURIComponent(
+      query
+    )}&page=${page}&size=10&sort=${sort}`
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch books");
+  }
+
+  return response.json();
+};
+
+const sortOptions = [
+  { value: "accuracy", label: "정확도순" },
+  { value: "latest", label: "최신순" },
+];
+
+export default function SearchContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
+  const { data: session } = useSession();
+
+  // URL에서 초기 값 읽기
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("query") || ""
+  );
+  const [inputValue, setInputValue] = useState(searchParams.get("query") || "");
+  const [currentPage, setCurrentPage] = useState(
+    Number(searchParams.get("page")) || 1
+  );
+  const [sortBy, setSortBy] = useState(searchParams.get("sort") || "accuracy");
+  const [isDateModalOpen, setIsDateModalOpen] = useState(false);
+  const [isStartDateModalOpen, setIsStartDateModalOpen] = useState(false);
+  const [selectedISBN, setSelectedISBN] = useState<string>("");
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["books", searchQuery, currentPage, sortBy],
+    queryFn: () => fetchBooks(searchQuery, currentPage, sortBy),
+    enabled: !!searchQuery.trim(),
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 10,
+  });
+
+  const books = data?.documents || [];
+
+  // ISBN 유효성 체크 함수
+  const hasValidISBN = (isbn: string) => {
+    if (!isbn || !isbn.trim()) return false;
+    const firstISBN = isbn.split(" ")[0].trim();
+    return firstISBN.length >= 10;
+  };
+
+  // API에서 제공하는 전체 개수 사용
+  const totalCount = data?.meta.total_count || 0;
+
+  // URL 파라미터 변경 감지 (뒤로가기/앞으로가기)
+  useEffect(() => {
+    const query = searchParams.get("query") || "";
+    const page = Number(searchParams.get("page")) || 1;
+    const sort = searchParams.get("sort") || "accuracy";
+
+    setSearchQuery(query);
+    setInputValue(query);
+    setCurrentPage(page);
+    setSortBy(sort);
+  }, [searchParams]);
+
+  // URL 업데이트 함수
+  const updateURL = (query: string, page: number, sort: string) => {
+    const params = new URLSearchParams();
+    if (query) params.set("query", query);
+    if (page > 1) params.set("page", page.toString());
+    if (sort !== "accuracy") params.set("sort", sort);
+
+    const newURL = params.toString()
+      ? `/search?${params.toString()}`
+      : "/search";
+    router.replace(newURL);
+  };
+
+  const handleSearch = () => {
+    if (inputValue.trim()) {
+      setSearchQuery(inputValue);
+      setCurrentPage(1);
+      updateURL(inputValue, 1, sortBy);
+    }
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    updateURL(searchQuery, page, sortBy);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleSortChange = (value: string) => {
+    setSortBy(value);
+    setCurrentPage(1);
+    updateURL(searchQuery, 1, value);
+  };
+
+  const handleBookClick = (book: Book) => {
+    // ISBN이 있는 경우 ISBN 사용, 없는 경우 title 사용
+    const firstISBN = book.isbn?.split(" ")[0].trim();
+    const identifier =
+      firstISBN && firstISBN.length >= 10
+        ? firstISBN
+        : encodeURIComponent(book.title);
+
+    // React Query 캐시에 책 데이터 저장
+    queryClient.setQueryData(["book", identifier], book);
+
+    router.push(`/book/${identifier}`);
+  };
+
+  const handleWriteClick = (isbn: string) => {
+    const firstISBN = isbn.split(" ")[0].trim();
+    if (firstISBN && firstISBN.length >= 10) {
+      setSelectedISBN(firstISBN);
+      setIsDateModalOpen(true);
+    }
+  };
+
+  const handleDateSubmit = (startDate: string, endDate: string) => {
+    if (selectedISBN) {
+      router.push(
+        `/write/${selectedISBN}?startDate=${startDate}&endDate=${endDate}`
+      );
+    }
+  };
+
+  const handleReadingClick = (isbn: string) => {
+    // 로그인 체크
+    if (!session?.user?.id) {
+      router.push("/login");
+      return;
+    }
+
+    const firstISBN = isbn.split(" ")[0].trim();
+    if (firstISBN && firstISBN.length >= 10) {
+      setSelectedISBN(firstISBN);
+      setIsStartDateModalOpen(true);
+    }
+  };
+
+  const handleStartDateSubmit = async (startDate: string) => {
+    if (!selectedISBN || !session?.user?.id) {
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/reading-books", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          isbn: selectedISBN,
+          startDate,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "읽는 중인 책 등록에 실패했습니다");
+      }
+
+      // React Query 캐시 무효화 - 읽는 중인 책 목록 새로고침
+      queryClient.invalidateQueries({ queryKey: ["readingBooks"] });
+
+      // 성공 시 마이페이지로 이동
+      router.push("/mypage");
+    } catch (error) {
+      console.error("읽는 중인 책 등록 오류:", error);
+      alert(
+        error instanceof Error
+          ? error.message
+          : "읽는 중인 책 등록 중 오류가 발생했습니다"
+      );
+    }
+  };
+
+  return (
+    <S.SearchContainer>
+      <S.SearchInner>
+        <BackButton />
+
+        <S.SearchSection>
+          <SearchBar
+            value={inputValue}
+            onChange={setInputValue}
+            onSearch={handleSearch}
+            placeholder="이야기 검색"
+          />
+
+          {searchQuery && (
+            <S.ResultsSection>
+              <S.ResultsHeader>
+                <S.ResultsCount>
+                  '<S.Highlight>{searchQuery}</S.Highlight>' 에 대한{" "}
+                  {totalCount.toLocaleString()}개의 이야기
+                </S.ResultsCount>
+                <Dropdown
+                  options={sortOptions}
+                  value={sortBy}
+                  onChange={handleSortChange}
+                  width="120px"
+                />
+              </S.ResultsHeader>
+
+              {isLoading ? (
+                <S.LoadingMessage>로딩 중...</S.LoadingMessage>
+              ) : books.length > 0 ? (
+                <>
+                  <S.BookList>
+                    {books.map((book, index) => {
+                      const isISBNValid = hasValidISBN(book.isbn);
+                      return (
+                        <BookCard
+                          key={book.isbn || `book-${index}`}
+                          thumbnail={book.thumbnail || "/book-sample.svg"}
+                          title={book.title}
+                          subtitle={book.contents}
+                          authors={book.authors}
+                          translators={book.translators}
+                          publisher={book.publisher}
+                          publishDate={new Date(
+                            book.datetime
+                          ).toLocaleDateString("ko-KR")}
+                          price={
+                            book.sale_price > 0
+                              ? `${book.sale_price.toLocaleString()} 원`
+                              : book.price > 0
+                              ? `${book.price.toLocaleString()} 원`
+                              : "가격 정보 없음"
+                          }
+                          rating={0}
+                          reviewCount={0}
+                          variant="search"
+                          isbn={book.isbn}
+                          onClick={() => handleBookClick(book)}
+                          onWriteClick={() =>
+                            isISBNValid && handleWriteClick(book.isbn)
+                          }
+                          onReadingClick={() =>
+                            isISBNValid && handleReadingClick(book.isbn)
+                          }
+                        />
+                      );
+                    })}
+                  </S.BookList>
+
+                  <S.Pagination>
+                    {currentPage > 2 && (
+                      <>
+                        <S.PageNumber onClick={() => handlePageChange(1)}>
+                          1
+                        </S.PageNumber>
+                        <S.PageNumber>...</S.PageNumber>
+                      </>
+                    )}
+                    {currentPage > 1 && (
+                      <S.PageNumber
+                        onClick={() => handlePageChange(currentPage - 1)}
+                      >
+                        {currentPage - 1}
+                      </S.PageNumber>
+                    )}
+                    <S.PageNumber active>{currentPage}</S.PageNumber>
+                    {!isLoading &&
+                      data?.meta &&
+                      (!data.meta.is_end || books.length === 10) && (
+                        <>
+                          <S.PageNumber
+                            onClick={() => handlePageChange(currentPage + 1)}
+                          >
+                            {currentPage + 1}
+                          </S.PageNumber>
+                          <S.PageNumber>...</S.PageNumber>
+                        </>
+                      )}
+                  </S.Pagination>
+                </>
+              ) : (
+                <LoadingNotFound />
+              )}
+            </S.ResultsSection>
+          )}
+        </S.SearchSection>
+      </S.SearchInner>
+
+      <ReadingDateModal
+        isOpen={isDateModalOpen}
+        onClose={() => setIsDateModalOpen(false)}
+        onSubmit={handleDateSubmit}
+      />
+
+      <StartDateModal
+        isOpen={isStartDateModalOpen}
+        onClose={() => setIsStartDateModalOpen(false)}
+        onSubmit={handleStartDateSubmit}
+      />
+    </S.SearchContainer>
+  );
+}

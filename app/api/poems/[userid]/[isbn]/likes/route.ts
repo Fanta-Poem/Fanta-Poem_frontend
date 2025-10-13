@@ -67,14 +67,6 @@ export async function POST(
     const { userid, isbn } = await context.params;
     const currentUserId = session.user.id;
 
-    // 본인의 시에는 좋아요를 누를 수 없음
-    if (currentUserId === userid) {
-      return NextResponse.json(
-        { error: "본인의 시에는 좋아요를 누를 수 없습니다" },
-        { status: 400 }
-      );
-    }
-
     // 현재 좋아요 상태 확인
     const { data: existingLike, error: checkError } = await supabaseAdmin
       .from("poem_likes")
